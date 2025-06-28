@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Primary Meta Tags -->
+    <title>{% block title %}Help Alpha - Sistema de Consulta de Exames{% endblock %}</title>
+    <meta name="title" content="{% block meta_title %}Help Alpha - Sistema de Consulta de Exames{% endblock %}">
+    <meta name="description" content="{% block meta_description %}Consulte informações sobre exames laboratoriais e de imagem. Preparo, documentos necessários, horários e contatos das unidades Help Alpha.{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}exames, laboratório, imagem, consulta, preparo, jejum, documentos, Help Alpha, Porto Velho, Rondônia{% endblock %}">
+    <meta name="author" content="PageUp Sistemas - Oézios Normando">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="pt-BR">
+    <meta name="revisit-after" content="7 days">
+    <meta name="distribution" content="global">
+    <meta name="rating" content="general">
+    <meta name="theme-color" content="#667eea">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ request.url }}">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title" content="{% block og_title %}Help Alpha - Sistema de Consulta de Exames{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Consulte informações sobre exames laboratoriais e de imagem. Preparo, documentos necessários, horários e contatos das unidades Help Alpha.{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{{ url_for('static', filename='images/help-alpha-og.jpg', _external=True) }}{% endblock %}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Help Alpha">
+    <meta property="og:locale" content="pt_BR">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ request.url }}">
+    <meta property="twitter:title" content="{% block twitter_title %}Help Alpha - Sistema de Consulta de Exames{% endblock %}">
+    <meta property="twitter:description" content="{% block twitter_description %}Consulte informações sobre exames laboratoriais e de imagem. Preparo, documentos necessários, horários e contatos das unidades Help Alpha.{% endblock %}">
+    <meta property="twitter:image" content="{% block twitter_image %}{{ url_for('static', filename='images/help-alpha-twitter.jpg', _external=True) }}{% endblock %}">
+    
+    <!-- Schema.org structured data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "MedicalOrganization",
+        "name": "Help Alpha",
+        "description": "Sistema de consulta de exames laboratoriais e de imagem",
+        "url": "{{ request.url_root }}",
+        "logo": "{{ url_for('static', filename='images/logo.png', _external=True) }}",
+        "image": "{{ url_for('static', filename='images/help-alpha.jpg', _external=True) }}",
+        "address": [
+            {
+                "@type": "PostalAddress",
+                "streetAddress": "Av. Calama 2215",
+                "addressLocality": "São João Bosco",
+                "addressRegion": "RO",
+                "addressCountry": "BR",
+                "postalCode": "76801-000"
+            },
+            {
+                "@type": "PostalAddress",
+                "streetAddress": "Av. Jatuarana 4184",
+                "addressLocality": "Conceição",
+                "addressRegion": "RO",
+                "addressCountry": "BR",
+                "postalCode": "76801-000"
+            }
+        ],
+        "telephone": [
+            "+556932230132",
+            "+556932230133",
+            "+556932230136",
+            "+556932279311"
+        ],
+        "sameAs": [
+            "https://www.facebook.com/helpalpha",
+            "https://www.instagram.com/helpalpha"
+        ],
+        "openingHours": [
+            "Mo-Fr 06:30-21:30",
+            "Sa 06:30-17:00"
+        ],
+        "medicalSpecialty": [
+            "Laboratory Medicine",
+            "Radiology",
+            "Clinical Pathology"
+        ],
+        "serviceType": "Medical Laboratory Services",
+        "areaServed": {
+            "@type": "City",
+            "name": "Porto Velho",
+            "addressRegion": "RO",
+            "addressCountry": "BR"
+        }
+    }
+    </script>
+    
+    <!-- Additional SEO Meta Tags -->
+    <meta name="geo.region" content="BR-RO">
+    <meta name="geo.placename" content="Porto Velho">
+    <meta name="geo.position" content="-8.7619;-63.9039">
+    <meta name="ICBM" content="-8.7619, -63.9039">
+    
+    <!-- Mobile App Meta Tags -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Help Alpha">
+    <meta name="application-name" content="Help Alpha">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
+    
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bulma.min.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        .hero.is-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card {
+            transition: transform 0.2s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        .search-box {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .footer {
+            background-color: #f5f5f5;
+            padding: 3rem 1.5rem;
+        }
+        .unidade-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            height: 100%;
+        }
+        .unidade-card h4 {
+            color: #3273dc;
+            border-bottom: 2px solid #3273dc;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .horario-item {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        .horario-item strong {
+            color: #363636;
+        }
+        .navbar-item {
+            color: white !important;
+        }
+        .navbar-item:hover {
+            background-color: rgba(255,255,255,0.1) !important;
+            color: white !important;
+        }
+        .navbar-burger {
+            color: white;
+        }
+        .navbar-burger:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="{{ url_for('index') }}">
+                    <span class="icon">
+                        <i class="fas fa-stethoscope"></i>
+                    </span>
+                    <span class="has-text-weight-bold">Help Alpha</span>
+                </a>
+
+                <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasic">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
+            </div>
+
+            <div id="navbarBasic" class="navbar-menu">
+                <div class="navbar-end">
+                    <a class="navbar-item" href="{{ url_for('index') }}">
+                        <span class="icon">
+                            <i class="fas fa-home"></i>
+                        </span>
+                        <span>Início</span>
+                    </a>
+                    <a class="navbar-item" href="{{ url_for('admin_login') }}">
+                        <span class="icon">
+                            <i class="fas fa-user-shield"></i>
+                        </span>
+                        <span>Administração</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <section class="hero is-primary">
+        <div class="hero-body">
+            <div class="container">
+                <div class="columns is-centered">
+                    <div class="column is-8">
+                        <h1 class="title has-text-centered">
+                            <i class="fas fa-stethoscope"></i> Help Alpha
+                        </h1>
+                        <p class="subtitle has-text-centered">
+                            Sistema de Consulta de Exames
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="section">
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <!-- Nossas Unidades -->
+            <div class="columns is-multiline">
+                <div class="column is-12">
+                    <h3 class="title is-4 has-text-centered mb-5">
+                        <span class="icon">
+                            <i class="fas fa-hospital"></i>
+                        </span>
+                        <span>Nossas Unidades</span>
+                    </h3>
+                </div>
+                
+                <!-- Unidade Central -->
+                <div class="column is-6">
+                    <div class="unidade-card">
+                        <h4 class="title is-5">
+                            <span class="icon">
+                                <i class="fas fa-building"></i>
+                            </span>
+                            <span>Unidade Central</span>
+                        </h4>
+                        
+                        <div class="content">
+                            <p><strong>Endereço:</strong><br>
+                            Av. Calama 2215, São João Bosco</p>
+                            
+                            <p><strong>Telefones:</strong></p>
+                            <ul>
+                                <li><i class="fas fa-phone"></i> (69) 3223-0132</li>
+                                <li><i class="fas fa-phone"></i> (69) 3223-0133</li>
+                                <li><i class="fas fa-phone"></i> (69) 3223-0136</li>
+                            </ul>
+                            
+                            <p><strong>Horário de Funcionamento:</strong></p>
+                            <div class="horario-item">
+                                <strong>Segunda a Sexta:</strong> das 6h30 às 21h30<br>
+                                <small class="has-text-grey">(coleta de exames até às 16h)</small>
+                            </div>
+                            <div class="horario-item">
+                                <strong>Sábado:</strong> das 6h30 às 17h*<br>
+                                <small class="has-text-grey">(coleta de exames até às 11:00)</small>
+                            </div>
+                            
+                            <p><strong>Vacinação:</strong></p>
+                            <div class="horario-item">
+                                <strong>Segunda a Sexta:</strong> 08h às 18h00
+                            </div>
+                            <div class="horario-item">
+                                <strong>Sábado:</strong> 8h às 12h00
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Zona Sul -->
+                <div class="column is-6">
+                    <div class="unidade-card">
+                        <h4 class="title is-5">
+                            <span class="icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </span>
+                            <span>Zona Sul</span>
+                        </h4>
+                        
+                        <div class="content">
+                            <p><strong>Endereço:</strong><br>
+                            Av. Jatuarana 4184, Conceição</p>
+                            
+                            <p><strong>Telefones:</strong></p>
+                            <ul>
+                                <li><i class="fas fa-phone"></i> (69) 3227-9311</li>
+                                <li><i class="fab fa-whatsapp"></i> (69) 98129-0005 - WhatsApp</li>
+                            </ul>
+                            
+                            <p><strong>Horário de Funcionamento:</strong></p>
+                            <div class="horario-item">
+                                <strong>Segunda a Sexta:</strong> das 6h30 às 17h<br>
+                                <small class="has-text-grey">(coleta de exames 6h30 às 15h)</small>
+                            </div>
+                            <div class="horario-item">
+                                <strong>Sábado:</strong> das 6h30 às 11h<br>
+                                <small class="has-text-grey">(coleta de exames das 6h30 às 9h)</small>
+                            </div>
+                            
+                            <p><strong>Vacinação:</strong></p>
+                            <div class="horario-item">
+                                <strong>Segunda a Sexta:</strong> Horário agendado
+                            </div>
+                            <div class="horario-item">
+                                <strong>Sábado:</strong> Horário agendado
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="mt-5">
+            
+            <!-- Informações Adicionais -->
+            <div class="columns is-centered mt-5">
+                <div class="column is-8">
+                    <div class="notification is-info is-light">
+                        <div class="content has-text-centered">
+                            <h4 class="title is-5">
+                                <span class="icon">
+                                    <i class="fas fa-info-circle"></i>
+                                </span>
+                                <span>Informações Importantes</span>
+                            </h4>
+                            <ul>
+                                <li><strong>Chegue com antecedência:</strong> Recomendamos chegar 15 minutos antes do horário marcado</li>
+                                <li><strong>Documentos:</strong> Traga sempre RG, CPF e pedido médico</li>
+                                <li><strong>Jejum:</strong> Respeite rigorosamente as orientações de jejum</li>
+                                <li><strong>Dúvidas:</strong> Entre em contato conosco para esclarecimentos</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Copyright -->
+            <div class="content has-text-centered mt-5">
+                <p>
+                    <strong>Help Alpha</strong> - Sistema de Consulta de Exames<br>
+                    Desenvolvido por <strong>PageUp Sistemas</strong> - Oézios Normando
+                </p>
+                <p class="is-size-7 has-text-grey">
+                    * Confirmar disponibilidade do serviço aos sábados
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', () => {
+            const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+            
+            if ($navbarBurgers.length > 0) {
+                $navbarBurgers.forEach( el => {
+                    el.addEventListener('click', () => {
+                        const target = el.dataset.target;
+                        const $target = document.getElementById(target);
+                        
+                        el.classList.toggle('is-active');
+                        $target.classList.toggle('is-active');
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

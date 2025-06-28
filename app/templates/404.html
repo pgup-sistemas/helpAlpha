@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Exame Não Encontrado - Help Alpha{% endblock %}
+
+{% block content %}
+<div class="columns is-centered">
+    <div class="column is-6">
+        <div class="notification is-danger is-light">
+            <div class="content has-text-centered">
+                <span class="icon is-large">
+                    <i class="fas fa-exclamation-triangle fa-3x"></i>
+                </span>
+                <h1 class="title is-2">404</h1>
+                <h2 class="subtitle is-4">Exame Não Encontrado</h2>
+                <p>O exame que você está procurando não foi encontrado em nossa base de dados.</p>
+                <p>Verifique se o nome está correto ou tente buscar por outro termo.</p>
+                
+                <div class="mt-5">
+                    <a href="{{ url_for('index') }}" class="button is-primary is-medium">
+                        <span class="icon">
+                            <i class="fas fa-home"></i>
+                        </span>
+                        <span>Voltar ao Início</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

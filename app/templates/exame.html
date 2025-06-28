@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+
+{% block title %}{{ exame.nome }} - Help Alpha{% endblock %}
+
+{% block meta_title %}{{ exame.nome }} - Preparo e Informações | Help Alpha{% endblock %}
+
+{% block meta_description %}Consulte informações sobre {{ exame.nome }}. Preparo: {{ exame.preparo }}. Documentos necessários, duração e cuidados pós-exame.{% endblock %}
+
+{% block meta_keywords %}{{ exame.nome }}, preparo, jejum, documentos, duração, {{ exame.nome.lower() }}, exames, laboratório, Help Alpha{% endblock %}
+
+{% block og_title %}{{ exame.nome }} - Preparo e Informações | Help Alpha{% endblock %}
+
+{% block og_description %}Consulte informações sobre {{ exame.nome }}. Preparo: {{ exame.preparo }}. Documentos necessários e cuidados pós-exame.{% endblock %}
+
+{% block twitter_title %}{{ exame.nome }} - Preparo e Informações | Help Alpha{% endblock %}
+
+{% block twitter_description %}Consulte informações sobre {{ exame.nome }}. Preparo: {{ exame.preparo }}. Documentos necessários e cuidados pós-exame.{% endblock %}
+
+<!-- Schema.org for MedicalTest -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "MedicalTest",
+    "name": "{{ exame.nome }}",
+    "description": "{{ exame.descricao }}",
+    "url": "{{ request.url }}",
+    "category": "MedicalTest",
+    "preparation": "{{ exame.preparo }}",
+    "followup": "{{ exame.pos_exame }}",
+    "timeRequired": "{{ exame.tempo }}",
+    "requiredDocumentation": "{{ exame.documentos }}",
+    "availableAtOrFrom": {
+        "@type": "MedicalOrganization",
+        "name": "Help Alpha",
+        "address": [
+            {
+                "@type": "PostalAddress",
+                "streetAddress": "Av. Calama 2215",
+                "addressLocality": "São João Bosco",
+                "addressRegion": "RO",
+                "addressCountry": "BR"
+            },
+            {
+                "@type": "PostalAddress",
+                "streetAddress": "Av. Jatuarana 4184",
+                "addressLocality": "Conceição",
+                "addressRegion": "RO",
+                "addressCountry": "BR"
+            }
+        ],
+        "telephone": ["+556932230132", "+556932230133", "+556932230136", "+556932279311"]
+    },
+    "areaServed": {
+        "@type": "City",
+        "name": "Porto Velho",
+        "addressRegion": "RO",
+        "addressCountry": "BR"
+    }
+}
+</script>
+
+{% block content %}
+<div class="container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="breadcrumbs">
+        <ul>
+            <li><a href="{{ url_for('index') }}">Início</a></li>
+            <li class="is-active"><a href="#" aria-current="page">{{ exame.nome }}</a></li>
+        </ul>
+    </nav>
+
+    <!-- Exame Details -->
+    <div class="columns">
+        <div class="column is-8">
+            <div class="card">
+                <header class="card-header">
+                    <p class="card-header-title">
+                        <span class="icon">
+                            <i class="fas fa-stethoscope"></i>
+                        </span>
+                        <span>{{ exame.nome }}</span>
+                    </p>
+                </header>
+                <div class="card-content">
+                    <div class="content">
+                        <h2 class="title is-4">Descrição</h2>
+                        <p>{{ exame.descricao }}</p>
+                        
+                        <h3 class="title is-5 mt-5">
+                            <span class="icon">
+                                <i class="fas fa-clock"></i>
+                            </span>
+                            <span>Preparo Necessário</span>
+                        </h3>
+                        <div class="notification is-info is-light">
+                            <p><strong>{{ exame.preparo }}</strong></p>
+                        </div>
+                        
+                        <h3 class="title is-5 mt-5">
+                            <span class="icon">
+                                <i class="fas fa-file-alt"></i>
+                            </span>
+                            <span>Documentos Exigidos</span>
+                        </h3>
+                        <div class="notification is-warning is-light">
+                            <p>{{ exame.documentos }}</p>
+                        </div>
+                        
+                        <h3 class="title is-5 mt-5">
+                            <span class="icon">
+                                <i class="fas fa-hourglass-half"></i>
+                            </span>
+                            <span>Duração do Exame</span>
+                        </h3>
+                        <p>{{ exame.tempo }}</p>
+                        
+                        <h3 class="title is-5 mt-5">
+                            <span class="icon">
+                                <i class="fas fa-heart"></i>
+                            </span>
+                            <span>Cuidados Pós-Exame</span>
+                        </h3>
+                        <div class="notification is-success is-light">
+                            <p>{{ exame.pos_exame }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="column is-4">
+            <!-- Contact Information -->
+            <div class="card">
+                <header class="card-header">
+                    <p class="card-header-title">
+                        <span class="icon">
+                            <i class="fas fa-phone"></i>
+                        </span>
+                        <span>Agende seu Exame</span>
+                    </p>
+                </header>
+                <div class="card-content">
+                    <div class="content">
+                        <h4 class="title is-6">Unidade Central</h4>
+                        <p><i class="fas fa-phone"></i> (69) 3223-0132</p>
+                        <p><i class="fas fa-phone"></i> (69) 3223-0133</p>
+                        <p><i class="fas fa-phone"></i> (69) 3223-0136</p>
+                        
+                        <hr>
+                        
+                        <h4 class="title is-6">Zona Sul</h4>
+                        <p><i class="fas fa-phone"></i> (69) 3227-9311</p>
+                        <p><i class="fab fa-whatsapp"></i> (69) 98129-0005</p>
+                        
+                        <hr>
+                        
+                        <div class="buttons">
+                            <a href="tel:+556932230132" class="button is-primary is-fullwidth">
+                                <span class="icon">
+                                    <i class="fas fa-phone"></i>
+                                </span>
+                                <span>Ligar Agora</span>
+                            </a>
+                            <a href="https://wa.me/5569981290005" target="_blank" class="button is-success is-fullwidth">
+                                <span class="icon">
+                                    <i class="fab fa-whatsapp"></i>
+                                </span>
+                                <span>WhatsApp</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Related Information -->
+            <div class="card mt-4">
+                <header class="card-header">
+                    <p class="card-header-title">
+                        <span class="icon">
+                            <i class="fas fa-info-circle"></i>
+                        </span>
+                        <span>Informações Importantes</span>
+                    </p>
+                </header>
+                <div class="card-content">
+                    <div class="content">
+                        <ul>
+                            <li><strong>Chegue com antecedência:</strong> 15 minutos antes</li>
+                            <li><strong>Documentos:</strong> RG, CPF e pedido médico</li>
+                            <li><strong>Jejum:</strong> Respeite as orientações</li>
+                            <li><strong>Dúvidas:</strong> Entre em contato conosco</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Back to Search -->
+    <div class="has-text-centered mt-5">
+        <a href="{{ url_for('index') }}" class="button is-outlined">
+            <span class="icon">
+                <i class="fas fa-arrow-left"></i>
+            </span>
+            <span>Voltar para Busca</span>
+        </a>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+
+{% block title %}Help Alpha - Consulta de Exames Laboratoriais e Imagem{% endblock %}
+
+{% block meta_title %}Help Alpha - Consulta de Exames Laboratoriais e Imagem | Porto Velho{% endblock %}
+
+{% block meta_description %}Consulte informações sobre exames laboratoriais e de imagem. Preparo, documentos necessários, horários e contatos das unidades Help Alpha em Porto Velho, Rondônia.{% endblock %}
+
+{% block meta_keywords %}exames laboratoriais, exames de imagem, laboratório, Porto Velho, Rondônia, Help Alpha, preparo, jejum, documentos, consulta, agendamento{% endblock %}
+
+{% block og_title %}Help Alpha - Consulta de Exames Laboratoriais e Imagem | Porto Velho{% endblock %}
+
+{% block og_description %}Consulte informações sobre exames laboratoriais e de imagem. Preparo, documentos necessários, horários e contatos das unidades Help Alpha em Porto Velho, Rondônia.{% endblock %}
+
+{% block twitter_title %}Help Alpha - Consulta de Exames Laboratoriais e Imagem | Porto Velho{% endblock %}
+
+{% block twitter_description %}Consulte informações sobre exames laboratoriais e de imagem. Preparo, documentos necessários, horários e contatos das unidades Help Alpha em Porto Velho, Rondônia.{% endblock %}
+
+<!-- Schema.org for WebSite -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Help Alpha",
+    "description": "Sistema de consulta de exames laboratoriais e de imagem",
+    "url": "{{ request.url_root }}",
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "{{ request.url_root }}?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    "publisher": {
+        "@type": "MedicalOrganization",
+        "name": "Help Alpha",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Av. Calama 2215",
+            "addressLocality": "São João Bosco",
+            "addressRegion": "RO",
+            "addressCountry": "BR"
+        }
+    }
+}
+</script>
+
+{% block content %}
+<!-- Search Section -->
+<div class="columns is-centered">
+    <div class="column is-8">
+        <div class="box">
+            <h1 class="title has-text-centered">
+                <span class="icon">
+                    <i class="fas fa-search"></i>
+                </span>
+                <span>Buscar Exames</span>
+            </h1>
+            <p class="subtitle has-text-centered">
+                Digite o nome do exame que você procura
+            </p>
+            
+            <form method="GET" action="{{ url_for('index') }}">
+                <div class="field">
+                    <div class="control has-icons-left has-icons-right">
+                        <input class="input is-large" type="text" name="q" 
+                               placeholder="Ex: Hemograma, Tomografia, Ressonância..." 
+                               value="{{ query }}" autocomplete="off">
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        {% if query %}
+                        <span class="icon is-small is-right">
+                            <a href="{{ url_for('index') }}">
+                                <i class="fas fa-times"></i>
+                            </a>
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <button type="submit" class="button is-primary is-fullwidth is-large">
+                            <span class="icon">
+                                <i class="fas fa-search"></i>
+                            </span>
+                            <span>Buscar Exames</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Results Section -->
+{% if query %}
+<div class="columns is-centered">
+    <div class="column is-10">
+        <h2 class="title is-4">
+            <span class="icon">
+                <i class="fas fa-list"></i>
+            </span>
+            <span>Resultados para "{{ query }}"</span>
+        </h2>
+        <p class="subtitle is-6">Encontrados {{ exames|length }} exame(s)</p>
+    </div>
+</div>
+{% else %}
+<div class="columns is-centered">
+    <div class="column is-10">
+        <h2 class="title is-4">
+            <span class="icon">
+                <i class="fas fa-clipboard-list"></i>
+            </span>
+            <span>Todos os Exames Disponíveis</span>
+        </h2>
+        <p class="subtitle is-6">Consulte informações sobre {{ exames|length }} exames</p>
+    </div>
+</div>
+{% endif %}
+
+<!-- Exames Grid -->
+<div class="columns is-multiline">
+    {% for exame in exames %}
+    <div class="column is-4">
+        <div class="card">
+            <div class="card-content">
+                <div class="content">
+                    <h3 class="title is-5">
+                        <span class="icon">
+                            <i class="fas fa-stethoscope"></i>
+                        </span>
+                        <span>{{ exame.nome }}</span>
+                    </h3>
+                    <p class="subtitle is-6">{{ exame.descricao[:100] }}{% if exame.descricao|length > 100 %}...{% endif %}</p>
+                    
+                    <div class="tags">
+                        <span class="tag is-info is-small">
+                            <span class="icon">
+                                <i class="fas fa-clock"></i>
+                            </span>
+                            <span>{{ exame.tempo }}</span>
+                        </span>
+                        <span class="tag is-warning is-small">
+                            <span class="icon">
+                                <i class="fas fa-utensils"></i>
+                            </span>
+                            <span>{{ exame.preparo[:20] }}{% if exame.preparo|length > 20 %}...{% endif %}</span>
+                        </span>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <a href="{{ url_for('exame', nome=exame.nome) }}" class="button is-primary is-fullwidth">
+                            <span class="icon">
+                                <i class="fas fa-info-circle"></i>
+                            </span>
+                            <span>Ver Detalhes</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- No Results Message -->
+{% if query and exames|length == 0 %}
+<div class="columns is-centered">
+    <div class="column is-6">
+        <div class="notification is-warning is-light">
+            <div class="content has-text-centered">
+                <h3 class="title is-5">
+                    <span class="icon">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <span>Nenhum exame encontrado</span>
+                </h3>
+                <p>Não encontramos exames com o termo "{{ query }}".</p>
+                <p>Tente:</p>
+                <ul>
+                    <li>Verificar a ortografia</li>
+                    <li>Usar termos mais gerais</li>
+                    <li>Consultar a lista completa de exames</li>
+                </ul>
+                <a href="{{ url_for('index') }}" class="button is-primary">
+                    <span class="icon">
+                        <i class="fas fa-list"></i>
+                    </span>
+                    <span>Ver Todos os Exames</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Statistics Section -->
+{% if not query %}
+<div class="columns is-centered mt-6">
+    <div class="column is-8">
+        <div class="notification is-info is-light">
+            <div class="content has-text-centered">
+                <h3 class="title is-5">
+                    <span class="icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </span>
+                    <span>Estatísticas</span>
+                </h3>
+                <div class="columns">
+                    <div class="column">
+                        <p class="title is-3">{{ exames|length }}</p>
+                        <p class="subtitle is-6">Total de Exames</p>
+                    </div>
+                    <div class="column">
+                        <p class="title is-3">2</p>
+                        <p class="subtitle is-6">Unidades</p>
+                    </div>
+                    <div class="column">
+                        <p class="title is-3">24/7</p>
+                        <p class="subtitle is-6">Disponibilidade</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Quick Actions -->
+<div class="columns is-centered mt-6">
+    <div class="column is-8">
+        <div class="box">
+            <h3 class="title is-5 has-text-centered">
+                <span class="icon">
+                    <i class="fas fa-bolt"></i>
+                </span>
+                <span>Ações Rápidas</span>
+            </h3>
+            <div class="columns">
+                <div class="column">
+                    <a href="tel:+556932230132" class="button is-primary is-fullwidth">
+                        <span class="icon">
+                            <i class="fas fa-phone"></i>
+                        </span>
+                        <span>Ligar Agora</span>
+                    </a>
+                </div>
+                <div class="column">
+                    <a href="https://wa.me/5569981290005" target="_blank" class="button is-success is-fullwidth">
+                        <span class="icon">
+                            <i class="fab fa-whatsapp"></i>
+                        </span>
+                        <span>WhatsApp</span>
+                    </a>
+                </div>
+                <div class="column">
+                    <a href="#contatos" class="button is-info is-fullwidth">
+                        <span class="icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </span>
+                        <span>Endereços</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

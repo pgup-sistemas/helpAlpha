@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin - Help Alpha{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bulma.min.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .admin-sidebar {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .admin-content {
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+        .sidebar-menu a {
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .sidebar-menu a:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+        }
+        .sidebar-menu a.is-active {
+            background-color: rgba(255,255,255,0.2);
+            border-left: 4px solid white;
+        }
+        .footer {
+            background-color: #f5f5f5;
+            padding: 2rem 1.5rem;
+            margin-top: 3rem;
+        }
+        .unidade-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            height: 100%;
+        }
+        .unidade-card h4 {
+            color: #3273dc;
+            border-bottom: 2px solid #3273dc;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .horario-item {
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+        .horario-item strong {
+            color: #363636;
+        }
+    </style>
+</head>
+<body>
+    <div class="columns is-gapless">
+        <!-- Sidebar -->
+        <div class="column is-2">
+            <aside class="admin-sidebar">
+                <div class="p-4">
+                    <h1 class="title has-text-white has-text-centered">
+                        <i class="fas fa-stethoscope"></i><br>
+                        Help Alpha
+                    </h1>
+                    <p class="has-text-white has-text-centered is-size-7">Painel Administrativo</p>
+                </div>
+                
+                <div class="sidebar-menu">
+                    <ul class="menu-list">
+                        <li>
+                            <a href="{{ url_for('admin_dashboard') }}" class="{% if request.endpoint == 'admin_dashboard' %}is-active{% endif %}">
+                                <span class="icon">
+                                    <i class="fas fa-tachometer-alt"></i>
+                                </span>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('admin_exames') }}" class="{% if request.endpoint == 'admin_exames' %}is-active{% endif %}">
+                                <span class="icon">
+                                    <i class="fas fa-flask"></i>
+                                </span>
+                                <span>Gerenciar Exames</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('admin_add_exame') }}" class="{% if request.endpoint == 'admin_add_exame' %}is-active{% endif %}">
+                                <span class="icon">
+                                    <i class="fas fa-plus"></i>
+                                </span>
+                                <span>Adicionar Exame</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('admin_upload_excel') }}" class="{% if request.endpoint == 'admin_upload_excel' %}is-active{% endif %}">
+                                <span class="icon">
+                                    <i class="fas fa-upload"></i>
+                                </span>
+                                <span>Upload em Massa</span>
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <hr class="has-background-white">
+                    
+                    <ul class="menu-list">
+                        <li>
+                            <a href="{{ url_for('index') }}" target="_blank">
+                                <span class="icon">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </span>
+                                <span>Ver Site</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('admin_logout') }}">
+                                <span class="icon">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                </span>
+                                <span>Sair</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="column">
+            <div class="admin-content">
+                <!-- Header -->
+                <nav class="navbar is-white" role="navigation" aria-label="main navigation">
+                    <div class="navbar-brand">
+                        <div class="navbar-item">
+                            <h2 class="title is-4">{% block page_title %}Administração{% endblock %}</h2>
+                        </div>
+                    </div>
+                    
+                    <div class="navbar-end">
+                        <div class="navbar-item">
+                            <div class="buttons">
+                                <span class="button is-static">
+                                    <span class="icon">
+                                        <i class="fas fa-user"></i>
+                                    </span>
+                                    <span>{{ current_user.username }}</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+                
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="container mt-3">
+                            {% for category, message in messages %}
+                                <div class="notification is-{{ category if category != 'message' else 'info' }} is-light">
+                                    <button class="delete"></button>
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+                
+                <!-- Page Content -->
+                <div class="container mt-4">
+                    {% block content %}{% endblock %}
+                </div>
+                
+                <!-- Footer -->
+                <footer class="footer">
+                    <div class="container">
+                        <!-- Nossas Unidades -->
+                        <div class="columns is-multiline">
+                            <div class="column is-12">
+                                <h3 class="title is-5 has-text-centered mb-4">
+                                    <span class="icon">
+                                        <i class="fas fa-hospital"></i>
+                                    </span>
+                                    <span>Nossas Unidades</span>
+                                </h3>
+                            </div>
+                            
+                            <!-- Unidade Central -->
+                            <div class="column is-6">
+                                <div class="unidade-card">
+                                    <h4 class="title is-6">
+                                        <span class="icon">
+                                            <i class="fas fa-building"></i>
+                                        </span>
+                                        <span>Unidade Central</span>
+                                    </h4>
+                                    
+                                    <div class="content">
+                                        <p><strong>Endereço:</strong><br>
+                                        Av. Calama 2215, São João Bosco</p>
+                                        
+                                        <p><strong>Telefones:</strong></p>
+                                        <ul>
+                                            <li><i class="fas fa-phone"></i> (69) 3223-0132</li>
+                                            <li><i class="fas fa-phone"></i> (69) 3223-0133</li>
+                                            <li><i class="fas fa-phone"></i> (69) 3223-0136</li>
+                                        </ul>
+                                        
+                                        <p><strong>Horário:</strong></p>
+                                        <div class="horario-item">
+                                            <strong>Seg-Sex:</strong> 6h30 às 21h30<br>
+                                            <small class="has-text-grey">(coleta até 16h)</small>
+                                        </div>
+                                        <div class="horario-item">
+                                            <strong>Sábado:</strong> 6h30 às 17h*<br>
+                                            <small class="has-text-grey">(coleta até 11h)</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Zona Sul -->
+                            <div class="column is-6">
+                                <div class="unidade-card">
+                                    <h4 class="title is-6">
+                                        <span class="icon">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                        </span>
+                                        <span>Zona Sul</span>
+                                    </h4>
+                                    
+                                    <div class="content">
+                                        <p><strong>Endereço:</strong><br>
+                                        Av. Jatuarana 4184, Conceição</p>
+                                        
+                                        <p><strong>Telefones:</strong></p>
+                                        <ul>
+                                            <li><i class="fas fa-phone"></i> (69) 3227-9311</li>
+                                            <li><i class="fab fa-whatsapp"></i> (69) 98129-0005</li>
+                                        </ul>
+                                        
+                                        <p><strong>Horário:</strong></p>
+                                        <div class="horario-item">
+                                            <strong>Seg-Sex:</strong> 6h30 às 17h<br>
+                                            <small class="has-text-grey">(coleta 6h30 às 15h)</small>
+                                        </div>
+                                        <div class="horario-item">
+                                            <strong>Sábado:</strong> 6h30 às 11h<br>
+                                            <small class="has-text-grey">(coleta 6h30 às 9h)</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Copyright -->
+                        <div class="content has-text-centered mt-4">
+                            <p class="is-size-7">
+                                <strong>Help Alpha</strong> - Desenvolvido por <strong>PageUp Sistemas</strong> - Oézios Normando
+                            </p>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Auto-hide flash messages
+        document.addEventListener('DOMContentLoaded', () => {
+            (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+                const $notification = $delete.parentNode;
+                $delete.addEventListener('click', () => {
+                    $notification.parentNode.removeChild($notification);
+                });
+            });
+        });
+    </script>
+</body>
+</html> 
