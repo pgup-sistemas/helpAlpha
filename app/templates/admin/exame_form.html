@@ -1,163 +1,401 @@
 {% extends "admin/base.html" %}
 
-{% block title %}{{ title }} - Help Alpha Admin{% endblock %}
+{% block title %}{{ title }} - Help Alphaclin Admin{% endblock %}
 {% block page_title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div class="columns is-centered">
-    <div class="column is-8">
-        <div class="card">
-            <header class="card-header">
-                <p class="card-header-title">
-                    <span class="icon">
-                        <i class="fas fa-edit"></i>
-                    </span>
-                    <span>{{ title }}</span>
-                </p>
-            </header>
-            <div class="card-content">
-                <form method="POST">
-                    {{ form.hidden_tag() }}
-                    
-                    <div class="columns">
-                        <div class="column is-6">
-                            <div class="field">
-                                <label class="label">{{ form.nome.label }}</label>
-                                <div class="control">
-                                    {{ form.nome(class="input", placeholder="Ex: Hemograma Completo") }}
-                                </div>
-                                {% if form.nome.errors %}
-                                    {% for error in form.nome.errors %}
-                                        <p class="help is-danger">{{ error }}</p>
-                                    {% endfor %}
-                                {% endif %}
-                            </div>
-                        </div>
-                        
-                        <div class="column is-6">
-                            <div class="field">
-                                <label class="label">{{ form.tempo.label }}</label>
-                                <div class="control">
-                                    {{ form.tempo(class="input", placeholder="Ex: 10-15 minutos") }}
-                                </div>
-                                {% if form.tempo.errors %}
-                                    {% for error in form.tempo.errors %}
-                                        <p class="help is-danger">{{ error }}</p>
-                                    {% endfor %}
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="field">
-                        <label class="label">{{ form.descricao.label }}</label>
-                        <div class="control">
-                            {{ form.descricao(class="textarea", placeholder="Descreva detalhadamente o que é o exame e para que serve...", rows=4) }}
-                        </div>
-                        {% if form.descricao.errors %}
-                            {% for error in form.descricao.errors %}
-                                <p class="help is-danger">{{ error }}</p>
-                            {% endfor %}
-                        {% endif %}
-                        <p class="help">Descreva o exame de forma clara e compreensível para os pacientes.</p>
-                    </div>
-                    
-                    <div class="field">
-                        <label class="label">{{ form.preparo.label }}</label>
-                        <div class="control">
-                            {{ form.preparo(class="textarea", placeholder="Ex: Jejum de 8 horas. Evitar exercícios físicos 24h antes...", rows=3) }}
-                        </div>
-                        {% if form.preparo.errors %}
-                            {% for error in form.preparo.errors %}
-                                <p class="help is-danger">{{ error }}</p>
-                            {% endfor %}
-                        {% endif %}
-                        <p class="help">Instruções específicas que o paciente deve seguir antes do exame.</p>
-                    </div>
-                    
-                    <div class="field">
-                        <label class="label">{{ form.documentos.label }}</label>
-                        <div class="control">
-                            {{ form.documentos(class="textarea", placeholder="Ex: RG, CPF, pedido médico e carteira do convênio", rows=2) }}
-                        </div>
-                        {% if form.documentos.errors %}
-                            {% for error in form.documentos.errors %}
-                                <p class="help is-danger">{{ error }}</p>
-                            {% endfor %}
-                        {% endif %}
-                        <p class="help">Liste todos os documentos necessários para realizar o exame.</p>
-                    </div>
-                    
-                    <div class="field">
-                        <label class="label">{{ form.pos_exame.label }}</label>
-                        <div class="control">
-                            {{ form.pos_exame(class="textarea", placeholder="Ex: Nenhuma restrição. Pode retomar atividades normais.", rows=3) }}
-                        </div>
-                        {% if form.pos_exame.errors %}
-                            {% for error in form.pos_exame.errors %}
-                                <p class="help is-danger">{{ error }}</p>
-                            {% endfor %}
-                        {% endif %}
-                        <p class="help">Orientações sobre cuidados após a realização do exame.</p>
-                    </div>
-                    
-                    <div class="field is-grouped">
-                        <div class="control">
-                            {{ form.submit(class="button is-primary") }}
-                        </div>
-                        <div class="control">
-                            <a href="{{ url_for('admin_exames') }}" class="button is-light">Cancelar</a>
-                        </div>
-                    </div>
-                </form>
-            </div>
+<!-- Informações sobre limites -->
+<div class="notification is-info is-light mb-4">
+    <h4 class="title is-5">
+        <span class="icon">
+            <i class="fas fa-info-circle"></i>
+        </span>
+        <span>Limites de Caracteres</span>
+    </h4>
+    <div class="columns is-multiline">
+        <div class="column is-3">
+            <strong>Nome:</strong> 3-100 caracteres
         </div>
-        
-        <!-- Help Section -->
-        <div class="notification is-info is-light mt-4">
-            <h4 class="title is-5">
-                <span class="icon">
-                    <i class="fas fa-lightbulb"></i>
-                </span>
-                <span>Dicas para um Bom Cadastro</span>
-            </h4>
-            <ul>
-                <li><strong>Nome:</strong> Use nomes claros e reconhecíveis pelos pacientes</li>
-                <li><strong>Descrição:</strong> Explique de forma simples o que o exame detecta</li>
-                <li><strong>Preparo:</strong> Seja específico sobre jejum, medicamentos, etc.</li>
-                <li><strong>Documentos:</strong> Liste todos os documentos necessários</li>
-                <li><strong>Pós-exame:</strong> Informe sobre restrições ou cuidados especiais</li>
+        <div class="column is-3">
+            <strong>Descrição:</strong> 10-500 caracteres
+        </div>
+        <div class="column is-3">
+            <strong>Preparo:</strong> 5-1000 caracteres
+        </div>
+        <div class="column is-3">
+            <strong>Documentos:</strong> 5-200 caracteres
+        </div>
+        <div class="column is-3">
+            <strong>Cuidados pós-exame:</strong> 5-1000 caracteres
+        </div>
+        <div class="column is-3">
+            <strong>Duração:</strong> 2-50 caracteres
+        </div>
+        <div class="column is-3">
+            <strong>Ícone:</strong> Máximo 50 caracteres
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <header class="card-header">
+        <p class="card-header-title">
+            <span class="icon">
+                <i class="fas fa-edit"></i>
+            </span>
+            <span>{{ title }}</span>
+        </p>
+    </header>
+    <div class="card-content">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            
+            <div class="columns">
+                <div class="column is-6">
+                    <div class="field">
+                        <label class="label">{{ form.nome.label }}</label>
+                        <div class="control">
+                            {{ form.nome(class="input", placeholder="Ex: Hemograma Completo") }}
+                        </div>
+                        {% if form.nome.errors %}
+                            {% for error in form.nome.errors %}
+                                <p class="help is-danger">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </span>
+                                    <span>{{ error }}</span>
+                                </p>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="column is-3">
+                    <div class="field">
+                        <label class="label">{{ form.categoria.label }}</label>
+                        <div class="control">
+                            <div class="select is-fullwidth">
+                                {{ form.categoria(class="select") }}
+                            </div>
+                        </div>
+                        {% if form.categoria.errors %}
+                            {% for error in form.categoria.errors %}
+                                <p class="help is-danger">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </span>
+                                    <span>{{ error }}</span>
+                                </p>
+                            {% endfor %}
+                        {% endif %}
+                        <p class="help">{{ form.categoria.description }}</p>
+                    </div>
+                </div>
+                
+                <div class="column is-3">
+                    <div class="field">
+                        <label class="label">{{ form.tempo.label }}</label>
+                        <div class="control">
+                            {{ form.tempo(class="input", placeholder="Ex: 10-15 minutos") }}
+                        </div>
+                        {% if form.tempo.errors %}
+                            {% for error in form.tempo.errors %}
+                                <p class="help is-danger">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </span>
+                                    <span>{{ error }}</span>
+                                </p>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="field">
+                <label class="label">{{ form.icone.label }}</label>
+                <div class="control">
+                    {{ form.icone(class="input", placeholder="Ex: fas fa-heart") }}
+                </div>
+                {% if form.icone.errors %}
+                    {% for error in form.icone.errors %}
+                        <p class="help is-danger">
+                            <span class="icon is-small">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </span>
+                            <span>{{ error }}</span>
+                        </p>
+                    {% endfor %}
+                {% endif %}
+                <p class="help">{{ form.icone.description }}</p>
+            </div>
+            
+            <div class="field">
+                <label class="label">{{ form.descricao.label }}</label>
+                <div class="control">
+                    {{ form.descricao(class="textarea", placeholder="Descreva detalhadamente o que é o exame e para que serve...\n\nExemplo:\n**Hemograma Completo** é um exame que avalia:\n- Glóbulos vermelhos\n- Glóbulos brancos\n- Plaquetas\n- Hemoglobina", rows=4) }}
+                </div>
+                {% if form.descricao.errors %}
+                    {% for error in form.descricao.errors %}
+                        <p class="help is-danger">
+                            <span class="icon is-small">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </span>
+                            <span>{{ error }}</span>
+                        </p>
+                    {% endfor %}
+                {% endif %}
+                <p class="help">Descreva o exame de forma clara e compreensível para os pacientes. Use **negrito** para destacar informações importantes.</p>
+            </div>
+            
+            <div class="field">
+                <label class="label">{{ form.preparo.label }}</label>
+                <div class="control">
+                    {{ form.preparo(class="textarea", placeholder="Exemplo:\n**Jejum obrigatório de 8 horas**\n\n⚠️ **ATENÇÃO:**\n- Não ingerir alimentos\n- Pode beber água\n- Evitar exercícios físicos 24h antes\n\n✅ **PERMITIDO:**\n- Água em pequenas quantidades\n- Medicamentos de uso contínuo", rows=6) }}
+                </div>
+                {% if form.preparo.errors %}
+                    {% for error in form.preparo.errors %}
+                        <p class="help is-danger">
+                            <span class="icon is-small">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </span>
+                            <span>{{ error }}</span>
+                        </p>
+                    {% endfor %}
+                {% endif %}
+                <p class="help">Instruções específicas que o paciente deve seguir antes do exame. Use **negrito** e emojis para destacar informações importantes.</p>
+            </div>
+            
+            <div class="field">
+                <label class="label">{{ form.documentos.label }}</label>
+                <div class="control">
+                    {{ form.documentos(class="textarea", placeholder="Exemplo:\n**Documentos obrigatórios:**\n1. RG ou CPF\n2. Pedido médico\n3. Carteira do convênio\n\n**Documentos opcionais:**\n- Resultados de exames anteriores", rows=4) }}
+                </div>
+                {% if form.documentos.errors %}
+                    {% for error in form.documentos.errors %}
+                        <p class="help is-danger">
+                            <span class="icon is-small">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </span>
+                            <span>{{ error }}</span>
+                        </p>
+                    {% endfor %}
+                {% endif %}
+                <p class="help">Liste todos os documentos necessários para realizar o exame. Use listas numeradas para documentos obrigatórios.</p>
+            </div>
+            
+            <div class="field">
+                <label class="label">{{ form.pos_exame.label }}</label>
+                <div class="control">
+                    {{ form.pos_exame(class="textarea", placeholder="Exemplo:\n✅ **Nenhuma restrição**\n\nPode retomar atividades normais imediatamente.\n\n⚠️ **Observações:**\n- Resultado em 24h\n- Retirar no laboratório ou pelo app", rows=4) }}
+                </div>
+                {% if form.pos_exame.errors %}
+                    {% for error in form.pos_exame.errors %}
+                        <p class="help is-danger">
+                            <span class="icon is-small">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </span>
+                            <span>{{ error }}</span>
+                        </p>
+                    {% endfor %}
+                {% endif %}
+                <p class="help">Orientações sobre cuidados após a realização do exame. Use ✅ para permissões e ⚠️ para observações importantes.</p>
+            </div>
+            
+            <div class="field is-grouped">
+                <div class="control">
+                    {{ form.submit(class="button is-primary") }}
+                </div>
+                <div class="control">
+                    <a href="{{ url_for('admin_exames') }}" class="button is-light">Cancelar</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Help Section -->
+<div class="notification is-info is-light mt-4">
+    <h4 class="title is-5">
+        <span class="icon">
+            <i class="fas fa-lightbulb"></i>
+        </span>
+        <span>Dicas para um Bom Cadastro</span>
+    </h4>
+    <ul>
+        <li><strong>Nome:</strong> Use nomes claros e reconhecíveis pelos pacientes</li>
+        <li><strong>Descrição:</strong> Explique de forma simples o que o exame detecta</li>
+        <li><strong>Preparo:</strong> Seja específico sobre jejum, medicamentos, etc.</li>
+        <li><strong>Documentos:</strong> Liste todos os documentos necessários</li>
+        <li><strong>Pós-exame:</strong> Informe sobre restrições ou cuidados especiais</li>
+    </ul>
+</div>
+
+<!-- Markdown Help Section -->
+<div class="notification is-warning is-light mt-4">
+    <h4 class="title is-5">
+        <span class="icon">
+            <i class="fas fa-markdown"></i>
+        </span>
+        <span>Formatação Markdown Disponível</span>
+    </h4>
+    <div class="columns is-multiline">
+        <div class="column is-6">
+            <h5 class="title is-6">Texto Básico:</h5>
+            <ul class="is-size-7">
+                <li><code>**negrito**</code> = <strong>negrito</strong></li>
+                <li><code>*itálico*</code> = <em>itálico</em></li>
+                <li><code>`código`</code> = <code>código</code></li>
             </ul>
         </div>
-        
-        <!-- Preview Section -->
-        <div class="card mt-4">
-            <header class="card-header">
-                <p class="card-header-title">
-                    <span class="icon">
-                        <i class="fas fa-eye"></i>
-                    </span>
-                    <span>Visualização do Exame</span>
-                </p>
-            </header>
-            <div class="card-content">
-                <div class="content">
-                    <div class="columns">
-                        <div class="column is-6">
-                            <h5 class="title is-5">Como aparecerá no site:</h5>
-                            <div class="box">
-                                <h6 class="title is-6" id="preview-nome">Nome do Exame</h6>
-                                <p class="is-size-7" id="preview-descricao">Descrição do exame...</p>
-                                <span class="tag is-info is-light" id="preview-tempo">Duração</span>
+        <div class="column is-6">
+            <h5 class="title is-6">Listas:</h5>
+            <ul class="is-size-7">
+                <li><code>- item</code> = lista simples</li>
+                <li><code>1. item</code> = lista numerada</li>
+                <li><code>* item</code> = lista com marcadores</li>
+            </ul>
+        </div>
+        <div class="column is-6">
+            <h5 class="title is-6">Destaques:</h5>
+            <ul class="is-size-7">
+                <li><code>**IMPORTANTE:**</code> para alertas</li>
+                <li><code>⚠️ ATENÇÃO:</code> para avisos</li>
+                <li><code>✅ OK:</code> para confirmações</li>
+            </ul>
+        </div>
+        <div class="column is-6">
+            <h5 class="title is-6">Quebras de Linha:</h5>
+            <ul class="is-size-7">
+                <li>Use <code>  </code> (2 espaços) no final da linha</li>
+                <li>Ou <code>---</code> para linha horizontal</li>
+                <li>Pule uma linha para parágrafos</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Exemplo Prático -->
+<div class="notification is-info is-light mt-4">
+    <h4 class="title is-5">
+        <span class="icon">
+            <i class="fas fa-lightbulb"></i>
+        </span>
+        <span>Exemplo Prático de Formatação</span>
+    </h4>
+    <div class="columns">
+        <div class="column is-6">
+            <h5 class="title is-6">Como escrever:</h5>
+            <div class="box is-small">
+                <pre class="is-size-7"><code>**Duração:** 6 dia(s) útil(eis)
+
+**Material:**
+- Soro (CS11)
+- Soro (17-PG)  
+- Soro (VIT-125)
+
+**Preparo por Paciente:**
+
+**VIT-125 (0-99 anos):**
+- Jejum não obrigatório
+
+**17-PG (0-99 anos):**
+- Jejum obrigatório de 8 horas
+
+**CS11 (0-99 anos):**
+- Jejum obrigatório de 4 horas
+- ⚠️ **A coleta deve ser feita preferencialmente até duas horas após o horário habitual de acordar.**
+
+**Documentos:**
+1. RG
+2. CPF  
+3. Pedido médico
+4. Autorização do convênio
+
+**Duração:** 10-18 minutos
+
+**Pós-exame:**
+✅ Nenhuma restrição, pode retomar as atividades normais.</code></pre>
+            </div>
+        </div>
+        <div class="column is-6">
+            <h5 class="title is-6">Como ficará:</h5>
+            <div class="box is-small markdown-content">
+                <strong>Duração:</strong> 6 dia(s) útil(eis)<br><br>
+                <strong>Material:</strong><br>
+                - Soro (CS11)<br>
+                - Soro (17-PG)<br>
+                - Soro (VIT-125)<br><br>
+                <strong>Preparo por Paciente:</strong><br><br>
+                <strong>VIT-125 (0-99 anos):</strong><br>
+                - Jejum não obrigatório<br><br>
+                <strong>17-PG (0-99 anos):</strong><br>
+                - Jejum obrigatório de 8 horas<br><br>
+                <strong>CS11 (0-99 anos):</strong><br>
+                - Jejum obrigatório de 4 horas<br>
+                ⚠️ <strong>A coleta deve ser feita preferencialmente até duas horas após o horário habitual de acordar.</strong><br><br>
+                <strong>Documentos:</strong><br>
+                1. RG<br>
+                2. CPF<br>
+                3. Pedido médico<br>
+                4. Autorização do convênio<br><br>
+                <strong>Duração:</strong> 10-18 minutos<br><br>
+                <strong>Pós-exame:</strong><br>
+                ✅ Nenhuma restrição, pode retomar as atividades normais.
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Preview Section -->
+<div class="card mt-4">
+    <header class="card-header">
+        <p class="card-header-title">
+            <span class="icon">
+                <i class="fas fa-eye"></i>
+            </span>
+            <span>Visualização do Exame</span>
+        </p>
+    </header>
+    <div class="card-content">
+        <div class="content">
+            <div class="columns">
+                <div class="column is-6">
+                    <h5 class="title is-5">Como aparecerá no site:</h5>
+                    <div class="box">
+                        <div class="level is-mobile">
+                            <div class="level-left">
+                                <div class="level-item">
+                                    <span class="icon" id="preview-icon">
+                                        <i class="fas fa-flask"></i>
+                                    </span>
+                                </div>
+                                <div class="level-item">
+                                    <h6 class="title is-6" id="preview-nome">Nome do Exame</h6>
+                                </div>
+                            </div>
+                            <div class="level-right">
+                                <div class="level-item">
+                                    <span class="tag is-info is-light" id="preview-categoria">Laboratório</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="column is-6">
-                            <h5 class="title is-5">Informações completas:</h5>
-                            <div class="box">
-                                <p><strong>Preparo:</strong> <span id="preview-preparo">Instruções de preparo...</span></p>
-                                <p><strong>Documentos:</strong> <span id="preview-documentos">Documentos necessários...</span></p>
-                                <p><strong>Pós-exame:</strong> <span id="preview-pos-exame">Cuidados após o exame...</span></p>
-                            </div>
+                        <div class="is-size-7" id="preview-descricao">Descrição do exame...</div>
+                        <span class="tag is-info is-light" id="preview-tempo">Duração</span>
+                    </div>
+                </div>
+                <div class="column is-6">
+                    <h5 class="title is-5">Informações completas (com Markdown):</h5>
+                    <div class="box">
+                        <div class="content is-small">
+                            <h6 class="title is-6">Preparo:</h6>
+                            <div id="preview-preparo" class="notification is-info is-light is-small">Instruções de preparo...</div>
+                            
+                            <h6 class="title is-6">Documentos:</h6>
+                            <div id="preview-documentos" class="notification is-warning is-light is-small">Documentos necessários...</div>
+                            
+                            <h6 class="title is-6">Pós-exame:</h6>
+                            <div id="preview-pos-exame" class="notification is-success is-light is-small">Cuidados após o exame...</div>
                         </div>
                     </div>
                 </div>
@@ -167,6 +405,29 @@
 </div>
 
 <script>
+// Função simples para renderizar Markdown básico
+function simpleMarkdown(text) {
+    if (!text) return '';
+    
+    return text
+        // Negrito
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        // Itálico
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        // Código inline
+        .replace(/`(.*?)`/g, '<code>$1</code>')
+        // Listas simples
+        .replace(/^- (.+)$/gm, '<li>$1</li>')
+        .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
+        // Listas numeradas
+        .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
+        .replace(/(<li>.*<\/li>)/s, '<ol>$1</ol>')
+        // Quebras de linha
+        .replace(/\n/g, '<br>')
+        // Linhas horizontais
+        .replace(/^---$/gm, '<hr>');
+}
+
 // Live preview functionality
 document.addEventListener('DOMContentLoaded', function() {
     const nomeInput = document.getElementById('nome');
@@ -175,20 +436,59 @@ document.addEventListener('DOMContentLoaded', function() {
     const preparoInput = document.getElementById('preparo');
     const documentosInput = document.getElementById('documentos');
     const posExameInput = document.getElementById('pos_exame');
+    const categoriaSelect = document.getElementById('categoria');
+    const iconeInput = document.getElementById('icone');
+    
+    // Mapeamento de categorias para cores e ícones padrão
+    const categoriaConfig = {
+        'laboratorio': {
+            cor: 'is-info',
+            icone: 'fas fa-flask',
+            nome: 'Laboratório'
+        },
+        'imagem': {
+            cor: 'is-warning',
+            icone: 'fas fa-x-ray',
+            nome: 'Exame de Imagem'
+        },
+        'vacina': {
+            cor: 'is-success',
+            icone: 'fas fa-syringe',
+            nome: 'Vacina'
+        }
+    };
     
     function updatePreview() {
         document.getElementById('preview-nome').textContent = nomeInput.value || 'Nome do Exame';
-        document.getElementById('preview-descricao').textContent = descricaoInput.value || 'Descrição do exame...';
+        document.getElementById('preview-descricao').innerHTML = simpleMarkdown(descricaoInput.value || 'Descrição do exame...');
         document.getElementById('preview-tempo').textContent = tempoInput.value || 'Duração';
-        document.getElementById('preview-preparo').textContent = preparoInput.value || 'Instruções de preparo...';
-        document.getElementById('preview-documentos').textContent = documentosInput.value || 'Documentos necessários...';
-        document.getElementById('preview-pos-exame').textContent = posExameInput.value || 'Cuidados após o exame...';
+        document.getElementById('preview-preparo').innerHTML = simpleMarkdown(preparoInput.value || 'Instruções de preparo...');
+        document.getElementById('preview-documentos').innerHTML = simpleMarkdown(documentosInput.value || 'Documentos necessários...');
+        document.getElementById('preview-pos-exame').innerHTML = simpleMarkdown(posExameInput.value || 'Cuidados após o exame...');
+        
+        // Atualizar categoria e ícone
+        const categoria = categoriaSelect.value;
+        const config = categoriaConfig[categoria] || categoriaConfig['laboratorio'];
+        
+        // Atualizar tag da categoria
+        const categoriaTag = document.getElementById('preview-categoria');
+        categoriaTag.textContent = config.nome;
+        categoriaTag.className = `tag ${config.cor} is-light`;
+        
+        // Atualizar ícone
+        const iconePersonalizado = iconeInput.value.trim();
+        const iconeFinal = iconePersonalizado || config.icone;
+        const iconElement = document.querySelector('#preview-icon i');
+        iconElement.className = iconeFinal;
     }
     
     // Update preview on input
-    [nomeInput, descricaoInput, tempoInput, preparoInput, documentosInput, posExameInput].forEach(input => {
+    [nomeInput, descricaoInput, tempoInput, preparoInput, documentosInput, posExameInput, iconeInput].forEach(input => {
         input.addEventListener('input', updatePreview);
     });
+    
+    // Update preview on category change
+    categoriaSelect.addEventListener('change', updatePreview);
     
     // Initial preview
     updatePreview();

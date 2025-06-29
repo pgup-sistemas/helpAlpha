@@ -1,0 +1,255 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Logs de Acesso - Help Alphaclin{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="columns">
+        <div class="column">
+            <h1 class="title">
+                <span class="icon-text">
+                    <span class="icon">
+                        <i class="fas fa-list-alt"></i>
+                    </span>
+                    <span>Logs de Acesso</span>
+                </span>
+            </h1>
+            
+            <!-- Filtros -->
+            <div class="card">
+                <div class="card-header">
+                    <p class="card-header-title">
+                        <span class="icon-text">
+                            <span class="icon">
+                                <i class="fas fa-filter"></i>
+                            </span>
+                            <span>Filtros</span>
+                        </span>
+                    </p>
+                </div>
+                <div class="card-content">
+                    <form method="GET" action="{{ url_for('logs_acesso') }}">
+                        <div class="columns is-multiline">
+                            <div class="column is-3">
+                                <label class="label">Data Início</label>
+                                <div class="control">
+                                    <input class="input" type="date" name="data_inicio" 
+                                           value="{{ request.args.get('data_inicio', '') }}">
+                                </div>
+                            </div>
+                            <div class="column is-3">
+                                <label class="label">Data Fim</label>
+                                <div class="control">
+                                    <input class="input" type="date" name="data_fim" 
+                                           value="{{ request.args.get('data_fim', '') }}">
+                                </div>
+                            </div>
+                            <div class="column is-3">
+                                <label class="label">Endereço IP</label>
+                                <div class="control">
+                                    <input class="input" type="text" name="ip" 
+                                           value="{{ request.args.get('ip', '') }}" 
+                                           placeholder="Ex: 192.168.1.1">
+                                </div>
+                            </div>
+                            <div class="column is-3">
+                                <label class="label">Página</label>
+                                <div class="control">
+                                    <input class="input" type="text" name="pagina" 
+                                           value="{{ request.args.get('pagina', '') }}" 
+                                           placeholder="Ex: /exame/">
+                                </div>
+                            </div>
+                            <div class="column is-12">
+                                <div class="buttons">
+                                    <button type="submit" class="button is-info">
+                                        <span class="icon">
+                                            <i class="fas fa-search"></i>
+                                        </span>
+                                        <span>Filtrar</span>
+                                    </button>
+                                    <a href="{{ url_for('logs_acesso') }}" class="button is-light">
+                                        <span class="icon">
+                                            <i class="fas fa-times"></i>
+                                        </span>
+                                        <span>Limpar</span>
+                                    </a>
+                                    <a href="{{ url_for('exportar_relatorio', tipo='logs', **request.args) }}" class="button is-success">
+                                        <span class="icon">
+                                            <i class="fas fa-download"></i>
+                                        </span>
+                                        <span>Exportar</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Tabela de Logs -->
+            <div class="card">
+                <div class="card-header">
+                    <p class="card-header-title">
+                        <span class="icon-text">
+                            <span class="icon">
+                                <i class="fas fa-table"></i>
+                            </span>
+                            <span>Histórico de Acessos</span>
+                        </span>
+                    </p>
+                </div>
+                <div class="card-content">
+                    <div class="table-container">
+                        <table class="table is-fullwidth is-striped is-hoverable">
+                            <thead>
+                                <tr>
+                                    <th>Data/Hora</th>
+                                    <th>IP</th>
+                                    <th>Página</th>
+                                    <th>Método</th>
+                                    <th>Status</th>
+                                    <th>Tempo (s)</th>
+                                    <th>User Agent</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for log in logs.items %}
+                                <tr>
+                                    <td>
+                                        <span class="has-text-weight-medium">
+                                            {{ log.created_at.strftime('%d/%m/%Y %H:%M:%S') }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="tag is-info is-light">{{ log.ip_address }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="has-text-weight-medium">{{ log.pagina }}</span>
+                                        {% if log.query_string %}
+                                            <br><small class="has-text-grey">{{ log.query_string }}</small>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if log.metodo == 'GET' %}
+                                            <span class="tag is-success is-light">{{ log.metodo }}</span>
+                                        {% elif log.metodo == 'POST' %}
+                                            <span class="tag is-warning is-light">{{ log.metodo }}</span>
+                                        {% else %}
+                                            <span class="tag is-light">{{ log.metodo }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if log.status_code >= 200 and log.status_code < 300 %}
+                                            <span class="tag is-success">{{ log.status_code }}</span>
+                                        {% elif log.status_code >= 300 and log.status_code < 400 %}
+                                            <span class="tag is-info">{{ log.status_code }}</span>
+                                        {% elif log.status_code >= 400 and log.status_code < 500 %}
+                                            <span class="tag is-warning">{{ log.status_code }}</span>
+                                        {% else %}
+                                            <span class="tag is-danger">{{ log.status_code }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if log.tempo_resposta %}
+                                            <span class="has-text-weight-medium">
+                                                {{ "%.3f"|format(log.tempo_resposta) }}
+                                            </span>
+                                        {% else %}
+                                            <span class="has-text-grey">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="content">
+                                            <small class="has-text-grey">
+                                                {{ log.user_agent[:50] }}{% if log.user_agent|length > 50 %}...{% endif %}
+                                            </small>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="7" class="has-text-centered has-text-grey">
+                                        <div class="content">
+                                            <p class="has-text-grey">Nenhum log encontrado para os filtros aplicados.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Paginação -->
+                    {% if logs.pages > 1 %}
+                    <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+                        {% if logs.has_prev %}
+                            <a href="{{ url_for('logs_acesso', page=logs.prev_num, **request.args) }}" 
+                               class="pagination-previous">Anterior</a>
+                        {% else %}
+                            <span class="pagination-previous" disabled>Anterior</span>
+                        {% endif %}
+                        
+                        {% if logs.has_next %}
+                            <a href="{{ url_for('logs_acesso', page=logs.next_num, **request.args) }}" 
+                               class="pagination-next">Próxima</a>
+                        {% else %}
+                            <span class="pagination-next" disabled>Próxima</span>
+                        {% endif %}
+                        
+                        <ul class="pagination-list">
+                            {% for page_num in logs.iter_pages() %}
+                                {% if page_num %}
+                                    {% if page_num != logs.page %}
+                                        <li>
+                                            <a href="{{ url_for('logs_acesso', page=page_num, **request.args) }}" 
+                                               class="pagination-link">{{ page_num }}</a>
+                                        </li>
+                                    {% else %}
+                                        <li>
+                                            <span class="pagination-link is-current">{{ page_num }}</span>
+                                        </li>
+                                    {% endif %}
+                                {% else %}
+                                    <li><span class="pagination-ellipsis">&hellip;</span></li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </nav>
+                    {% endif %}
+                    
+                    <!-- Informações da Paginação -->
+                    <div class="content has-text-centered">
+                        <p class="has-text-grey">
+                            Mostrando {{ logs.items|length }} de {{ logs.total }} logs
+                            {% if logs.pages > 1 %}
+                                (página {{ logs.page }} de {{ logs.pages }})
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ações -->
+            <div class="columns">
+                <div class="column">
+                    <div class="buttons">
+                        <a href="{{ url_for('relatorios') }}" class="button is-info">
+                            <span class="icon">
+                                <i class="fas fa-arrow-left"></i>
+                            </span>
+                            <span>Voltar aos Relatórios</span>
+                        </a>
+                        <a href="{{ url_for('exportar_relatorio', tipo='logs', **request.args) }}" class="button is-success">
+                            <span class="icon">
+                                <i class="fas fa-download"></i>
+                            </span>
+                            <span>Exportar Logs</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

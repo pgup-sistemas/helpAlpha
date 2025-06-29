@@ -1,0 +1,366 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Configurações do Site{% endblock %}
+{% block page_title %}Configurações{% endblock %}
+
+{% block content %}
+<div class="box">
+    <h1 class="title has-text-centered">
+        <span class="icon">
+            <i class="fas fa-cog"></i>
+        </span>
+        <span>Configurações do Site</span>
+    </h1>
+    
+    <!-- Menu de Navegação -->
+    <div class="tabs is-centered is-boxed">
+        <ul>
+            <li class="is-active">
+                <a href="#geral">
+                    <span class="icon"><i class="fas fa-info-circle"></i></span>
+                    <span>Geral</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('admin_configuracoes_enderecos') }}">
+                    <span class="icon"><i class="fas fa-map-marker-alt"></i></span>
+                    <span>Endereços</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('admin_configuracoes_redes_sociais') }}">
+                    <span class="icon"><i class="fab fa-facebook"></i></span>
+                    <span>Redes Sociais</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('admin_configuracoes_horarios') }}">
+                    <span class="icon"><i class="fas fa-clock"></i></span>
+                    <span>Horários</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('admin_configuracoes_informacoes') }}">
+                    <span class="icon"><i class="fas fa-exclamation-triangle"></i></span>
+                    <span>Informações</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Formulário de Configurações Gerais -->
+    <form method="POST" class="mt-5">
+        {{ form.hidden_tag() }}
+        
+        <!-- Informações Básicas -->
+        <div class="field">
+            <label class="label">Informações Básicas</label>
+        </div>
+        
+        <div class="field">
+            <label class="label">{{ form.nome_site.label }}</label>
+            <div class="control">
+                {{ form.nome_site(class="input", placeholder="Nome do site") }}
+            </div>
+            {% if form.nome_site.errors %}
+                <p class="help is-danger">
+                    {% for error in form.nome_site.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </p>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <label class="label">{{ form.descricao_site.label }}</label>
+            <div class="control">
+                {{ form.descricao_site(class="textarea", placeholder="Descrição do site", rows=3) }}
+            </div>
+            {% if form.descricao_site.errors %}
+                <p class="help is-danger">
+                    {% for error in form.descricao_site.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </p>
+            {% endif %}
+        </div>
+
+        <div class="columns">
+            <div class="column">
+                <div class="field">
+                    <label class="label">{{ form.email_contato.label }}</label>
+                    <div class="control">
+                        {{ form.email_contato(class="input", placeholder="contato@exemplo.com") }}
+                    </div>
+                    {% if form.email_contato.errors %}
+                        <p class="help is-danger">
+                            {% for error in form.email_contato.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="column">
+                <div class="field">
+                    <label class="label">{{ form.telefone_principal.label }}</label>
+                    <div class="control">
+                        {{ form.telefone_principal(class="input", placeholder="(69) 3223-0132") }}
+                    </div>
+                    {% if form.telefone_principal.errors %}
+                        <p class="help is-danger">
+                            {% for error in form.telefone_principal.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="column">
+                <div class="field">
+                    <label class="label">{{ form.whatsapp.label }}</label>
+                    <div class="control">
+                        {{ form.whatsapp(class="input", placeholder="(69) 98129-0005") }}
+                    </div>
+                    {% if form.whatsapp.errors %}
+                        <p class="help is-danger">
+                            {% for error in form.whatsapp.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- Configurações do Mapa -->
+        <div class="field">
+            <label class="label">Configurações do Google Maps</label>
+        </div>
+
+        <div class="field">
+            <label class="label">{{ form.google_maps_api_key.label }}</label>
+            <div class="control">
+                {{ form.google_maps_api_key(class="input", placeholder="Chave da API do Google Maps") }}
+            </div>
+            <p class="help">{{ form.google_maps_api_key.description }}</p>
+            {% if form.google_maps_api_key.errors %}
+                <p class="help is-danger">
+                    {% for error in form.google_maps_api_key.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </p>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <label class="label">{{ form.google_maps_embed_url.label }}</label>
+            <div class="control">
+                {{ form.google_maps_embed_url(class="textarea", placeholder="URL completa do iframe do Google Maps", rows=3) }}
+            </div>
+            <p class="help">{{ form.google_maps_embed_url.description }}</p>
+            {% if form.google_maps_embed_url.errors %}
+                <p class="help is-danger">
+                    {% for error in form.google_maps_embed_url.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </p>
+            {% endif %}
+        </div>
+
+        <hr>
+
+        <!-- Configurações de SEO -->
+        <div class="field">
+            <label class="label">Configurações de SEO</label>
+        </div>
+
+        <div class="field">
+            <label class="label">{{ form.meta_description.label }}</label>
+            <div class="control">
+                {{ form.meta_description(class="textarea", placeholder="Descrição para SEO", rows=2) }}
+            </div>
+            <p class="help">{{ form.meta_description.description }}</p>
+            {% if form.meta_description.errors %}
+                <p class="help is-danger">
+                    {% for error in form.meta_description.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </p>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <label class="label">{{ form.meta_keywords.label }}</label>
+            <div class="control">
+                {{ form.meta_keywords(class="textarea", placeholder="palavra-chave1, palavra-chave2, palavra-chave3", rows=2) }}
+            </div>
+            <p class="help">{{ form.meta_keywords.description }}</p>
+            {% if form.meta_keywords.errors %}
+                <p class="help is-danger">
+                    {% for error in form.meta_keywords.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </p>
+            {% endif %}
+        </div>
+
+        <hr>
+
+        <!-- Configurações de Tema -->
+        <div class="field">
+            <label class="label">Configurações de Tema</label>
+        </div>
+
+        <div class="columns">
+            <div class="column">
+                <div class="field">
+                    <label class="label">{{ form.cor_primaria.label }}</label>
+                    <div class="control">
+                        {{ form.cor_primaria(class="input", type="color", placeholder="#667eea") }}
+                    </div>
+                    <p class="help">{{ form.cor_primaria.description }}</p>
+                    {% if form.cor_primaria.errors %}
+                        <p class="help is-danger">
+                            {% for error in form.cor_primaria.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="column">
+                <div class="field">
+                    <label class="label">{{ form.cor_secundaria.label }}</label>
+                    <div class="control">
+                        {{ form.cor_secundaria(class="input", type="color", placeholder="#764ba2") }}
+                    </div>
+                    <p class="help">{{ form.cor_secundaria.description }}</p>
+                    {% if form.cor_secundaria.errors %}
+                        <p class="help is-danger">
+                            {% for error in form.cor_secundaria.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- Configurações de Exibição -->
+        <div class="field">
+            <label class="label">Configurações de Exibição</label>
+        </div>
+
+        <div class="columns">
+            <div class="column">
+                <label class="checkbox">
+                    {{ form.mostrar_contatos() }}
+                    {{ form.mostrar_contatos.label }}
+                </label>
+            </div>
+            <div class="column">
+                <label class="checkbox">
+                    {{ form.mostrar_mapa() }}
+                    {{ form.mostrar_mapa.label }}
+                </label>
+            </div>
+            <div class="column">
+                <label class="checkbox">
+                    {{ form.mostrar_redes_sociais() }}
+                    {{ form.mostrar_redes_sociais.label }}
+                </label>
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- Botões de Ação -->
+        <div class="field is-grouped">
+            <div class="control">
+                {{ form.submit(class="button is-primary") }}
+            </div>
+            <div class="control">
+                <a href="{{ url_for('admin_dashboard') }}" class="button is-light">Cancelar</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Preview Section -->
+<div class="card mt-5">
+    <header class="card-header">
+        <p class="card-header-title">
+            <span class="icon">
+                <i class="fas fa-eye"></i>
+            </span>
+            <span>Visualização das Configurações</span>
+        </p>
+    </header>
+    <div class="card-content">
+        <div class="content">
+            <div class="columns">
+                <div class="column is-6">
+                    <h5 class="title is-5">Informações do Site</h5>
+                    <div class="box">
+                        <h6 class="title is-6" id="preview-nome">Nome do Site</h6>
+                        <p class="is-size-7" id="preview-descricao">Descrição do site...</p>
+                        <div class="tags">
+                            <span class="tag is-info is-light" id="preview-email">Email</span>
+                            <span class="tag is-success is-light" id="preview-telefone">Telefone</span>
+                            <span class="tag is-warning is-light" id="preview-whatsapp">WhatsApp</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-6">
+                    <h5 class="title is-5">SEO e Mapa</h5>
+                    <div class="box">
+                        <p><strong>Meta Description:</strong> <span id="preview-meta-desc">Descrição para SEO...</span></p>
+                        <p><strong>Meta Keywords:</strong> <span id="preview-meta-keywords">Palavras-chave...</span></p>
+                        <p><strong>Google Maps:</strong> <span id="preview-maps-status">Configurado</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Live preview functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const nomeSiteInput = document.getElementById('nome_site');
+    const descricaoSiteInput = document.getElementById('descricao_site');
+    const emailContatoInput = document.getElementById('email_contato');
+    const telefonePrincipalInput = document.getElementById('telefone_principal');
+    const whatsappInput = document.getElementById('whatsapp');
+    const metaDescriptionInput = document.getElementById('meta_description');
+    const metaKeywordsInput = document.getElementById('meta_keywords');
+    const googleMapsApiKeyInput = document.getElementById('google_maps_api_key');
+    
+    function updatePreview() {
+        document.getElementById('preview-nome').textContent = nomeSiteInput.value || 'Nome do Site';
+        document.getElementById('preview-descricao').textContent = descricaoSiteInput.value || 'Descrição do site...';
+        document.getElementById('preview-email').textContent = emailContatoInput.value || 'Email';
+        document.getElementById('preview-telefone').textContent = telefonePrincipalInput.value || 'Telefone';
+        document.getElementById('preview-whatsapp').textContent = whatsappInput.value || 'WhatsApp';
+        document.getElementById('preview-meta-desc').textContent = metaDescriptionInput.value || 'Descrição para SEO...';
+        document.getElementById('preview-meta-keywords').textContent = metaKeywordsInput.value || 'Palavras-chave...';
+        document.getElementById('preview-maps-status').textContent = googleMapsApiKeyInput.value ? 'Configurado' : 'Não configurado';
+    }
+    
+    // Update preview on input
+    [nomeSiteInput, descricaoSiteInput, emailContatoInput, telefonePrincipalInput, whatsappInput, metaDescriptionInput, metaKeywordsInput, googleMapsApiKeyInput].forEach(input => {
+        if (input) {
+            input.addEventListener('input', updatePreview);
+        }
+    });
+    
+    // Initial preview
+    updatePreview();
+});
+</script>
+{% endblock %} 

@@ -1,0 +1,244 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Gerenciar Horários{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="columns is-centered">
+        <div class="column is-10">
+            <div class="box">
+                <h1 class="title has-text-centered">
+                    <span class="icon">
+                        <i class="fas fa-clock"></i>
+                    </span>
+                    <span>Gerenciar Horários de Funcionamento</span>
+                </h1>
+                
+                <!-- Menu de Navegação -->
+                <div class="tabs is-centered is-boxed">
+                    <ul>
+                        <li>
+                            <a href="{{ url_for('admin_configuracoes') }}">
+                                <span class="icon"><i class="fas fa-info-circle"></i></span>
+                                <span>Geral</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('admin_configuracoes_enderecos') }}">
+                                <span class="icon"><i class="fas fa-map-marker-alt"></i></span>
+                                <span>Endereços</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('admin_configuracoes_redes_sociais') }}">
+                                <span class="icon"><i class="fab fa-facebook"></i></span>
+                                <span>Redes Sociais</span>
+                            </a>
+                        </li>
+                        <li class="is-active">
+                            <a href="#horarios">
+                                <span class="icon"><i class="fas fa-clock"></i></span>
+                                <span>Horários</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('admin_configuracoes_informacoes') }}">
+                                <span class="icon"><i class="fas fa-exclamation-triangle"></i></span>
+                                <span>Informações</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Formulário de Horários -->
+                <form method="POST" class="mt-5">
+                    <div class="columns">
+                        <!-- Segunda a Sexta -->
+                        <div class="column">
+                            <div class="card">
+                                <header class="card-header">
+                                    <p class="card-header-title">
+                                        <span class="icon">
+                                            <i class="fas fa-calendar-week"></i>
+                                        </span>
+                                        <span>Segunda a Sexta</span>
+                                    </p>
+                                </header>
+                                <div class="card-content">
+                                    <div class="field">
+                                        <label class="label">Horário de Funcionamento</label>
+                                        <div class="control">
+                                            <input class="input" type="text" name="segunda_sexta_funcionamento" 
+                                                   value="{{ config.get_horarios_funcionamento().get('segunda_sexta', {}).get('funcionamento', '') }}"
+                                                   placeholder="Ex: 6h30 às 21h30">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="field">
+                                        <label class="label">Horário de Coleta de Exames</label>
+                                        <div class="control">
+                                            <input class="input" type="text" name="segunda_sexta_coleta" 
+                                                   value="{{ config.get_horarios_funcionamento().get('segunda_sexta', {}).get('coleta', '') }}"
+                                                   placeholder="Ex: 6h30 às 16h">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="field">
+                                        <label class="label">Horário de Vacinação</label>
+                                        <div class="control">
+                                            <input class="input" type="text" name="segunda_sexta_vacinacao" 
+                                                   value="{{ config.get_horarios_funcionamento().get('segunda_sexta', {}).get('vacinacao', '') }}"
+                                                   placeholder="Ex: 8h às 18h">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sábado -->
+                        <div class="column">
+                            <div class="card">
+                                <header class="card-header">
+                                    <p class="card-header-title">
+                                        <span class="icon">
+                                            <i class="fas fa-calendar-day"></i>
+                                        </span>
+                                        <span>Sábado</span>
+                                    </p>
+                                </header>
+                                <div class="card-content">
+                                    <div class="field">
+                                        <label class="label">Horário de Funcionamento</label>
+                                        <div class="control">
+                                            <input class="input" type="text" name="sabado_funcionamento" 
+                                                   value="{{ config.get_horarios_funcionamento().get('sabado', {}).get('funcionamento', '') }}"
+                                                   placeholder="Ex: 6h30 às 17h">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="field">
+                                        <label class="label">Horário de Coleta de Exames</label>
+                                        <div class="control">
+                                            <input class="input" type="text" name="sabado_coleta" 
+                                                   value="{{ config.get_horarios_funcionamento().get('sabado', {}).get('coleta', '') }}"
+                                                   placeholder="Ex: 6h30 às 11h">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="field">
+                                        <label class="label">Horário de Vacinação</label>
+                                        <div class="control">
+                                            <input class="input" type="text" name="sabado_vacinacao" 
+                                                   value="{{ config.get_horarios_funcionamento().get('sabado', {}).get('vacinacao', '') }}"
+                                                   placeholder="Ex: 8h às 12h">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Domingo -->
+                        <div class="column">
+                            <div class="card">
+                                <header class="card-header">
+                                    <p class="card-header-title">
+                                        <span class="icon">
+                                            <i class="fas fa-calendar-day"></i>
+                                        </span>
+                                        <span>Domingo</span>
+                                    </p>
+                                </header>
+                                <div class="card-content">
+                                    <div class="field">
+                                        <label class="label">Horário de Funcionamento</label>
+                                        <div class="control">
+                                            <input class="input" type="text" name="domingo_funcionamento" 
+                                                   value="{{ config.get_horarios_funcionamento().get('domingo', {}).get('funcionamento', '') }}"
+                                                   placeholder="Ex: Fechado">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="field">
+                                        <label class="label">Horário de Coleta de Exames</label>
+                                        <div class="control">
+                                            <input class="input" type="text" name="domingo_coleta" 
+                                                   value="{{ config.get_horarios_funcionamento().get('domingo', {}).get('coleta', '') }}"
+                                                   placeholder="Ex: Não há coleta">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="field">
+                                        <label class="label">Horário de Vacinação</label>
+                                        <div class="control">
+                                            <input class="input" type="text" name="domingo_vacinacao" 
+                                                   value="{{ config.get_horarios_funcionamento().get('domingo', {}).get('vacinacao', '') }}"
+                                                   placeholder="Ex: Fechado">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botões -->
+                    <div class="field is-grouped is-grouped-centered mt-5">
+                        <div class="control">
+                            <button type="submit" class="button is-primary is-medium">
+                                <span class="icon">
+                                    <i class="fas fa-save"></i>
+                                </span>
+                                <span>Salvar Horários</span>
+                            </button>
+                        </div>
+                        <div class="control">
+                            <a href="{{ url_for('admin_configuracoes') }}" class="button is-light is-medium">
+                                <span class="icon">
+                                    <i class="fas fa-arrow-left"></i>
+                                </span>
+                                <span>Voltar</span>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Preview dos Horários -->
+                <div class="mt-5">
+                    <h3 class="title is-4">Preview dos Horários</h3>
+                    <div class="notification is-info is-light">
+                        <div class="content">
+                            <h4 class="title is-5">Horários de Funcionamento</h4>
+                            
+                            <div class="columns">
+                                <div class="column">
+                                    <h5 class="title is-6">Segunda a Sexta</h5>
+                                    <ul>
+                                        <li><strong>Funcionamento:</strong> {{ config.get_horarios_funcionamento().get('segunda_sexta', {}).get('funcionamento', 'Não definido') }}</li>
+                                        <li><strong>Coleta de Exames:</strong> {{ config.get_horarios_funcionamento().get('segunda_sexta', {}).get('coleta', 'Não definido') }}</li>
+                                        <li><strong>Vacinação:</strong> {{ config.get_horarios_funcionamento().get('segunda_sexta', {}).get('vacinacao', 'Não definido') }}</li>
+                                    </ul>
+                                </div>
+                                <div class="column">
+                                    <h5 class="title is-6">Sábado</h5>
+                                    <ul>
+                                        <li><strong>Funcionamento:</strong> {{ config.get_horarios_funcionamento().get('sabado', {}).get('funcionamento', 'Não definido') }}</li>
+                                        <li><strong>Coleta de Exames:</strong> {{ config.get_horarios_funcionamento().get('sabado', {}).get('coleta', 'Não definido') }}</li>
+                                        <li><strong>Vacinação:</strong> {{ config.get_horarios_funcionamento().get('sabado', {}).get('vacinacao', 'Não definido') }}</li>
+                                    </ul>
+                                </div>
+                                <div class="column">
+                                    <h5 class="title is-6">Domingo</h5>
+                                    <ul>
+                                        <li><strong>Funcionamento:</strong> {{ config.get_horarios_funcionamento().get('domingo', {}).get('funcionamento', 'Não definido') }}</li>
+                                        <li><strong>Coleta de Exames:</strong> {{ config.get_horarios_funcionamento().get('domingo', {}).get('coleta', 'Não definido') }}</li>
+                                        <li><strong>Vacinação:</strong> {{ config.get_horarios_funcionamento().get('domingo', {}).get('vacinacao', 'Não definido') }}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

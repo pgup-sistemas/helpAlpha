@@ -1,0 +1,148 @@
+{% extends "admin/base.html" %}
+
+{% block page_title %}Gerenciar Usuários{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="columns">
+        <div class="column">
+            <div class="card">
+                <header class="card-header">
+                    <p class="card-header-title">
+                        <span class="icon">
+                            <i class="fas fa-users"></i>
+                        </span>
+                        Usuários do Sistema
+                    </p>
+                    <div class="card-header-icon">
+                        <a href="{{ url_for('admin_add_usuario') }}" class="button is-primary is-small">
+                            <span class="icon">
+                                <i class="fas fa-plus"></i>
+                            </span>
+                            <span>Adicionar Usuário</span>
+                        </a>
+                    </div>
+                </header>
+                
+                <div class="card-content">
+                    {% if usuarios.items %}
+                        <div class="table-container">
+                            <table class="table is-fullwidth is-striped is-hoverable">
+                                <thead>
+                                    <tr>
+                                        <th>Usuário</th>
+                                        <th>Email</th>
+                                        <th>Nível de Acesso</th>
+                                        <th>Status</th>
+                                        <th>Última Atividade</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for usuario in usuarios.items %}
+                                    <tr>
+                                        <td>
+                                            <div class="media">
+                                                <div class="media-left">
+                                                    <span class="icon">
+                                                        <i class="fas fa-user-circle"></i>
+                                                    </span>
+                                                </div>
+                                                <div class="media-content">
+                                                    <p class="title is-6">{{ usuario.username }}</p>
+                                                    {% if usuario.is_admin %}
+                                                        <p class="subtitle is-7 has-text-danger">Administrador</p>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>{{ usuario.email }}</td>
+                                        <td>
+                                            <span class="tag {% if usuario.role == 'admin' %}is-danger{% elif usuario.role == 'editor' %}is-warning{% else %}is-info{% endif %}">
+                                                {% if usuario.role == 'admin' %}Administrador
+                                                {% elif usuario.role == 'editor' %}Editor
+                                                {% else %}Visualizador{% endif %}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {% if usuario.is_active %}
+                                                <span class="tag is-success">Ativo</span>
+                                            {% else %}
+                                                <span class="tag is-danger">Inativo</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if usuario.last_activity %}
+                                                <span class="has-text-grey">{{ usuario.last_activity|brazil_datetime }}</span>
+                                            {% else %}
+                                                <span class="has-text-grey">Nunca</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="buttons are-small">
+                                                <a href="{{ url_for('admin_edit_usuario', user_id=usuario.id) }}" 
+                                                   class="button is-info" title="Editar">
+                                                    <span class="icon">
+                                                        <i class="fas fa-edit"></i>
+                                                    </span>
+                                                </a>
+                                                {% if usuario.id != current_user.id %}
+                                                <form method="POST" action="{{ url_for('admin_delete_usuario', user_id=usuario.id) }}" 
+                                                      style="display: inline;" 
+                                                      onsubmit="return confirm('Tem certeza que deseja deletar este usuário?')">
+                                                    <button type="submit" class="button is-danger" title="Deletar">
+                                                        <span class="icon">
+                                                            <i class="fas fa-trash"></i>
+                                                        </span>
+                                                    </button>
+                                                </form>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Paginação -->
+                        {% if usuarios.pages > 1 %}
+                        <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+                            {% if usuarios.has_prev %}
+                                <a href="{{ url_for('admin_usuarios', page=usuarios.prev_num) }}" class="pagination-previous">Anterior</a>
+                            {% else %}
+                                <span class="pagination-previous" disabled>Anterior</span>
+                            {% endif %}
+                            
+                            {% if usuarios.has_next %}
+                                <a href="{{ url_for('admin_usuarios', page=usuarios.next_num) }}" class="pagination-next">Próxima</a>
+                            {% else %}
+                                <span class="pagination-next" disabled>Próxima</span>
+                            {% endif %}
+                            
+                            <ul class="pagination-list">
+                                {% for page_num in usuarios.iter_pages() %}
+                                    {% if page_num %}
+                                        {% if page_num != usuarios.page %}
+                                            <li><a href="{{ url_for('admin_usuarios', page=page_num) }}" class="pagination-link">{{ page_num }}</a></li>
+                                        {% else %}
+                                            <li><span class="pagination-link is-current">{{ page_num }}</span></li>
+                                        {% endif %}
+                                    {% else %}
+                                        <li><span class="pagination-ellipsis">&hellip;</span></li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </nav>
+                        {% endif %}
+                    {% else %}
+                        <div class="has-text-centered">
+                            <p class="has-text-grey">Nenhum usuário encontrado.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

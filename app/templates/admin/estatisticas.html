@@ -1,0 +1,255 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Estatísticas - Help Alphaclin{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="columns">
+        <div class="column">
+            <h1 class="title">
+                <span class="icon-text">
+                    <span class="icon">
+                        <i class="fas fa-chart-line"></i>
+                    </span>
+                    <span>Estatísticas Gerais</span>
+                </span>
+            </h1>
+            
+            <!-- Cards de Estatísticas -->
+            <div class="columns is-multiline">
+                <div class="column is-3">
+                    <div class="card has-background-info has-text-white">
+                        <div class="card-content">
+                            <div class="media">
+                                <div class="media-left">
+                                    <span class="icon is-large">
+                                        <i class="fas fa-flask fa-2x"></i>
+                                    </span>
+                                </div>
+                                <div class="media-content">
+                                    <p class="title is-4 has-text-white">{{ total_exames }}</p>
+                                    <p class="subtitle is-6 has-text-white">Total de Exames</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="column is-3">
+                    <div class="card has-background-success has-text-white">
+                        <div class="card-content">
+                            <div class="media">
+                                <div class="media-left">
+                                    <span class="icon is-large">
+                                        <i class="fas fa-hospital fa-2x"></i>
+                                    </span>
+                                </div>
+                                <div class="media-content">
+                                    <p class="title is-4 has-text-white">{{ total_unidades }}</p>
+                                    <p class="subtitle is-6 has-text-white">Unidades Ativas</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="column is-3">
+                    <div class="card has-background-warning has-text-white">
+                        <div class="card-content">
+                            <div class="media">
+                                <div class="media-left">
+                                    <span class="icon is-large">
+                                        <i class="fas fa-bell fa-2x"></i>
+                                    </span>
+                                </div>
+                                <div class="media-content">
+                                    <p class="title is-4 has-text-white">{{ total_avisos }}</p>
+                                    <p class="subtitle is-6 has-text-white">Avisos Ativos</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="column is-3">
+                    <div class="card has-background-primary has-text-white">
+                        <div class="card-content">
+                            <div class="media">
+                                <div class="media-left">
+                                    <span class="icon is-large">
+                                        <i class="fas fa-users fa-2x"></i>
+                                    </span>
+                                </div>
+                                <div class="media-content">
+                                    <p class="title is-4 has-text-white">{{ acessos_hoje }}</p>
+                                    <p class="subtitle is-6 has-text-white">Acessos Hoje</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Gráficos -->
+            <div class="columns">
+                <div class="column is-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <p class="card-header-title">
+                                <span class="icon-text">
+                                    <span class="icon">
+                                        <i class="fas fa-chart-bar"></i>
+                                    </span>
+                                    <span>Exames Mais Consultados</span>
+                                </span>
+                            </p>
+                        </div>
+                        <div class="card-content">
+                            {% if grafico_exames %}
+                                <img src="data:image/png;base64,{{ grafico_exames }}" alt="Gráfico de Exames" style="width: 100%; height: auto;">
+                            {% else %}
+                                <p class="has-text-grey">Nenhum dado disponível para gerar o gráfico.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="column is-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <p class="card-header-title">
+                                <span class="icon-text">
+                                    <span class="icon">
+                                        <i class="fas fa-search"></i>
+                                    </span>
+                                    <span>Termos de Busca Populares</span>
+                                </span>
+                            </p>
+                        </div>
+                        <div class="card-content">
+                            {% if grafico_termos %}
+                                <img src="data:image/png;base64,{{ grafico_termos }}" alt="Gráfico de Termos" style="width: 100%; height: auto;">
+                            {% else %}
+                                <p class="has-text-grey">Nenhum dado disponível para gerar o gráfico.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tabelas de Dados -->
+            <div class="columns">
+                <div class="column is-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <p class="card-header-title">
+                                <span class="icon-text">
+                                    <span class="icon">
+                                        <i class="fas fa-list"></i>
+                                    </span>
+                                    <span>Top 10 Exames Mais Consultados</span>
+                                </span>
+                            </p>
+                        </div>
+                        <div class="card-content">
+                            <div class="table-container">
+                                <table class="table is-fullwidth is-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Posição</th>
+                                            <th>Exame</th>
+                                            <th>Consultas</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for exame in exames_populares %}
+                                        <tr>
+                                            <td>{{ loop.index }}</td>
+                                            <td>{{ exame[0] }}</td>
+                                            <td>
+                                                <span class="tag is-info">{{ exame[1] }}</span>
+                                            </td>
+                                        </tr>
+                                        {% else %}
+                                        <tr>
+                                            <td colspan="3" class="has-text-centered has-text-grey">
+                                                Nenhum dado disponível
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="column is-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <p class="card-header-title">
+                                <span class="icon-text">
+                                    <span class="icon">
+                                        <i class="fas fa-search"></i>
+                                    </span>
+                                    <span>Top 10 Termos de Busca</span>
+                                </span>
+                            </p>
+                        </div>
+                        <div class="card-content">
+                            <div class="table-container">
+                                <table class="table is-fullwidth is-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Posição</th>
+                                            <th>Termo</th>
+                                            <th>Buscas</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for termo in termos_populares %}
+                                        <tr>
+                                            <td>{{ loop.index }}</td>
+                                            <td>{{ termo[0] }}</td>
+                                            <td>
+                                                <span class="tag is-warning">{{ termo[1] }}</span>
+                                            </td>
+                                        </tr>
+                                        {% else %}
+                                        <tr>
+                                            <td colspan="3" class="has-text-centered has-text-grey">
+                                                Nenhum dado disponível
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ações -->
+            <div class="columns">
+                <div class="column">
+                    <div class="buttons">
+                        <a href="{{ url_for('relatorios') }}" class="button is-info">
+                            <span class="icon">
+                                <i class="fas fa-arrow-left"></i>
+                            </span>
+                            <span>Voltar aos Relatórios</span>
+                        </a>
+                        <a href="{{ url_for('exportar_relatorio', tipo='estatisticas') }}" class="button is-success">
+                            <span class="icon">
+                                <i class="fas fa-download"></i>
+                            </span>
+                            <span>Exportar Estatísticas</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

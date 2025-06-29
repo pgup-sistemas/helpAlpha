@@ -1,6 +1,6 @@
 {
-    "name": "Help Alpha - Sistema de Consulta de Exames",
-    "short_name": "Help Alpha",
+    "name": "Help Alphaclin - Sistema de Consulta de Exames",
+    "short_name": "Help Alphaclin",
     "description": "Sistema de consulta de exames laboratoriais e de imagem",
     "start_url": "/",
     "display": "standalone",

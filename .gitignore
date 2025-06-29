@@ -128,12 +128,56 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# IDE
+# IDEs
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
 
 # OS
 .DS_Store
-Thumbs.db 
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project specific
+logs/
+backups/
+downloads/
+uploads/
+instance/
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# Security
+.env.local
+.env.production
+.env.staging
+
+# Database
+*.db-journal
+*.sqlite-journal
+
+# Cache
+.cache/
+*.cache
+
+# Test files
+test_*.py
+*_test.py
+tests/
+
+# Development files
+dev_*.py
+debug_*.py 

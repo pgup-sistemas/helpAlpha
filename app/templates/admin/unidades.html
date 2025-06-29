@@ -1,0 +1,145 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Gerenciar Unidades{% endblock %}
+{% block page_title %}Unidades{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="columns">
+        <div class="column">
+            <div class="level">
+                <div class="level-left">
+                    <div class="level-item">
+                        <h1 class="title">Gerenciar Unidades</h1>
+                    </div>
+                </div>
+                <div class="level-right">
+                    <div class="level-item">
+                        <a href="{{ url_for('admin_add_unidade') }}" class="button is-primary">
+                            <span class="icon">
+                                <i class="fas fa-plus"></i>
+                            </span>
+                            <span>Nova Unidade</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            {% if unidades %}
+            <div class="table-container">
+                <table class="table is-fullwidth is-striped is-hoverable">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Endereço</th>
+                            <th>Telefones</th>
+                            <th>Horários</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for unidade in unidades %}
+                        <tr>
+                            <td>
+                                <strong>{{ unidade.nome }}</strong>
+                            </td>
+                            <td>
+                                <div class="content is-small">
+                                    {{ unidade.endereco[:100] }}{% if unidade.endereco|length > 100 %}...{% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="content is-small">
+                                    {{ unidade.telefones[:50] }}{% if unidade.telefones|length > 50 %}...{% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="content is-small">
+                                    {{ unidade.horarios[:50] }}{% if unidade.horarios|length > 50 %}...{% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                {% if unidade.is_ativo %}
+                                <span class="tag is-success">Ativa</span>
+                                {% else %}
+                                <span class="tag is-danger">Inativa</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="buttons are-small">
+                                    <a href="{{ url_for('admin_edit_unidade', unidade_id=unidade.id) }}" 
+                                       class="button is-info is-light">
+                                        <span class="icon">
+                                            <i class="fas fa-edit"></i>
+                                        </span>
+                                        <span>Editar</span>
+                                    </a>
+                                    <button class="button is-danger is-light" 
+                                            onclick="confirmarExclusao('{{ unidade.nome }}', {{ unidade.id }})">
+                                        <span class="icon">
+                                            <i class="fas fa-trash"></i>
+                                        </span>
+                                        <span>Excluir</span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="notification is-info">
+                <p>Nenhuma unidade cadastrada ainda.</p>
+                <a href="{{ url_for('admin_add_unidade') }}" class="button is-info is-light">
+                    <span class="icon">
+                        <i class="fas fa-plus"></i>
+                    </span>
+                    <span>Adicionar Primeira Unidade</span>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Modal de confirmação -->
+<div id="modal-exclusao" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Confirmar Exclusão</p>
+            <button class="delete" aria-label="close" onclick="fecharModal()"></button>
+        </header>
+        <section class="modal-card-body">
+            <p>Tem certeza que deseja desativar a unidade <strong id="nome-unidade"></strong>?</p>
+            <p class="has-text-warning">Esta ação pode ser revertida editando a unidade.</p>
+        </section>
+        <footer class="modal-card-foot">
+            <form id="form-exclusao" method="POST">
+                <button type="submit" class="button is-danger">Confirmar</button>
+                <button type="button" class="button" onclick="fecharModal()">Cancelar</button>
+            </form>
+        </footer>
+    </div>
+</div>
+
+<script>
+function confirmarExclusao(nome, id) {
+    document.getElementById('nome-unidade').textContent = nome;
+    document.getElementById('form-exclusao').action = `/admin/unidades/delete/${id}`;
+    document.getElementById('modal-exclusao').classList.add('is-active');
+}
+
+function fecharModal() {
+    document.getElementById('modal-exclusao').classList.remove('is-active');
+}
+
+// Fechar modal ao clicar no background
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('modal-exclusao');
+    modal.querySelector('.modal-background').addEventListener('click', fecharModal);
+});
+</script>
+{% endblock %} 

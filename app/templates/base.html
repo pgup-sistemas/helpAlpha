@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- Primary Meta Tags -->
-    <title>{% block title %}Help Alpha - Sistema de Consulta de Exames{% endblock %}</title>
-    <meta name="title" content="{% block meta_title %}Help Alpha - Sistema de Consulta de Exames{% endblock %}">
-    <meta name="description" content="{% block meta_description %}Consulte informações sobre exames laboratoriais e de imagem. Preparo, documentos necessários, horários e contatos das unidades Help Alpha.{% endblock %}">
-    <meta name="keywords" content="{% block meta_keywords %}exames, laboratório, imagem, consulta, preparo, jejum, documentos, Help Alpha, Porto Velho, Rondônia{% endblock %}">
+    <title>{% block title %}{{ site_config.nome_site or 'Help Alphaclin' }} - Exames e Vacinas{% endblock %}</title>
+    <meta name="title" content="{% block meta_title %}{{ site_config.nome_site or 'Help Alphaclin' }} - Exames e Vacinas{% endblock %}">
+    <meta name="description" content="{% block meta_description %}{{ site_config.meta_description or 'Consulte informações sobre exames laboratoriais e de imagem. Preparo, documentos necessários, horários e contatos das unidades Help Alphaclin.' }}{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}{{ site_config.meta_keywords or 'exames, laboratório, imagem, consulta, preparo, jejum, documentos, Help Alphaclin, Porto Velho, Rondônia' }}{% endblock %}">
     <meta name="author" content="PageUp Sistemas - Oézios Normando">
     <meta name="robots" content="index, follow">
     <meta name="language" content="pt-BR">
@@ -23,31 +23,31 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request.url }}">
-    <meta property="og:title" content="{% block og_title %}Help Alpha - Sistema de Consulta de Exames{% endblock %}">
-    <meta property="og:description" content="{% block og_description %}Consulte informações sobre exames laboratoriais e de imagem. Preparo, documentos necessários, horários e contatos das unidades Help Alpha.{% endblock %}">
-    <meta property="og:image" content="{% block og_image %}{{ url_for('static', filename='images/help-alpha-og.jpg', _external=True) }}{% endblock %}">
+    <meta property="og:title" content="{% block og_title %}{{ site_config.nome_site or 'Help Alphaclin' }} - Sistema de Consulta de Exames{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{{ site_config.meta_description or 'Consulte informações sobre exames laboratoriais e de imagem. Preparo, documentos necessários, horários e contatos das unidades Help Alphaclin.' }}{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{{ url_for('static', filename='images/help-alphaclin-og.jpg', _external=True) }}{% endblock %}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:site_name" content="Help Alpha">
+    <meta property="og:site_name" content="{{ site_config.nome_site or 'Help Alphaclin' }}">
     <meta property="og:locale" content="pt_BR">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="{{ request.url }}">
-    <meta property="twitter:title" content="{% block twitter_title %}Help Alpha - Sistema de Consulta de Exames{% endblock %}">
-    <meta property="twitter:description" content="{% block twitter_description %}Consulte informações sobre exames laboratoriais e de imagem. Preparo, documentos necessários, horários e contatos das unidades Help Alpha.{% endblock %}">
-    <meta property="twitter:image" content="{% block twitter_image %}{{ url_for('static', filename='images/help-alpha-twitter.jpg', _external=True) }}{% endblock %}">
+    <meta property="twitter:title" content="{% block twitter_title %}{{ site_config.nome_site or 'Help Alphaclin' }} - Sistema de Consulta de Exames{% endblock %}">
+    <meta property="twitter:description" content="{% block twitter_description %}{{ site_config.meta_description or 'Consulte informações sobre exames laboratoriais e de imagem. Preparo, documentos necessários, horários e contatos das unidades Help Alphaclin.' }}{% endblock %}">
+    <meta property="twitter:image" content="{% block twitter_image %}{{ url_for('static', filename='images/help-alphaclin-twitter.jpg', _external=True) }}{% endblock %}">
     
     <!-- Schema.org structured data -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "MedicalOrganization",
-        "name": "Help Alpha",
-        "description": "Sistema de consulta de exames laboratoriais e de imagem",
+        "name": "{{ site_config.nome_site or 'Help Alphaclin' }}",
+        "description": "{{ site_config.descricao_site or 'Sistema de consulta de exames laboratoriais e de imagem' }}",
         "url": "{{ request.url_root }}",
         "logo": "{{ url_for('static', filename='images/logo.png', _external=True) }}",
-        "image": "{{ url_for('static', filename='images/help-alpha.jpg', _external=True) }}",
+        "image": "{{ url_for('static', filename='images/help-alphaclin.jpg', _external=True) }}",
         "address": [
             {
                 "@type": "PostalAddress",
@@ -67,14 +67,13 @@
             }
         ],
         "telephone": [
-            "+556932230132",
-            "+556932230133",
-            "+556932230136",
-            "+556932279311"
+            "{{ site_config.telefone_principal or '+556932230132' }}",
+            "{{ site_config.whatsapp or '+5569981290005' }}"
         ],
+        "email": "{{ site_config.email_contato or 'contato@helpalphaclin.com' }}",
         "sameAs": [
-            "https://www.facebook.com/helpalpha",
-            "https://www.instagram.com/helpalpha"
+            "https://www.facebook.com/helpalphaclinclinclinclin",
+            "https://www.instagram.com/helpalphaclinclinclinclin"
         ],
         "openingHours": [
             "Mo-Fr 06:30-21:30",
@@ -105,14 +104,14 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Help Alpha">
-    <meta name="application-name" content="Help Alpha">
+    <meta name="apple-mobile-web-app-title" content="{{ site_config.nome_site or 'Help Alphaclin' }}">
+    <meta name="application-name" content="{{ site_config.nome_site or 'Help Alphaclin' }}">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png') }}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='images/favicon-16x16.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/apple-touch-icon.png') }}">
     <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
     
     <!-- Preconnect to external domains -->
@@ -170,10 +169,116 @@
             color: white !important;
         }
         .navbar-burger {
-            color: white;
+            color: #1e3a8a;
         }
         .navbar-burger:hover {
-            background-color: rgba(255,255,255,0.1);
+            background-color: rgba(30, 58, 138, 0.1);
+        }
+        
+        /* Mobile-specific styles */
+        @media (max-width: 768px) {
+            .hero-body {
+                padding: 2rem 1rem;
+            }
+            
+            .hero .title {
+                font-size: 1.75rem !important;
+            }
+            
+            .hero .subtitle {
+                font-size: 1rem !important;
+            }
+            
+            .navbar-brand .navbar-item {
+                font-size: 1rem;
+            }
+            
+            .navbar-menu {
+                background-color: #3273dc;
+                box-shadow: 0 8px 16px rgba(10,10,10,.1);
+            }
+            
+            .navbar-menu .navbar-item {
+                color: white !important;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+            
+            .navbar-menu .navbar-item:hover {
+                background-color: rgba(255,255,255,0.1) !important;
+            }
+            
+            .container {
+                padding: 0 0.75rem;
+            }
+            
+            .section {
+                padding: 2rem 0;
+            }
+            
+            .box {
+                margin: 0.5rem;
+                padding: 1rem;
+            }
+            
+            .card {
+                margin-bottom: 1rem;
+            }
+            
+            .notification {
+                margin: 0.5rem;
+                padding: 1rem;
+            }
+            
+            .breadcrumb {
+                font-size: 0.8rem;
+                margin-bottom: 1rem;
+            }
+            
+            .breadcrumb ul {
+                flex-wrap: wrap;
+            }
+        }
+        
+        /* Tablet styles */
+        @media (min-width: 769px) and (max-width: 1023px) {
+            .hero .title {
+                font-size: 2rem !important;
+            }
+            
+            .hero .subtitle {
+                font-size: 1.1rem !important;
+            }
+        }
+        
+        /* Ensure proper touch targets on mobile */
+        @media (max-width: 768px) {
+            .button {
+                min-height: 44px;
+                min-width: 44px;
+            }
+            
+            .navbar-item {
+                min-height: 44px;
+            }
+            
+            .card-header-title {
+                min-height: 44px;
+            }
+        }
+        
+        /* Improve readability on mobile */
+        @media (max-width: 768px) {
+            .content p {
+                line-height: 1.6;
+            }
+            
+            .content ul {
+                padding-left: 1.5rem;
+            }
+            
+            .content li {
+                margin-bottom: 0.5rem;
+            }
         }
     </style>
 </head>
@@ -186,7 +291,7 @@
                     <span class="icon">
                         <i class="fas fa-stethoscope"></i>
                     </span>
-                    <span class="has-text-weight-bold">Help Alpha</span>
+                    <span class="has-text-weight-bold">{{ site_config.nome_site or 'Help Alphaclin' }}</span>
                 </a>
 
                 <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasic">
@@ -222,16 +327,58 @@
                 <div class="columns is-centered">
                     <div class="column is-8">
                         <h1 class="title has-text-centered">
-                            <i class="fas fa-stethoscope"></i> Help Alpha
+                            <i class="fas fa-stethoscope"></i> {{ site_config.nome_site or 'Help Alphaclin' }}
                         </h1>
                         <p class="subtitle has-text-centered">
-                            Sistema de Consulta de Exames
+                            {{ site_config.descricao_site or 'Sistema de Consulta de Exames' }}
                         </p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- Avisos Banner -->
+    {% if avisos %}
+    <div class="container">
+        <div id="avisos-banner" class="notification is-warning is-light" style="border-radius: 0; margin: 0; border-bottom: 1px solid #ffdd57;">
+            <div class="level">
+                <div class="level-left">
+                    <div class="level-item">
+                        <div>
+                            <h4 class="title is-6">
+                                <span class="icon">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </span>
+                                <span>Avisos Importantes</span>
+                            </h4>
+                            {% for aviso in avisos %}
+                            <div class="mt-2">
+                                <p class="is-size-6">
+                                    <strong>{{ aviso.titulo }}:</strong> {{ aviso.conteudo }}
+                                    {% if aviso.data_fim %}
+                                    <span class="has-text-grey-dark">
+                                        <span class="icon is-small">
+                                            <i class="fas fa-calendar"></i>
+                                        </span>
+                                        <span>Válido até: {{ aviso.data_fim.strftime('%d/%m/%Y %H:%M') }}</span>
+                                    </span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="level-right">
+                    <div class="level-item">
+                        <button class="delete is-small" onclick="document.getElementById('avisos-banner').remove()"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 
     <!-- Main Content -->
     <section class="section">
@@ -246,7 +393,7 @@
             <!-- Nossas Unidades -->
             <div class="columns is-multiline">
                 <div class="column is-12">
-                    <h3 class="title is-4 has-text-centered mb-5">
+                    <h3 class="title is-4 is-size-5-mobile has-text-centered mb-5">
                         <span class="icon">
                             <i class="fas fa-hospital"></i>
                         </span>
@@ -255,9 +402,9 @@
                 </div>
                 
                 <!-- Unidade Central -->
-                <div class="column is-6">
+                <div class="column is-12-mobile is-6-tablet is-6-desktop">
                     <div class="unidade-card">
-                        <h4 class="title is-5">
+                        <h4 class="title is-5 is-size-6-mobile">
                             <span class="icon">
                                 <i class="fas fa-building"></i>
                             </span>
@@ -265,31 +412,31 @@
                         </h4>
                         
                         <div class="content">
-                            <p><strong>Endereço:</strong><br>
+                            <p class="is-size-7-mobile"><strong>Endereço:</strong><br>
                             Av. Calama 2215, São João Bosco</p>
                             
-                            <p><strong>Telefones:</strong></p>
-                            <ul>
-                                <li><i class="fas fa-phone"></i> (69) 3223-0132</li>
+                            <p class="is-size-7-mobile"><strong>Telefones:</strong></p>
+                            <ul class="is-size-7-mobile">
+                                <li><i class="fas fa-phone"></i> {{ site_config.telefone_principal or '(69) 3223-0132' }}</li>
                                 <li><i class="fas fa-phone"></i> (69) 3223-0133</li>
                                 <li><i class="fas fa-phone"></i> (69) 3223-0136</li>
                             </ul>
                             
-                            <p><strong>Horário de Funcionamento:</strong></p>
-                            <div class="horario-item">
+                            <p class="is-size-7-mobile"><strong>Horário de Funcionamento:</strong></p>
+                            <div class="horario-item is-size-7-mobile">
                                 <strong>Segunda a Sexta:</strong> das 6h30 às 21h30<br>
                                 <small class="has-text-grey">(coleta de exames até às 16h)</small>
                             </div>
-                            <div class="horario-item">
+                            <div class="horario-item is-size-7-mobile">
                                 <strong>Sábado:</strong> das 6h30 às 17h*<br>
                                 <small class="has-text-grey">(coleta de exames até às 11:00)</small>
                             </div>
                             
-                            <p><strong>Vacinação:</strong></p>
-                            <div class="horario-item">
+                            <p class="is-size-7-mobile"><strong>Vacinação:</strong></p>
+                            <div class="horario-item is-size-7-mobile">
                                 <strong>Segunda a Sexta:</strong> 08h às 18h00
                             </div>
-                            <div class="horario-item">
+                            <div class="horario-item is-size-7-mobile">
                                 <strong>Sábado:</strong> 8h às 12h00
                             </div>
                         </div>
@@ -297,9 +444,9 @@
                 </div>
                 
                 <!-- Zona Sul -->
-                <div class="column is-6">
+                <div class="column is-12-mobile is-6-tablet is-6-desktop">
                     <div class="unidade-card">
-                        <h4 class="title is-5">
+                        <h4 class="title is-5 is-size-6-mobile">
                             <span class="icon">
                                 <i class="fas fa-map-marker-alt"></i>
                             </span>
@@ -307,30 +454,30 @@
                         </h4>
                         
                         <div class="content">
-                            <p><strong>Endereço:</strong><br>
+                            <p class="is-size-7-mobile"><strong>Endereço:</strong><br>
                             Av. Jatuarana 4184, Conceição</p>
                             
-                            <p><strong>Telefones:</strong></p>
-                            <ul>
+                            <p class="is-size-7-mobile"><strong>Telefones:</strong></p>
+                            <ul class="is-size-7-mobile">
                                 <li><i class="fas fa-phone"></i> (69) 3227-9311</li>
-                                <li><i class="fab fa-whatsapp"></i> (69) 98129-0005 - WhatsApp</li>
+                                <li><i class="fab fa-whatsapp"></i> {{ site_config.whatsapp or '(69) 98129-0005' }} - WhatsApp</li>
                             </ul>
                             
-                            <p><strong>Horário de Funcionamento:</strong></p>
-                            <div class="horario-item">
+                            <p class="is-size-7-mobile"><strong>Horário de Funcionamento:</strong></p>
+                            <div class="horario-item is-size-7-mobile">
                                 <strong>Segunda a Sexta:</strong> das 6h30 às 17h<br>
                                 <small class="has-text-grey">(coleta de exames 6h30 às 15h)</small>
                             </div>
-                            <div class="horario-item">
+                            <div class="horario-item is-size-7-mobile">
                                 <strong>Sábado:</strong> das 6h30 às 11h<br>
                                 <small class="has-text-grey">(coleta de exames das 6h30 às 9h)</small>
                             </div>
                             
-                            <p><strong>Vacinação:</strong></p>
-                            <div class="horario-item">
+                            <p class="is-size-7-mobile"><strong>Vacinação:</strong></p>
+                            <div class="horario-item is-size-7-mobile">
                                 <strong>Segunda a Sexta:</strong> Horário agendado
                             </div>
-                            <div class="horario-item">
+                            <div class="horario-item is-size-7-mobile">
                                 <strong>Sábado:</strong> Horário agendado
                             </div>
                         </div>
@@ -338,20 +485,41 @@
                 </div>
             </div>
             
+            <!-- Mapa do Google Maps -->
+            {% if site_config.google_maps_embed_url %}
+            <div class="columns is-centered mt-5">
+                <div class="column is-12">
+                    <h3 class="title is-4 is-size-5-mobile has-text-centered mb-4">
+                        <span class="icon">
+                            <i class="fas fa-map"></i>
+                        </span>
+                        <span>Nossa Localização</span>
+                    </h3>
+                    <div class="box">
+                        <div class="content has-text-centered">
+                            <div class="map-container">
+                                {{ site_config.google_maps_embed_url|safe }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
             <hr class="mt-5">
             
             <!-- Informações Adicionais -->
             <div class="columns is-centered mt-5">
-                <div class="column is-8">
+                <div class="column is-12-mobile is-10-tablet is-8-desktop">
                     <div class="notification is-info is-light">
                         <div class="content has-text-centered">
-                            <h4 class="title is-5">
+                            <h4 class="title is-5 is-size-6-mobile">
                                 <span class="icon">
                                     <i class="fas fa-info-circle"></i>
                                 </span>
                                 <span>Informações Importantes</span>
                             </h4>
-                            <ul>
+                            <ul class="is-size-7-mobile">
                                 <li><strong>Chegue com antecedência:</strong> Recomendamos chegar 15 minutos antes do horário marcado</li>
                                 <li><strong>Documentos:</strong> Traga sempre RG, CPF e pedido médico</li>
                                 <li><strong>Jejum:</strong> Respeite rigorosamente as orientações de jejum</li>
@@ -364,13 +532,41 @@
             
             <!-- Copyright -->
             <div class="content has-text-centered mt-5">
-                <p>
-                    <strong>Help Alpha</strong> - Sistema de Consulta de Exames<br>
+                <p class="is-size-7-mobile">
+                    <strong>{{ site_config.nome_site or 'Help Alphaclin' }}</strong> - Sistema de Consulta de Exames<br>
                     Desenvolvido por <strong>PageUp Sistemas</strong> - Oézios Normando
                 </p>
                 <p class="is-size-7 has-text-grey">
                     * Confirmar disponibilidade do serviço aos sábados
                 </p>
+                
+                <!-- Footer com GitHub e Versão -->
+                <div class="mt-4 pt-3" style="border-top: 1px solid #f0f0f0;">
+                    <div class="columns is-mobile is-centered is-vcentered">
+                        <div class="column is-narrow">
+                            <a href="https://github.com/pgup-sistemas" target="_blank" rel="noopener noreferrer" 
+                               class="has-text-grey-light hover-effect" 
+                               style="text-decoration: none; transition: color 0.3s ease;">
+                                <span class="icon is-small">
+                                    <i class="fab fa-github"></i>
+                                </span>
+                                <span class="is-size-7">PageUp Sistemas</span>
+                            </a>
+                        </div>
+                        <div class="column is-narrow">
+                            <span class="is-size-7 has-text-grey-light">•</span>
+                        </div>
+                        <div class="column is-narrow">
+                            <span class="is-size-7 has-text-grey-light">v{{ app_version }}</span>
+                        </div>
+                        <div class="column is-narrow">
+                            <span class="is-size-7 has-text-grey-light">•</span>
+                        </div>
+                        <div class="column is-narrow">
+                            <span class="is-size-7 has-text-grey-light">{{ current_year }}</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </footer>
@@ -393,5 +589,123 @@
             }
         });
     </script>
+
+    <style>
+    /* Mobile-specific styles for footer */
+    @media (max-width: 768px) {
+        .footer {
+            padding: 2rem 1rem;
+        }
+        
+        .unidade-card {
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .unidade-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .horario-item {
+            margin-bottom: 0.5rem;
+            font-size: 0.8rem;
+        }
+        
+        .notification {
+            padding: 1rem;
+        }
+        
+        .map-container iframe {
+            width: 100%;
+            height: 250px;
+            border: none;
+        }
+        
+        .title.is-4 {
+            font-size: 1.5rem;
+        }
+        
+        .title.is-5 {
+            font-size: 1.25rem;
+        }
+    }
+    
+    /* Tablet styles */
+    @media (min-width: 769px) and (max-width: 1023px) {
+        .unidade-card {
+            padding: 1.25rem;
+        }
+        
+        .map-container iframe {
+            width: 100%;
+            height: 300px;
+        }
+    }
+    
+    /* Desktop styles */
+    @media (min-width: 1024px) {
+        .map-container iframe {
+            width: 100%;
+            height: 400px;
+        }
+    }
+    
+    /* Ensure proper spacing */
+    .unidade-card {
+        background: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        height: 100%;
+    }
+    
+    .unidade-card h4 {
+        color: #3273dc;
+        border-bottom: 2px solid #3273dc;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .horario-item {
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .horario-item strong {
+        color: #363636;
+    }
+    
+    .map-container {
+        overflow: hidden;
+        border-radius: 8px;
+    }
+    
+    /* Footer styles */
+    .hover-effect:hover {
+        color: #3273dc !important;
+        text-decoration: none;
+    }
+    
+    .footer .columns.is-mobile {
+        margin: 0;
+    }
+    
+    .footer .column.is-narrow {
+        padding: 0.25rem;
+    }
+    
+    /* Responsive footer */
+    @media (max-width: 768px) {
+        .footer .columns.is-mobile {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .footer .column.is-narrow {
+            padding: 0.125rem;
+        }
+    }
+    </style>
 </body>
 </html> 

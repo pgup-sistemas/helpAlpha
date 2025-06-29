@@ -1,65 +1,52 @@
-# 🩺 Help Alpha - Sistema de Consulta de Exames
+# 🩺 Help Alphaclin - Sistema de Consulta de Exames
 
 ## 📋 Descrição
 
-O **Help Alpha** é um sistema web desenvolvido com **Flask (Python)** e **Bulma (CSS)** que oferece aos pacientes uma plataforma simples, responsiva e profissional para consulta de informações sobre exames laboratoriais e de imagem.
+O **Help Alphaclin** é um sistema web desenvolvido com **Flask (Python)** e **Bulma (CSS)** que oferece aos pacientes uma plataforma simples, responsiva e profissional para consulta de informações sobre exames laboratoriais e de imagem.
 
-## ✨ Funcionalidades
+## 🚀 Funcionalidades
 
-### 🎯 Público
-- 🔍 **Busca de Exames**: Campo de busca por nome do exame
-- 📋 **Lista Responsiva**: Visualização em cards de todos os exames disponíveis
-- 📄 **Detalhes Completos**: Informações detalhadas de cada exame
-- 📱 **Design Responsivo**: Funciona perfeitamente em desktop, tablet e mobile
-- 🎨 **Interface Moderna**: Design profissional com Bulma CSS
-- 🏥 **Informações das Unidades**: Contatos e horários atualizados
+### Para Usuários
+- **Busca de Exames**: Interface de busca intuitiva
+- **Detalhes Completos**: Informações sobre preparo, documentos necessários, duração e cuidados pós-exame
+- **Paginação**: Navegação eficiente com paginação
+- **Design Responsivo**: Interface adaptável para diferentes dispositivos
 
-### 🔧 Administrativo (CRUD Completo)
-- 🔐 **Sistema de Login**: Autenticação segura para administradores
-- 📊 **Dashboard**: Estatísticas e visão geral do sistema
-- ➕ **Adicionar Exames**: Formulário completo para cadastro de novos exames
-- ✏️ **Editar Exames**: Modificação de exames existentes
-- 🗑️ **Excluir Exames**: Remoção segura com confirmação
-- 📋 **Gerenciar Exames**: Lista administrativa com todas as ações
-- 👁️ **Preview em Tempo Real**: Visualização instantânea das alterações
-- 📤 **Upload em Massa**: Importação de exames via arquivo Excel
-- 📥 **Template Excel**: Download de modelo para preenchimento
-- 🔄 **Processamento Inteligente**: Validação automática de dados Excel
+### Para Administradores
+- **Autenticação Segura**: Sistema de login com tokens de redefinição de senha
+- **Gestão de Exames**: CRUD completo de exames
+- **Upload em Massa**: Importação de exames via arquivo Excel
+- **Dashboard**: Estatísticas e visão geral do sistema
+- **Paginação Administrativa**: Gerenciamento eficiente de grandes volumes de dados
 
-## 🛠️ Tecnologias Utilizadas
+## 🛠️ Tecnologias
 
-- **Backend**: Python + Flask
-- **Frontend**: Bulma CSS Framework + Font Awesome
+- **Backend**: Flask 3.0.0
+- **Banco de Dados**: SQLite com SQLAlchemy
 - **Autenticação**: Flask-Login
-- **Formulários**: Flask-WTF + WTForms
-- **Dados**: JSON (estrutura simples e escalável)
-- **Excel**: pandas + openpyxl + xlrd
-- **Hospedagem**: Compatível com Render, Railway, Heroku, etc.
+- **Frontend**: Bulma CSS Framework
+- **Processamento**: Pandas para arquivos Excel
+- **Formulários**: WTForms com validação
 
-## 📦 Instalação
+## 📋 Pré-requisitos
 
-### Pré-requisitos
-
-- Python 3.7 ou superior
+- Python 3.8+
 - pip (gerenciador de pacotes Python)
 
-### Passos para Instalação
+## 🔧 Instalação
 
 1. **Clone o repositório**
    ```bash
    git clone <url-do-repositorio>
-   cd helpAlpha
+   cd helpalphaclinclinclin
    ```
 
-2. **Crie um ambiente virtual (recomendado)**
+2. **Crie um ambiente virtual**
    ```bash
    python -m venv venv
-   
-   # Windows
-   venv\Scripts\activate
-   
-   # Linux/Mac
-   source venv/bin/activate
+   source venv/bin/activate  # Linux/Mac
+   # ou
+   venv\Scripts\activate     # Windows
    ```
 
 3. **Instale as dependências**
@@ -67,75 +54,231 @@ O **Help Alpha** é um sistema web desenvolvido com **Flask (Python)** e **Bulma
    pip install -r requirements.txt
    ```
 
-4. **Execute a aplicação**
+4. **Configure o banco de dados**
+   ```bash
+   python migrate_data.py
+   ```
+
+5. **Execute a aplicação**
    ```bash
    python run.py
    ```
 
-5. **Acesse no navegador**
-   ```
-   Site público: http://localhost:5000
-   Painel admin: http://localhost:5000/admin/login
-   ```
+6. **Acesse a aplicação**
+   - Frontend: http://localhost:5000
+   - Admin: http://localhost:5000/admin/login
 
-## 🔧 Configuração do Ambiente
+## 🔐 Sistema de Usuários e Credenciais
 
-### Ambiente Virtual Ativo
-O projeto já possui um ambiente virtual configurado com todas as dependências instaladas:
+### 👥 Níveis de Acesso
+
+O sistema implementa **3 níveis de usuário** com permissões específicas:
+
+| Nível | Usuário | Senha | Acesso |
+|-------|---------|-------|--------|
+| 👑 **Admin** | `admin` | `admin123` | **Total** |
+| ✏️ **Editor** | `editor` | `editor123` | **Edição** |
+| 👁️ **Viewer** | `viewer` | `viewer123` | **Visualização** |
+
+### 📋 Permissões por Nível
+
+**👑 Administrador**: Acesso total a todas as funcionalidades, incluindo gerenciamento de usuários e configurações do sistema.
+
+**✏️ Editor**: Pode editar conteúdo (exames, unidades, avisos) e fazer upload em massa, mas não pode deletar conteúdo ou gerenciar usuários.
+
+**👁️ Visualizador**: Apenas visualização de estatísticas e relatórios, sem permissão para editar conteúdo.
+
+### 🔧 Gerenciamento de Usuários
+
+1. **Acesse** `/admin/usuarios` (apenas administradores)
+2. **Crie** novos usuários com níveis apropriados
+3. **Edite** usuários existentes
+4. **Monitore** atividade dos usuários
+
+**⚠️ Importante**: Altere as credenciais padrão após o primeiro acesso!
+
+### 📖 Documentação Completa
+
+- **Documentação detalhada**: `DOCUMENTACAO_USUARIOS.md`
+- **Resumo executivo**: `RESUMO_PERMISSOES.md`
+
+## 🔑 Redefinição de Senha
+
+O sistema inclui funcionalidade de redefinição de senha por token:
+
+1. Acesse `/admin/reset-password`
+2. Digite seu nome de usuário
+3. Um token será gerado e exibido na tela
+4. Use o token para acessar a página de redefinição
+5. O token é válido por 24 horas e pode ser usado apenas uma vez
+
+## 📊 Estrutura do Projeto
+
+```
+helpalphaclinclinclin/
+├── app/
+│   ├── __init__.py          # Configuração da aplicação
+│   ├── models.py            # Modelos do banco de dados
+│   ├── forms.py             # Formulários
+│   ├── routes.py            # Rotas públicas
+│   ├── admin_routes.py      # Rotas administrativas
+│   ├── static/              # Arquivos estáticos
+│   ├── templates/           # Templates HTML
+│   ├── uploads/             # Arquivos de upload
+│   └── downloads/           # Arquivos para download
+├── data/
+│   └── exames.json          # Dados iniciais (migrados para SQLite)
+├── config.py                # Configurações
+├── requirements.txt         # Dependências
+├── run.py                   # Script de execução
+├── migrate_data.py          # Script de migração
+└── helpalphaclinclinclin.db             # Banco de dados SQLite (criado automaticamente)
+```
+
+## 📝 Uso
+
+### Acessando como Usuário
+1. Acesse a página inicial
+2. Use a barra de busca para encontrar exames
+3. Clique em "Ver Detalhes" para informações completas
+4. Navegue pelas páginas usando a paginação
+
+### Acessando como Administrador
+1. Acesse `/admin/login`
+2. Use as credenciais padrão ou suas credenciais personalizadas
+3. Gerencie exames através do dashboard
+4. Use o upload em massa para adicionar múltiplos exames
+
+### Upload em Massa
+1. Baixe o template Excel em `/admin/upload-excel`
+2. Preencha com seus dados seguindo o formato
+3. Faça upload do arquivo
+4. O sistema processará e importará os exames automaticamente
+
+## 🔧 Configuração
+
+### Variáveis de Ambiente
+- `SECRET_KEY`: Chave secreta para sessões (padrão: dev-secret-key-change-in-production)
+- `DATABASE_URL`: URL do banco de dados (padrão: sqlite:///helpalphaclinclinclinclin.db)
+
+### Configurações de Paginação
+- `EXAMES_PER_PAGE`: Exames por página no frontend (padrão: 9)
+- `ADMIN_EXAMES_PER_PAGE`: Exames por página no admin (padrão: 15)
+
+## 🚀 Deploy
+
+### Desenvolvimento
+```bash
+python run.py
+```
+
+### Produção
+
+Para configurar o ambiente de produção:
+
+1. **Execute o configurador de produção**
+```bash
+python setup_production.py
+```
+
+2. **Configure as variáveis de ambiente**
+- Edite o arquivo `.env` gerado
+- Configure `DATABASE_URL` para seu banco de produção
+- Ajuste outras configurações conforme necessário
+
+3. **Verifique os requisitos**
+```bash
+python setup_production.py check
+```
+
+4. **Configure o servidor web**
+- Use Gunicorn, uWSGI ou similar
+- Configure proxy reverso (Nginx/Apache)
+- Configure SSL/TLS
+
+### Configuração de Produção
+
+#### Variáveis de Ambiente Críticas
+
+| Variável | Descrição | Obrigatória |
+|----------|-----------|-------------|
+| `FLASK_ENV` | Ambiente (production) | ✅ |
+| `SECRET_KEY` | Chave secreta da aplicação | ✅ |
+| `DATABASE_URL` | URL do banco de dados | ✅ |
+| `LOG_LEVEL` | Nível de log (WARNING/ERROR) | ❌ |
+
+#### Exemplo de Configuração
 
 ```bash
-# Ativar o ambiente virtual
-venv\Scripts\Activate.ps1  # Windows PowerShell
-# ou
-venv\Scripts\activate.bat  # Windows CMD
+# .env para produção
+FLASK_ENV=production
+SECRET_KEY=sua-chave-secreta-muito-segura-aqui
+DATABASE_URL=postgresql://user:password@localhost/helpalphaclin
+LOG_LEVEL=WARNING
 ```
 
-### Dependências Instaladas
-- **Flask** (3.1.1) - Framework web
-- **Flask-Login** (0.6.3) - Autenticação
-- **Flask-WTF** (1.2.2) - Formulários
-- **WTForms** (3.2.1) - Validação de formulários
-- **pandas** (2.3.0) - Manipulação de dados
-- **openpyxl** (3.1.5) - Arquivos Excel (.xlsx)
-- **xlrd** (2.0.2) - Arquivos Excel (.xls)
-- **numpy** (2.3.1) - Dependência do pandas
+#### Servidor Web (Gunicorn)
 
-## 📁 Estrutura do Projeto
+```bash
+# Instalar Gunicorn
+pip install gunicorn
 
+# Executar em produção
+gunicorn -w 4 -b 0.0.0.0:5000 run:app
 ```
-helpAlpha/
-│
-├── app/
-│   ├── __init__.py          # Inicialização da aplicação Flask
-│   ├── routes.py            # Rotas públicas
-│   ├── admin_routes.py      # Rotas administrativas (CRUD + Upload)
-│   ├── models.py            # Modelo de usuário
-│   ├── forms.py             # Formulários (login, exames, upload)
-│   ├── templates/           # Templates HTML
-│   │   ├── base.html        # Template base público
-│   │   ├── index.html       # Página inicial
-│   │   ├── exame.html       # Página de detalhes
-│   │   ├── 404.html         # Página de erro
-│   │   └── admin/           # Templates administrativos
-│   │       ├── base.html    # Template base admin
-│   │       ├── login.html   # Página de login
-│   │       ├── dashboard.html # Dashboard administrativo
-│   │       ├── exames.html  # Lista de exames admin
-│   │       ├── exame_form.html # Formulário de exames
-│   │       └── upload_excel.html # Upload em massa
-│   └── static/
-│       └── css/
-│           └── bulma.min.css # Framework CSS
-│
-├── data/
-│   └── exames.json          # Base de dados dos exames
-│
-├── venv/                    # Ambiente virtual Python
-├── config.py                # Configurações da aplicação
-├── run.py                   # Arquivo principal para execução
-├── requirements.txt         # Dependências Python
-└── README.md               # Este arquivo
+
+#### Nginx (Proxy Reverso)
+
+```nginx
+server {
+    listen 80;
+    server_name seu-dominio.com;
+    
+    location / {
+        proxy_pass http://127.0.0.1:5000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
 ```
+
+### Segurança em Produção
+
+- ✅ Use HTTPS/SSL
+- ✅ Configure firewall
+- ✅ Mantenha dependências atualizadas
+- ✅ Faça backup regular do banco
+- ✅ Monitore logs de erro
+- ✅ Use variáveis de ambiente seguras
+- ❌ Nunca use credenciais padrão
+- ❌ Não exponha arquivos sensíveis
+
+## 📈 Funcionalidades Futuras
+
+- [ ] Sistema de logs de acesso
+- [ ] Backup automático do banco de dados
+- [ ] API REST completa
+- [ ] Sistema de notificações
+- [ ] Relatórios avançados
+- [ ] Integração com sistemas externos
+
+## 🤝 Contribuição
+
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature
+3. Commit suas mudanças
+4. Push para a branch
+5. Abra um Pull Request
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
+
+## 🆘 Suporte
+
+Para suporte, entre em contato através dos canais oficiais ou abra uma issue no repositório.
 
 ## 🗂️ Estrutura dos Dados
 
@@ -280,7 +423,7 @@ O sistema utiliza o framework Bulma CSS com personalizações:
 
 ### Variáveis de Ambiente
 ```python
-SECRET_KEY = 'dev-secret-key-help-alpha-2024'
+SECRET_KEY = 'dev-secret-key-help-alphaclin-2024'
 DEBUG = True
 WTF_CSRF_ENABLED = True
 ```
@@ -374,3 +517,243 @@ FLASK_ENV=production
 ---
 
 **Desenvolvido por PageUp sistemas Oézios Normando** 
+
+# 🚀 Características
+
+- **Consulta de Exames**: Busca por nome, categoria e descrição
+- **Informações Detalhadas**: Preparo, documentos, duração e cuidados pós-exame
+- **Markdown**: Suporte completo para formatação rica nos textos
+- **Painel Administrativo**: Gerenciamento completo de exames
+- **Upload em Massa**: Importação via Excel
+- **Responsivo**: Design adaptável para mobile e desktop
+- **SEO Otimizado**: Meta tags, sitemap e robots.txt
+- **Segurança**: Rate limiting, CSP, headers de segurança
+- **Google Maps**: Integração com mapas para localização
+
+## 🛠️ Tecnologias
+
+- **Backend**: Flask 3.0.0
+- **Banco de Dados**: PostgreSQL (produção) / SQLite (desenvolvimento)
+- **Frontend**: Bulma CSS + FontAwesome
+- **Markdown**: markdown2
+- **Segurança**: Flask-Limiter, CSP
+- **Produção**: Gunicorn
+
+## 📋 Pré-requisitos
+
+- Python 3.8+
+- PostgreSQL (para produção)
+- Git
+
+## 🚀 Deploy no Render.com
+
+### 1. Preparação do Repositório
+
+1. Clone o repositório:
+```bash
+git clone https://github.com/pgup-sistemas/help-alphaclin.git
+cd help-alphaclin
+```
+
+2. Verifique se os arquivos de deploy estão presentes:
+- `render.yaml` - Configuração do Render
+- `gunicorn.conf.py` - Configuração do Gunicorn
+- `Procfile` - Comando de inicialização
+- `requirements.txt` - Dependências Python
+
+### 2. Deploy no Render.com
+
+1. Acesse [render.com](https://render.com) e faça login
+2. Clique em "New +" e selecione "Blueprint"
+3. Conecte seu repositório GitHub
+4. O Render detectará automaticamente o `render.yaml`
+5. Clique em "Apply" para iniciar o deploy
+
+### 3. Configuração Pós-Deploy
+
+Após o deploy, acesse o painel administrativo:
+```
+https://seu-app.onrender.com/admin/login
+```
+
+**Credenciais padrão:**
+- Usuário: `admin`
+- Senha: Gerada automaticamente (verificar logs do Render)
+
+### 4. Configurações Importantes
+
+1. **Google Maps**: Configure no painel administrativo
+2. **Banco de Dados**: PostgreSQL configurado automaticamente
+3. **Variáveis de Ambiente**: Configuradas no `render.yaml`
+
+## 🏃‍♂️ Desenvolvimento Local
+
+### 1. Configuração do Ambiente
+
+```bash
+# Clone o repositório
+git clone https://github.com/pgup-sistemas/help-alphaclin.git
+cd help-alphaclin
+
+# Crie um ambiente virtual
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# ou
+venv\Scripts\activate  # Windows
+
+# Instale as dependências
+pip install -r requirements.txt
+```
+
+### 2. Configuração do Banco de Dados
+
+```bash
+# Configure as variáveis de ambiente
+cp env_template.txt .env
+# Edite o arquivo .env com suas configurações
+
+# Inicialize o banco de dados
+flask db init
+flask db migrate
+flask db upgrade
+```
+
+### 3. Executando o Projeto
+
+```bash
+# Ative o ambiente virtual
+source venv/bin/activate
+
+# Execute o servidor de desenvolvimento
+python run.py
+```
+
+Acesse: http://localhost:5000
+
+## 📁 Estrutura do Projeto
+
+```
+helpAlpha/
+├── app/
+│   ├── __init__.py          # Configuração da aplicação
+│   ├── models.py            # Modelos do banco de dados
+│   ├── routes.py            # Rotas públicas
+│   ├── admin_routes.py      # Rotas administrativas
+│   ├── forms.py             # Formulários
+│   ├── security.py          # Configurações de segurança
+│   ├── rate_limiting.py     # Rate limiting
+│   ├── extensions.py        # Extensões Flask
+│   ├── templates/           # Templates HTML
+│   └── static/              # Arquivos estáticos
+├── config.py                # Configurações
+├── run.py                   # Arquivo de execução
+├── requirements.txt         # Dependências
+├── render.yaml             # Configuração Render.com
+├── gunicorn.conf.py        # Configuração Gunicorn
+├── Procfile                # Comando de inicialização
+└── VERSION                 # Versão do sistema
+```
+
+## 🔧 Configurações
+
+### Variáveis de Ambiente
+
+```bash
+# Configurações básicas
+FLASK_ENV=production
+SECRET_KEY=sua_chave_secreta
+DATABASE_URL=postgresql://user:pass@host:port/db
+
+# Configurações do admin
+ADMIN_USERNAME=admin
+ADMIN_EMAIL=admin@exemplo.com
+ADMIN_PASSWORD=senha_segura
+
+# Google Maps (opcional)
+GOOGLE_MAPS_API_KEY=sua_chave_api
+```
+
+### Configurações de Segurança
+
+- **Rate Limiting**: Implementado para todas as rotas
+- **CSP**: Content Security Policy configurado
+- **Headers de Segurança**: HSTS, X-Frame-Options, etc.
+- **Sanitização**: Entrada de dados sanitizada
+
+## 📊 Funcionalidades
+
+### Públicas
+- ✅ Busca de exames
+- ✅ Visualização detalhada
+- ✅ Filtros por categoria
+- ✅ Paginação
+- ✅ SEO otimizado
+- ✅ Sitemap XML
+- ✅ Robots.txt
+
+### Administrativas
+- ✅ Login seguro
+- ✅ CRUD de exames
+- ✅ Upload em massa (Excel)
+- ✅ Estatísticas
+- ✅ Configurações do site
+- ✅ Logs de acesso
+
+## 🔒 Segurança
+
+- **Rate Limiting**: Proteção contra ataques de força bruta
+- **CSP**: Content Security Policy
+- **Headers de Segurança**: Proteção contra ataques comuns
+- **Sanitização**: Entrada de dados limpa
+- **Autenticação**: Sistema de login seguro
+
+## 📱 Responsividade
+
+- Design mobile-first
+- Adaptável para tablets e desktop
+- Interface otimizada para touch
+- Carregamento rápido
+
+## 🚀 Performance
+
+- **Gunicorn**: Servidor WSGI otimizado
+- **Rate Limiting**: Controle de requisições
+- **Caching**: Headers de cache configurados
+- **Compressão**: Gzip habilitado
+
+## 📈 Monitoramento
+
+- Logs de acesso
+- Estatísticas de busca
+- Monitoramento de performance
+- Alertas de erro
+
+## 🤝 Contribuição
+
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+## 📄 Licença
+
+Este projeto é desenvolvido pela **PageUp Sistemas** para o **Help Alphaclin**.
+
+## 👨‍💻 Desenvolvimento
+
+**PageUp Sistemas** - Oézios Normando
+- GitHub: [@pgup-sistemas](https://github.com/pgup-sistemas)
+- Email: contato@pageupsistemas.com
+
+## 📞 Suporte
+
+Para suporte técnico ou dúvidas:
+- Email: suporte@helpalphaclin.com
+- WhatsApp: (69) 98129-0005
+
+---
+
+**Versão**: v1.0.0  
+**Última atualização**: Janeiro 2025  
+**Desenvolvido por**: PageUp Sistemas 

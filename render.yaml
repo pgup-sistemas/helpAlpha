@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: help-alphaclin
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn run:app
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: help-alphaclin-db
+          property: connectionString
+      - key: GOOGLE_MAPS_API_KEY
+        sync: false
+      - key: ADMIN_USERNAME
+        value: admin
+      - key: ADMIN_EMAIL
+        value: admin@helpalphaclin.com
+      - key: ADMIN_PASSWORD
+        generateValue: true
+
+databases:
+  - name: help-alphaclin-db
+    plan: free
+    databaseName: helpalphaclin
+    user: helpalphaclin 

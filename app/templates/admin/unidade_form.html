@@ -1,0 +1,132 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="columns is-centered">
+        <div class="column is-8">
+            <div class="level">
+                <div class="level-left">
+                    <div class="level-item">
+                        <h1 class="title">{{ title }}</h1>
+                    </div>
+                </div>
+                <div class="level-right">
+                    <div class="level-item">
+                        <a href="{{ url_for('admin_unidades') }}" class="button is-light">
+                            <span class="icon">
+                                <i class="fas fa-arrow-left"></i>
+                            </span>
+                            <span>Voltar</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="field">
+                        {{ form.nome.label(class="label") }}
+                        <div class="control">
+                            {{ form.nome(class="input", placeholder="Nome da unidade") }}
+                        </div>
+                        {% if form.nome.errors %}
+                        <p class="help is-danger">
+                            {% for error in form.nome.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </p>
+                        {% endif %}
+                    </div>
+
+                    <div class="field">
+                        {{ form.endereco.label(class="label") }}
+                        <div class="control">
+                            {{ form.endereco(class="textarea", placeholder="Endereço completo da unidade", rows=3) }}
+                        </div>
+                        {% if form.endereco.errors %}
+                        <p class="help is-danger">
+                            {% for error in form.endereco.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </p>
+                        {% endif %}
+                    </div>
+
+                    <div class="field">
+                        {{ form.telefones.label(class="label") }}
+                        <div class="control">
+                            {{ form.telefones(class="textarea", placeholder="Telefones separados por vírgula ou quebra de linha", rows=2) }}
+                        </div>
+                        {% if form.telefones.description %}
+                        <p class="help">{{ form.telefones.description }}</p>
+                        {% endif %}
+                        {% if form.telefones.errors %}
+                        <p class="help is-danger">
+                            {% for error in form.telefones.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </p>
+                        {% endif %}
+                    </div>
+
+                    <div class="field">
+                        {{ form.horarios.label(class="label") }}
+                        <div class="control">
+                            {{ form.horarios(class="textarea", placeholder="Horários de funcionamento", rows=3) }}
+                        </div>
+                        {% if form.horarios.description %}
+                        <p class="help">{{ form.horarios.description }}</p>
+                        {% endif %}
+                        {% if form.horarios.errors %}
+                        <p class="help is-danger">
+                            {% for error in form.horarios.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </p>
+                        {% endif %}
+                    </div>
+
+                    <div class="field">
+                        {{ form.coordenadas.label(class="label") }}
+                        <div class="control">
+                            {{ form.coordenadas(class="input", placeholder="Ex: -8.7619,-63.9039") }}
+                        </div>
+                        {% if form.coordenadas.description %}
+                        <p class="help">{{ form.coordenadas.description }}</p>
+                        {% endif %}
+                        {% if form.coordenadas.errors %}
+                        <p class="help is-danger">
+                            {% for error in form.coordenadas.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </p>
+                        {% endif %}
+                    </div>
+
+                    <div class="field">
+                        <div class="control">
+                            <label class="checkbox">
+                                {{ form.is_ativo() }}
+                                {{ form.is_ativo.label.text }}
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="field is-grouped">
+                        <div class="control">
+                            {{ form.submit(class="button is-primary") }}
+                        </div>
+                        <div class="control">
+                            <a href="{{ url_for('admin_unidades') }}" class="button is-light">Cancelar</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

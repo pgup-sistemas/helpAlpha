@@ -1,7 +1,7 @@
 {% extends "admin/base.html" %}
 
-{% block title %}Gerenciar Exames - Help Alpha Admin{% endblock %}
-{% block page_title %}Gerenciar Exames{% endblock %}
+{% block title %}Gerenciar Exames - Help Alphaclin Admin{% endblock %}
+{% block page_title %}Exames{% endblock %}
 
 {% block content %}
 <!-- Header Actions -->
@@ -12,7 +12,7 @@
                 <span class="icon">
                     <i class="fas fa-flask"></i>
                 </span>
-                <span>Exames Cadastrados ({{ exames|length }})</span>
+                <span>Exames Cadastrados</span>
             </h3>
         </div>
     </div>
@@ -25,175 +25,372 @@
                 <span>Adicionar Exame</span>
             </a>
         </div>
+        <div class="level-item">
+            <a href="{{ url_for('admin_upload_excel') }}" class="button is-info">
+                <span class="icon">
+                    <i class="fas fa-upload"></i>
+                </span>
+                <span>Upload Excel</span>
+            </a>
+        </div>
     </div>
 </div>
 
-{% if exames %}
-    <!-- Exames Table -->
-    <div class="table-container">
-        <table class="table is-fullwidth is-striped is-hoverable">
-            <thead>
-                <tr>
-                    <th>Nome do Exame</th>
-                    <th>Descrição</th>
-                    <th>Duração</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for exame in exames %}
-                <tr>
-                    <td>
-                        <strong>{{ exame.nome }}</strong>
-                    </td>
-                    <td>
-                        <p class="is-size-7">{{ exame.descricao[:100] }}{% if exame.descricao|length > 100 %}...{% endif %}</p>
-                    </td>
-                    <td>
-                        <span class="tag is-info is-light">{{ exame.tempo }}</span>
-                    </td>
-                    <td>
-                        <div class="buttons are-small">
-                            <a href="{{ url_for('exame', nome=exame.nome) }}" target="_blank" class="button is-info" title="Visualizar">
-                                <span class="icon">
-                                    <i class="fas fa-eye"></i>
-                                </span>
-                            </a>
-                            <a href="{{ url_for('admin_edit_exame', nome=exame.nome) }}" class="button is-warning" title="Editar">
-                                <span class="icon">
-                                    <i class="fas fa-edit"></i>
-                                </span>
-                            </a>
-                            <button class="button is-danger" onclick="confirmDelete('{{ exame.nome }}')" title="Excluir">
-                                <span class="icon">
-                                    <i class="fas fa-trash"></i>
-                                </span>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Delete Confirmation Modal -->
-    <div id="deleteModal" class="modal">
-        <div class="modal-background"></div>
-        <div class="modal-card">
-            <header class="modal-card-head">
-                <p class="modal-card-title">
-                    <span class="icon">
-                        <i class="fas fa-exclamation-triangle"></i>
+<!-- Search and Filters -->
+<div class="box">
+    <div class="columns is-multiline">
+        <div class="column is-6">
+            <div class="field">
+                <label class="label">Buscar Exame</label>
+                <div class="control has-icons-left">
+                    <input type="text" id="searchInput" class="input" placeholder="Digite o nome do exame...">
+                    <span class="icon is-left">
+                        <i class="fas fa-search"></i>
                     </span>
-                    <span>Confirmar Exclusão</span>
-                </p>
-                <button class="delete" aria-label="close" onclick="closeModal()"></button>
-            </header>
-            <section class="modal-card-body">
-                <p>Tem certeza que deseja excluir o exame <strong id="exameNome"></strong>?</p>
-                <p class="has-text-danger">Esta ação não pode ser desfeita!</p>
-            </section>
-            <footer class="modal-card-foot">
-                <form id="deleteForm" method="POST">
-                    <button class="button is-danger" type="submit">
-                        <span class="icon">
-                            <i class="fas fa-trash"></i>
-                        </span>
-                        <span>Sim, Excluir</span>
-                    </button>
-                </form>
-                <button class="button" onclick="closeModal()">Cancelar</button>
-            </footer>
+                </div>
+            </div>
+        </div>
+        <div class="column is-3">
+            <div class="field">
+                <label class="label">Filtrar por Categoria</label>
+                <div class="control">
+                    <div class="select is-fullwidth">
+                        <select id="categoriaFilter">
+                            <option value="">Todas as Categorias</option>
+                            <option value="laboratorio">Laboratório</option>
+                            <option value="imagem">Exame de Imagem</option>
+                            <option value="vacina">Vacina</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="column is-3">
+            <div class="field">
+                <label class="label">Ordenar por</label>
+                <div class="control">
+                    <div class="select is-fullwidth">
+                        <select id="sortSelect">
+                            <option value="nome">Nome (A-Z)</option>
+                            <option value="nome_desc">Nome (Z-A)</option>
+                            <option value="categoria">Categoria</option>
+                            <option value="created_at">Data de Criação</option>
+                            <option value="updated_at">Última Atualização</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
-{% else %}
-    <!-- Empty State -->
-    <div class="notification is-light has-text-centered">
-        <span class="icon is-large">
-            <i class="fas fa-flask fa-3x has-text-grey-light"></i>
-        </span>
-        <h4 class="title is-4 has-text-grey">Nenhum exame cadastrado</h4>
-        <p class="subtitle is-6 has-text-grey">Comece adicionando o primeiro exame ao sistema.</p>
-        <a href="{{ url_for('admin_add_exame') }}" class="button is-primary">
-            <span class="icon">
-                <i class="fas fa-plus"></i>
-            </span>
-            <span>Adicionar Primeiro Exame</span>
-        </a>
+    
+    <!-- Search Results Info -->
+    <div id="searchInfo" class="notification is-info is-light" style="display: none;">
+        <span id="searchResultsText"></span>
+        <button class="delete" onclick="clearSearch()"></button>
     </div>
+</div>
+
+<!-- Exames Table -->
+<div class="table-container">
+    <table class="table is-fullwidth is-striped is-hoverable">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Categoria</th>
+                <th>Descrição</th>
+                <th>Tempo</th>
+                <th>Última Atualização</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="examesTableBody">
+            {% for exame in exames %}
+            <tr data-exame-id="{{ exame.id }}" data-exame-nome="{{ exame.nome.lower() }}" data-exame-categoria="{{ exame.categoria }}">
+                <td>
+                    <div class="level is-mobile">
+                        <div class="level-left">
+                            <div class="level-item">
+                                <span class="icon is-small">
+                                    <i class="{{ exame.icone or exame.icone_padrao }}"></i>
+                                </span>
+                            </div>
+                            <div class="level-item">
+                                <strong>{{ exame.nome }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <span class="tag {{ exame.cor_categoria }} is-light">{{ exame.categoria_display }}</span>
+                </td>
+                <td>
+                    <div class="content">
+                        <p class="is-size-7">{{ exame.descricao|markdown_safe|safe|truncate_html(100) }}</p>
+                    </div>
+                </td>
+                <td>
+                    <span class="tag is-info">{{ exame.tempo|markdown_safe|safe }}</span>
+                </td>
+                <td>
+                    <span class="is-size-7 has-text-grey">
+                        {{ exame.updated_at|brazil_datetime if exame.updated_at else 'N/A' }}
+                    </span>
+                </td>
+                <td>
+                    <div class="buttons are-small">
+                        <a href="{{ url_for('admin_edit_exame', exame_id=exame.id) }}" class="button is-warning" title="Editar">
+                            <span class="icon">
+                                <i class="fas fa-edit"></i>
+                            </span>
+                        </a>
+                        <button class="button is-danger" onclick="confirmDelete({{ exame.id }}, '{{ exame.nome }}')" title="Excluir">
+                            <span class="icon">
+                                <i class="fas fa-trash"></i>
+                            </span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <!-- No Results Message -->
+    <div id="noResults" class="has-text-centered py-6" style="display: none;">
+        <div class="content">
+            <span class="icon is-large has-text-grey">
+                <i class="fas fa-search fa-3x"></i>
+            </span>
+            <h4 class="title is-4 has-text-grey">Nenhum exame encontrado</h4>
+            <p class="has-text-grey">Tente ajustar os critérios de busca.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Pagination -->
+{% if pagination.pages > 1 %}
+<nav class="pagination is-centered" role="navigation" aria-label="pagination">
+    {% if pagination.has_prev %}
+        <a href="{{ url_for('admin_exames', page=pagination.prev_num) }}" class="pagination-previous">
+            <span class="icon">
+                <i class="fas fa-chevron-left"></i>
+            </span>
+            <span>Anterior</span>
+        </a>
+    {% else %}
+        <span class="pagination-previous" disabled>
+            <span class="icon">
+                <i class="fas fa-chevron-left"></i>
+            </span>
+            <span>Anterior</span>
+        </span>
+    {% endif %}
+    
+    {% if pagination.has_next %}
+        <a href="{{ url_for('admin_exames', page=pagination.next_num) }}" class="pagination-next">
+            <span>Próxima</span>
+            <span class="icon">
+                <i class="fas fa-chevron-right"></i>
+            </span>
+        </a>
+    {% else %}
+        <span class="pagination-next" disabled>
+            <span>Próxima</span>
+            <span class="icon">
+                <i class="fas fa-chevron-right"></i>
+            </span>
+        </span>
+    {% endif %}
+    
+    <ul class="pagination-list">
+        {% for page_num in pagination.iter_pages() %}
+            {% if page_num %}
+                {% if page_num != pagination.page %}
+                    <li>
+                        <a href="{{ url_for('admin_exames', page=page_num) }}" class="pagination-link">{{ page_num }}</a>
+                    </li>
+                {% else %}
+                    <li>
+                        <span class="pagination-link is-current">{{ page_num }}</span>
+                    </li>
+                {% endif %}
+            {% else %}
+                <li><span class="pagination-ellipsis">&hellip;</span></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</nav>
+
+<div class="has-text-centered mt-3">
+    <p class="is-size-7 has-text-grey">
+        Página {{ pagination.page }} de {{ pagination.pages }} 
+        ({{ pagination.total }} exames no total)
+    </p>
+</div>
 {% endif %}
 
-<!-- Statistics -->
-<div class="columns mt-5">
-    <div class="column is-4">
-        <div class="card">
-            <div class="card-content">
-                <div class="content has-text-centered">
-                    <span class="icon is-large has-text-primary">
-                        <i class="fas fa-flask fa-2x"></i>
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">
+                <span class="icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </span>
+                <span>Confirmar Exclusão</span>
+            </p>
+            <button class="delete" aria-label="close" onclick="closeDeleteModal()"></button>
+        </header>
+        <section class="modal-card-body">
+            <p>Tem certeza que deseja excluir o exame <strong id="exameNome"></strong>?</p>
+            <p class="has-text-danger">Esta ação não pode ser desfeita!</p>
+        </section>
+        <footer class="modal-card-foot">
+            <form id="deleteForm" method="POST" style="display: inline;">
+                <button type="submit" class="button is-danger">
+                    <span class="icon">
+                        <i class="fas fa-trash"></i>
                     </span>
-                    <p class="title is-3">{{ exames|length }}</p>
-                    <p class="subtitle is-6">Total de Exames</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="column is-4">
-        <div class="card">
-            <div class="card-content">
-                <div class="content has-text-centered">
-                    <span class="icon is-large has-text-info">
-                        <i class="fas fa-eye fa-2x"></i>
-                    </span>
-                    <p class="title is-3">Público</p>
-                    <p class="subtitle is-6">Disponível para Consulta</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="column is-4">
-        <div class="card">
-            <div class="card-content">
-                <div class="content has-text-centered">
-                    <span class="icon is-large has-text-success">
-                        <i class="fas fa-check-circle fa-2x"></i>
-                    </span>
-                    <p class="title is-3">Ativo</p>
-                    <p class="subtitle is-6">Sistema Funcionando</p>
-                </div>
-            </div>
-        </div>
+                    <span>Excluir</span>
+                </button>
+            </form>
+            <button class="button" onclick="closeDeleteModal()">Cancelar</button>
+        </footer>
     </div>
 </div>
 
 <script>
-function confirmDelete(nome) {
-    document.getElementById('exameNome').textContent = nome;
-    document.getElementById('deleteForm').action = "{{ url_for('admin_delete_exame', nome='') }}" + encodeURIComponent(nome);
+// Search functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const categoriaFilter = document.getElementById('categoriaFilter');
+    const sortSelect = document.getElementById('sortSelect');
+    const examesTableBody = document.getElementById('examesTableBody');
+    const noResults = document.getElementById('noResults');
+    const searchInfo = document.getElementById('searchInfo');
+    const searchResultsText = document.getElementById('searchResultsText');
+    
+    let searchTimeout;
+    
+    // Search and filter function
+    function performSearch() {
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        const categoriaSelecionada = categoriaFilter.value;
+        const rows = examesTableBody.querySelectorAll('tr');
+        let visibleCount = 0;
+        
+        rows.forEach(row => {
+            const exameNome = row.getAttribute('data-exame-nome');
+            const exameCategoria = row.getAttribute('data-exame-categoria');
+            
+            const matchesSearch = searchTerm === '' || exameNome.includes(searchTerm);
+            const matchesCategoria = categoriaSelecionada === '' || exameCategoria === categoriaSelecionada;
+            
+            if (matchesSearch && matchesCategoria) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+        
+        // Show/hide no results message
+        if (visibleCount === 0 && (searchTerm !== '' || categoriaSelecionada !== '')) {
+            noResults.style.display = 'block';
+            examesTableBody.style.display = 'none';
+        } else {
+            noResults.style.display = 'none';
+            examesTableBody.style.display = '';
+        }
+        
+        // Show search info
+        if (searchTerm !== '' || categoriaSelecionada !== '') {
+            let infoText = `Encontrados ${visibleCount} exame(s)`;
+            if (searchTerm !== '') {
+                infoText += ` para "${searchTerm}"`;
+            }
+            if (categoriaSelecionada !== '') {
+                const categoriaNome = categoriaFilter.options[categoriaFilter.selectedIndex].text;
+                infoText += ` na categoria "${categoriaNome}"`;
+            }
+            searchResultsText.textContent = infoText;
+            searchInfo.style.display = 'block';
+        } else {
+            searchInfo.style.display = 'none';
+        }
+    }
+    
+    // Search input event
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(performSearch, 300);
+    });
+    
+    // Category filter event
+    categoriaFilter.addEventListener('change', performSearch);
+    
+    // Sort functionality
+    sortSelect.addEventListener('change', function() {
+        const sortValue = this.value;
+        const rows = Array.from(examesTableBody.querySelectorAll('tr'));
+        
+        rows.sort((a, b) => {
+            const aNome = a.getAttribute('data-exame-nome');
+            const bNome = b.getAttribute('data-exame-nome');
+            const aCategoria = a.getAttribute('data-exame-categoria');
+            const bCategoria = b.getAttribute('data-exame-categoria');
+            
+            if (sortValue === 'nome') {
+                return aNome.localeCompare(bNome);
+            } else if (sortValue === 'nome_desc') {
+                return bNome.localeCompare(aNome);
+            } else if (sortValue === 'categoria') {
+                const categoriaOrder = { 'laboratorio': 1, 'imagem': 2, 'vacina': 3 };
+                const aOrder = categoriaOrder[aCategoria] || 4;
+                const bOrder = categoriaOrder[bCategoria] || 4;
+                if (aOrder === bOrder) {
+                    return aNome.localeCompare(bNome);
+                }
+                return aOrder - bOrder;
+            }
+            return 0;
+        });
+        
+        // Reorder rows
+        rows.forEach(row => {
+            examesTableBody.appendChild(row);
+        });
+    });
+});
+
+function clearSearch() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('categoriaFilter').value = '';
+    document.getElementById('searchInfo').style.display = 'none';
+    document.getElementById('noResults').style.display = 'none';
+    document.getElementById('examesTableBody').style.display = '';
+    
+    // Show all rows
+    const rows = document.querySelectorAll('#examesTableBody tr');
+    rows.forEach(row => {
+        row.style.display = '';
+    });
+}
+
+function confirmDelete(exameId, exameNome) {
+    document.getElementById('exameNome').textContent = exameNome;
+    document.getElementById('deleteForm').action = `/admin/exames/delete/${exameId}`;
     document.getElementById('deleteModal').classList.add('is-active');
 }
 
-function closeModal() {
+function closeDeleteModal() {
     document.getElementById('deleteModal').classList.remove('is-active');
 }
 
 // Close modal when clicking on background
-document.addEventListener('DOMContentLoaded', () => {
-    const modal = document.getElementById('deleteModal');
-    const modalBackground = modal.querySelector('.modal-background');
-    
-    modalBackground.addEventListener('click', closeModal);
-    
-    // Close modal with ESC key
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modal.classList.contains('is-active')) {
-            closeModal();
-        }
-    });
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelector('.modal-background').addEventListener('click', closeDeleteModal);
 });
 </script>
 {% endblock %} 

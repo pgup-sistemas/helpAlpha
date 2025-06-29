@@ -1,0 +1,97 @@
+# ========================================
+# CONFIGURAÇÕES DE AMBIENTE - HELP ALPHACLIN
+# ========================================
+
+# AMBIENTE
+# development, production, testing
+FLASK_ENV=development
+
+# CONFIGURAÇÕES CRÍTICAS PARA PRODUÇÃO
+# ========================================
+
+# Chave secreta - OBRIGATÓRIA em produção
+# Gere uma chave segura: python -c "import secrets; print(secrets.token_hex(32))"
+SECRET_KEY=dev-secret-key-change-in-production
+
+# URL do banco de dados - OBRIGATÓRIA em produção
+# Exemplo PostgreSQL: postgresql://user:password@localhost/dbname
+# Exemplo MySQL: mysql://user:password@localhost/dbname
+# Exemplo SQLite: sqlite:///helpalphaclin.db
+DATABASE_URL=sqlite:///helpalphaclin.db
+
+# CONFIGURAÇÕES DE SERVIDOR
+# ========================================
+
+# Host e porta do servidor
+FLASK_HOST=0.0.0.0
+FLASK_PORT=5000
+
+# CONFIGURAÇÕES DE SEGURANÇA
+# ========================================
+
+# CSRF Protection
+WTF_CSRF_ENABLED=True
+WTF_CSRF_TIME_LIMIT=3600
+
+# Sessão
+PERMANENT_SESSION_LIFETIME=28800
+
+# CONFIGURAÇÕES DE UPLOAD
+# ========================================
+
+# Tamanho máximo de arquivo (16MB)
+MAX_CONTENT_LENGTH=16777216
+
+# Pastas de upload
+UPLOAD_FOLDER=app/uploads
+DOWNLOAD_FOLDER=app/downloads
+
+# CONFIGURAÇÕES DE PAGINAÇÃO
+# ========================================
+
+EXAMES_PER_PAGE=9
+ADMIN_EXAMES_PER_PAGE=9
+
+# CONFIGURAÇÕES DE LOG
+# ========================================
+
+LOG_LEVEL=INFO
+LOG_FILE=logs/app.log
+
+# CONFIGURAÇÕES DE EMAIL (opcional)
+# ========================================
+
+# MAIL_SERVER=smtp.gmail.com
+# MAIL_PORT=587
+# MAIL_USE_TLS=True
+# MAIL_USERNAME=pageupsistemas@gmail.com
+# MAIL_PASSWORD=sua-senha-de-app
+
+# CONFIGURAÇÕES DE RATE LIMITING
+# ========================================
+
+RATELIMIT_STORAGE_URL=memory://
+RATELIMIT_DEFAULT=200 per day
+RATELIMIT_STORAGE_OPTIONS={}
+
+# CONFIGURAÇÕES DE CACHE
+# ========================================
+
+CACHE_TYPE=simple
+CACHE_DEFAULT_TIMEOUT=300
+
+# ========================================
+# INSTRUÇÕES PARA PRODUÇÃO
+# ========================================
+
+# 1. Copie este arquivo para .env
+# 2. Configure FLASK_ENV=production
+# 3. Gere uma SECRET_KEY segura
+# 4. Configure DATABASE_URL para seu banco de produção
+# 5. Configure outras variáveis conforme necessário
+
+# Exemplo de configuração para produção:
+# FLASK_ENV=production
+# SECRET_KEY=3fdda4d83d0e1f79921933e7b9a4c2a1d88e90c67c703822d9f0a69e360144b6
+# DATABASE_URL=postgresql://user:password@localhost/helpalphaclin
+# LOG_LEVEL=WARNING 

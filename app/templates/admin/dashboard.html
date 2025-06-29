@@ -1,23 +1,23 @@
 {% extends "admin/base.html" %}
 
-{% block title %}Dashboard - Help Alpha{% endblock %}
+{% block title %}Dashboard - Help Alphaclin{% endblock %}
 {% block page_title %}Dashboard{% endblock %}
 
 {% block content %}
 <!-- Welcome Section -->
 <div class="notification is-primary is-light">
-    <h1 class="title">
+    <h1 class="title is-4">
         <span class="icon">
             <i class="fas fa-tachometer-alt"></i>
         </span>
-        <span>Dashboard Administrativo</span>
+        <span>Painel de Controle</span>
     </h1>
-    <p>Bem-vindo ao painel de controle do Help Alpha. Aqui você pode gerenciar todos os exames e monitorar o sistema.</p>
+    <p>Bem-vindo ao painel de controle do Help Alphaclin. Aqui você pode gerenciar todos os exames e monitorar o sistema.</p>
 </div>
 
 <!-- Statistics Cards -->
 <div class="columns">
-    <div class="column is-3">
+    <div class="column is-2">
         <div class="card">
             <div class="card-content">
                 <div class="content has-text-centered">
@@ -25,49 +25,77 @@
                         <i class="fas fa-clipboard-list fa-2x"></i>
                     </span>
                     <p class="title is-2">{{ total_exames }}</p>
-                    <p class="subtitle is-6">Total de Exames</p>
+                    <p class="subtitle is-6">Total de Serviços</p>
                 </div>
             </div>
         </div>
     </div>
     
-    <div class="column is-3">
+    <div class="column is-2">
         <div class="card">
             <div class="card-content">
                 <div class="content has-text-centered">
                     <span class="icon is-large has-text-info">
-                        <i class="fas fa-tint fa-2x"></i>
+                        <i class="fas fa-hospital fa-2x"></i>
                     </span>
-                    <p class="title is-2">{{ exames_laboratoriais }}</p>
-                    <p class="subtitle is-6">Exames Laboratoriais</p>
+                    <p class="title is-2">{{ total_unidades }}</p>
+                    <p class="subtitle is-6">Unidades</p>
                 </div>
             </div>
         </div>
     </div>
     
-    <div class="column is-3">
-        <div class="card">
-            <div class="card-content">
-                <div class="content has-text-centered">
-                    <span class="icon is-large has-text-success">
-                        <i class="fas fa-x-ray fa-2x"></i>
-                    </span>
-                    <p class="title is-2">{{ exames_imagem }}</p>
-                    <p class="subtitle is-6">Exames de Imagem</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="column is-3">
+    <div class="column is-2">
         <div class="card">
             <div class="card-content">
                 <div class="content has-text-centered">
                     <span class="icon is-large has-text-warning">
+                        <i class="fas fa-bullhorn fa-2x"></i>
+                    </span>
+                    <p class="title is-2">{{ total_avisos }}</p>
+                    <p class="subtitle is-6">Avisos Ativos</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="column is-2">
+        <div class="card">
+            <div class="card-content">
+                <div class="content has-text-centered">
+                    <span class="icon is-large has-text-success">
                         <i class="fas fa-users fa-2x"></i>
                     </span>
-                    <p class="title is-2">24/7</p>
-                    <p class="subtitle is-6">Disponibilidade</p>
+                    <p class="title is-2">{{ total_usuarios }}</p>
+                    <p class="subtitle is-6">Usuários</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="column is-2">
+        <div class="card">
+            <div class="card-content">
+                <div class="content has-text-centered">
+                    <span class="icon is-large has-text-danger">
+                        <i class="fas fa-eye fa-2x"></i>
+                    </span>
+                    <p class="title is-2">{{ acessos_hoje }}</p>
+                    <p class="subtitle is-6">Acessos Hoje</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="column is-2">
+        <div class="card">
+            <div class="card-content">
+                <div class="content has-text-centered">
+                    <span class="icon is-large has-text-info">
+                        <i class="fas fa-chart-line fa-2x"></i>
+                    </span>
+                    <p class="title is-2">{{ acessos_semana }}</p>
+                    <p class="subtitle is-6">Acessos Semana</p>
                 </div>
             </div>
         </div>
@@ -192,22 +220,112 @@
 </div>
 
 <!-- Recent Activity -->
-<div class="card">
-    <header class="card-header">
-        <p class="card-header-title">
-            <span class="icon">
-                <i class="fas fa-history"></i>
-            </span>
-            <span>Atividade Recente</span>
-        </p>
-    </header>
-    <div class="card-content">
-        <div class="content">
-            <div class="notification is-light">
-                <p><i class="fas fa-info-circle"></i> Sistema funcionando normalmente</p>
-                <p><i class="fas fa-check-circle"></i> Todos os exames estão disponíveis para consulta</p>
-                <p><i class="fas fa-upload"></i> Funcionalidade de upload em massa disponível</p>
-                <p><i class="fas fa-clock"></i> Última verificação: 10:49</p>
+<div class="columns">
+    <div class="column is-6">
+        <div class="card">
+            <header class="card-header">
+                <p class="card-header-title">
+                    <span class="icon">
+                        <i class="fas fa-users"></i>
+                    </span>
+                    <span>Usuários Ativos Recentemente</span>
+                </p>
+            </header>
+            <div class="card-content">
+                <div class="content">
+                    {% if usuarios_ativos %}
+                        <div class="table-container">
+                            <table class="table is-fullwidth is-striped is-hoverable">
+                                <thead>
+                                    <tr>
+                                        <th>Usuário</th>
+                                        <th>Nível</th>
+                                        <th>Última Atividade</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for usuario in usuarios_ativos %}
+                                    <tr>
+                                        <td>
+                                            <div class="media">
+                                                <div class="media-left">
+                                                    <span class="icon">
+                                                        <i class="fas fa-user-circle"></i>
+                                                    </span>
+                                                </div>
+                                                <div class="media-content">
+                                                    <p class="title is-6">{{ usuario.username }}</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="tag {% if usuario.role == 'admin' %}is-danger{% elif usuario.role == 'editor' %}is-warning{% else %}is-info{% endif %}">
+                                                {{ usuario.role|title }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="has-text-grey">{{ usuario.last_activity|brazil_datetime }}</span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="has-text-centered">
+                            <p class="has-text-grey">Nenhum usuário ativo recentemente.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="column is-6">
+        <div class="card">
+            <header class="card-header">
+                <p class="card-header-title">
+                    <span class="icon">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                    <span>Acessos Recentes</span>
+                </p>
+            </header>
+            <div class="card-content">
+                <div class="content">
+                    {% if acessos_recentes %}
+                        <div class="table-container">
+                            <table class="table is-fullwidth is-striped is-hoverable">
+                                <thead>
+                                    <tr>
+                                        <th>IP</th>
+                                        <th>Página</th>
+                                        <th>Data/Hora</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for acesso in acessos_recentes %}
+                                    <tr>
+                                        <td>
+                                            <span class="has-text-grey">{{ acesso.ip_address }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="tag is-light">{{ acesso.pagina }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="has-text-grey">{{ acesso.created_at|brazil_datetime }}</span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="has-text-centered">
+                            <p class="has-text-grey">Nenhum acesso registrado recentemente.</p>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
@@ -224,7 +342,7 @@
     <p>Para suporte técnico ou dúvidas sobre o sistema, entre em contato:</p>
     <div class="columns">
         <div class="column is-4">
-            <p><strong>Email:</strong> suporte@helpalpha.com.br</p>
+            <p><strong>Email:</strong> suporte@helpalphaclinclinclin.com.br</p>
         </div>
         <div class="column is-4">
             <p><strong>WhatsApp:</strong> (69) 98129-0005</p>

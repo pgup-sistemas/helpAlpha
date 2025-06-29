@@ -1,0 +1,207 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<!-- Informações sobre limites -->
+<div class="notification is-info is-light mb-4">
+    <h4 class="title is-5">
+        <span class="icon">
+            <i class="fas fa-info-circle"></i>
+        </span>
+        <span>Limites de Caracteres</span>
+    </h4>
+    <div class="columns is-multiline">
+        <div class="column is-4">
+            <strong>Título:</strong> 5-200 caracteres
+        </div>
+        <div class="column is-4">
+            <strong>Conteúdo:</strong> 10-1000 caracteres
+        </div>
+        <div class="column is-4">
+            <strong>Tipo:</strong> Obrigatório
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="columns is-centered">
+        <div class="column is-8">
+            <div class="level">
+                <div class="level-left">
+                    <div class="level-item">
+                        <h1 class="title">{{ title }}</h1>
+                    </div>
+                </div>
+                <div class="level-right">
+                    <div class="level-item">
+                        <a href="{{ url_for('admin_avisos') }}" class="button is-light">
+                            <span class="icon">
+                                <i class="fas fa-arrow-left"></i>
+                            </span>
+                            <span>Voltar</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="field">
+                        {{ form.titulo.label(class="label") }}
+                        <div class="control">
+                            {{ form.titulo(class="input", placeholder="Título do aviso") }}
+                        </div>
+                        {% if form.titulo.errors %}
+                        <p class="help is-danger">
+                            <span class="icon is-small">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </span>
+                            <span>
+                            {% for error in form.titulo.errors %}
+                                {{ error }}
+                            {% endfor %}
+                            </span>
+                        </p>
+                        {% endif %}
+                    </div>
+
+                    <div class="field">
+                        {{ form.conteudo.label(class="label") }}
+                        <div class="control">
+                            {{ form.conteudo(class="textarea", placeholder="Conteúdo do aviso", rows=5) }}
+                        </div>
+                        {% if form.conteudo.errors %}
+                        <p class="help is-danger">
+                            <span class="icon is-small">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </span>
+                            <span>
+                            {% for error in form.conteudo.errors %}
+                                {{ error }}
+                            {% endfor %}
+                            </span>
+                        </p>
+                        {% endif %}
+                    </div>
+
+                    <div class="field">
+                        {{ form.tipo.label(class="label") }}
+                        <div class="control">
+                            <div class="select is-fullwidth">
+                                {{ form.tipo() }}
+                            </div>
+                        </div>
+                        {% if form.tipo.errors %}
+                        <p class="help is-danger">
+                            <span class="icon is-small">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </span>
+                            <span>
+                            {% for error in form.tipo.errors %}
+                                {{ error }}
+                            {% endfor %}
+                            </span>
+                        </p>
+                        {% endif %}
+                    </div>
+
+                    <div class="columns">
+                        <div class="column">
+                            <div class="field">
+                                {{ form.data_inicio.label(class="label") }}
+                                <div class="control">
+                                    {% if form.data_inicio.data %}
+                                        {% set data_inicio_str = form.data_inicio.data.strftime('%Y-%m-%dT%H:%M') if form.data_inicio.data else '' %}
+                                        <input type="datetime-local" name="data_inicio" id="data_inicio" class="input" value="{{ data_inicio_str }}">
+                                    {% else %}
+                                        {{ form.data_inicio(class="input", type="datetime-local") }}
+                                    {% endif %}
+                                </div>
+                                {% if form.data_inicio.errors %}
+                                <p class="help is-danger">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </span>
+                                    <span>
+                                    {% for error in form.data_inicio.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                    </span>
+                                </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="field">
+                                {{ form.data_fim.label(class="label") }}
+                                <div class="control">
+                                    {% if form.data_fim.data %}
+                                        {% set data_fim_str = form.data_fim.data.strftime('%Y-%m-%dT%H:%M') if form.data_fim.data else '' %}
+                                        <input type="datetime-local" name="data_fim" id="data_fim" class="input" value="{{ data_fim_str }}">
+                                    {% else %}
+                                        {{ form.data_fim(class="input", type="datetime-local") }}
+                                    {% endif %}
+                                </div>
+                                {% if form.data_fim.description %}
+                                <p class="help">{{ form.data_fim.description }}</p>
+                                {% endif %}
+                                {% if form.data_fim.errors %}
+                                <p class="help is-danger">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </span>
+                                    <span>
+                                    {% for error in form.data_fim.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                    </span>
+                                </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="control">
+                            <label class="checkbox">
+                                {{ form.is_ativo() }}
+                                {{ form.is_ativo.label.text }}
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="field is-grouped">
+                        <div class="control">
+                            {{ form.submit(class="button is-primary") }}
+                        </div>
+                        <div class="control">
+                            <a href="{{ url_for('admin_avisos') }}" class="button is-light">Cancelar</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Definir data/hora atual como padrão se não estiver preenchida
+    const dataInicio = document.getElementById('data_inicio');
+    
+    if (dataInicio && !dataInicio.value) {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        
+        dataInicio.value = `${year}-${month}-${day}T${hours}:${minutes}`;
+    }
+});
+</script>
+{% endblock %} 

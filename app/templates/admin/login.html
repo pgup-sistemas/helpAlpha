@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Help Alpha Admin</title>
+    <title>Login - Help Alphaclin Admin</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bulma.min.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -26,7 +26,7 @@
                     <span class="icon is-large has-text-primary">
                         <i class="fas fa-stethoscope fa-3x"></i>
                     </span>
-                    <h1 class="title is-3">Help Alpha</h1>
+                    <h1 class="title is-3">Help Alphaclin</h1>
                     <p class="subtitle is-6">Painel Administrativo</p>
                 </div>
                 
@@ -55,7 +55,12 @@
                         </div>
                         {% if form.username.errors %}
                             {% for error in form.username.errors %}
-                                <p class="help is-danger">{{ error }}</p>
+                                <p class="help is-danger">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </span>
+                                    <span>{{ error }}</span>
+                                </p>
                             {% endfor %}
                         {% endif %}
                     </div>
@@ -70,7 +75,12 @@
                         </div>
                         {% if form.password.errors %}
                             {% for error in form.password.errors %}
-                                <p class="help is-danger">{{ error }}</p>
+                                <p class="help is-danger">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </span>
+                                    <span>{{ error }}</span>
+                                </p>
                             {% endfor %}
                         {% endif %}
                     </div>
@@ -81,6 +91,15 @@
                         </div>
                     </div>
                 </form>
+                
+                <div class="has-text-centered mt-4">
+                    <a href="{{ url_for('admin_reset_password_request') }}" class="is-size-7">
+                        <span class="icon">
+                            <i class="fas fa-key"></i>
+                        </span>
+                        <span>Esqueceu sua senha?</span>
+                    </a>
+                </div>
                 
                 <div class="has-text-centered mt-4">
                     <p class="is-size-7 has-text-grey">
