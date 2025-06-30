@@ -104,7 +104,7 @@
             </tr>
         </thead>
         <tbody id="examesTableBody">
-            {% for exame in exames %}
+            {% for exame in exames.items %}
             <tr data-exame-id="{{ exame.id }}" data-exame-nome="{{ exame.nome.lower() }}" data-exame-categoria="{{ exame.categoria }}">
                 <td>
                     <div class="level is-mobile">
@@ -138,12 +138,12 @@
                 </td>
                 <td>
                     <div class="buttons are-small">
-                        <a href="{{ url_for('admin_edit_exame', exame_id=exame.id) }}" class="button is-warning" title="Editar">
+                        <a href="{{ url_for('admin_edit_exame', nome=exame.nome) }}" class="button is-warning" title="Editar">
                             <span class="icon">
                                 <i class="fas fa-edit"></i>
                             </span>
                         </a>
-                        <button class="button is-danger" onclick="confirmDelete({{ exame.id }}, '{{ exame.nome }}')" title="Excluir">
+                        <button class="button is-danger" onclick="confirmDelete('{{ exame.nome }}')" title="Excluir">
                             <span class="icon">
                                 <i class="fas fa-trash"></i>
                             </span>
@@ -168,10 +168,10 @@
 </div>
 
 <!-- Pagination -->
-{% if pagination.pages > 1 %}
+{% if exames.pages > 1 %}
 <nav class="pagination is-centered" role="navigation" aria-label="pagination">
-    {% if pagination.has_prev %}
-        <a href="{{ url_for('admin_exames', page=pagination.prev_num) }}" class="pagination-previous">
+    {% if exames.has_prev %}
+        <a href="{{ url_for('admin_exames', page=exames.prev_num) }}" class="pagination-previous">
             <span class="icon">
                 <i class="fas fa-chevron-left"></i>
             </span>
@@ -186,8 +186,8 @@
         </span>
     {% endif %}
     
-    {% if pagination.has_next %}
-        <a href="{{ url_for('admin_exames', page=pagination.next_num) }}" class="pagination-next">
+    {% if exames.has_next %}
+        <a href="{{ url_for('admin_exames', page=exames.next_num) }}" class="pagination-next">
             <span>Próxima</span>
             <span class="icon">
                 <i class="fas fa-chevron-right"></i>
@@ -203,9 +203,9 @@
     {% endif %}
     
     <ul class="pagination-list">
-        {% for page_num in pagination.iter_pages() %}
+        {% for page_num in exames.iter_pages() %}
             {% if page_num %}
-                {% if page_num != pagination.page %}
+                {% if page_num != exames.page %}
                     <li>
                         <a href="{{ url_for('admin_exames', page=page_num) }}" class="pagination-link">{{ page_num }}</a>
                     </li>
@@ -223,8 +223,8 @@
 
 <div class="has-text-centered mt-3">
     <p class="is-size-7 has-text-grey">
-        Página {{ pagination.page }} de {{ pagination.pages }} 
-        ({{ pagination.total }} exames no total)
+        Página {{ exames.page }} de {{ exames.pages }} 
+        ({{ exames.total }} exames no total)
     </p>
 </div>
 {% endif %}
@@ -378,9 +378,9 @@ function clearSearch() {
     });
 }
 
-function confirmDelete(exameId, exameNome) {
+function confirmDelete(exameNome) {
     document.getElementById('exameNome').textContent = exameNome;
-    document.getElementById('deleteForm').action = `/admin/exames/delete/${exameId}`;
+    document.getElementById('deleteForm').action = `/admin/exames/delete/${exameNome}`;
     document.getElementById('deleteModal').classList.add('is-active');
 }
 

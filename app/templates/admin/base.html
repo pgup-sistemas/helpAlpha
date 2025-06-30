@@ -203,6 +203,9 @@
                 z-index: 999;
                 width: 250px;
                 transition: left 0.3s ease;
+                /* Garantir que o sidebar tenha scroll se necessário */
+                max-height: 100vh;
+                overflow-y: auto;
             }
             .admin-sidebar.mobile-open {
                 left: 0;
@@ -245,6 +248,53 @@
                 font-size: 0.8rem;
             }
             
+            /* Reduzir espaçamento dos links do sidebar no mobile */
+            .admin-sidebar .sidebar-menu a {
+                padding: 0.5rem 0.75rem; /* Reduzir padding vertical e horizontal */
+                font-size: 0.9rem; /* Reduzir tamanho da fonte */
+            }
+            
+            /* Reduzir espaçamento do header do sidebar */
+            .admin-sidebar .sidebar-header {
+                padding: 0.75rem;
+                padding-top: 2.5rem; /* Reduzir padding top */
+            }
+            
+            .admin-sidebar .sidebar-header h1 {
+                font-size: 1.1rem !important; /* Reduzir tamanho do título */
+                margin-bottom: 0.25rem !important;
+            }
+            
+            .admin-sidebar .sidebar-header p {
+                font-size: 0.7rem !important; /* Reduzir tamanho do subtítulo */
+                margin-bottom: 0.5rem !important;
+            }
+            
+            /* Reduzir espaçamento dos separadores (hr) */
+            .admin-sidebar .sidebar-menu hr {
+                margin: 0.5rem 0; /* Reduzir margem dos separadores */
+            }
+            
+            /* Reduzir espaçamento das listas */
+            .admin-sidebar .sidebar-menu .menu-list {
+                margin-bottom: 0.25rem; /* Reduzir margem entre grupos de links */
+            }
+            
+            .admin-sidebar .sidebar-menu .menu-list li {
+                margin-bottom: 0.1rem; /* Reduzir margem entre itens */
+            }
+            
+            /* Reduzir tamanho dos ícones no mobile */
+            .admin-sidebar .sidebar-menu .icon {
+                font-size: 0.9rem;
+                min-width: 1.2rem; /* Garantir largura mínima consistente */
+            }
+            
+            /* Garantir que o texto dos links seja menor */
+            .admin-sidebar .sidebar-menu .menu-text {
+                font-size: 0.85rem;
+            }
+            
             /* Botão hamburger mobile */
             #mobileMenuToggle {
                 position: fixed;
@@ -285,6 +335,82 @@
             /* Esconder botão toggle do sidebar no mobile */
             .admin-sidebar .sidebar-toggle {
                 display: none;
+            }
+            
+            /* Melhorar scroll do sidebar no mobile */
+            .admin-sidebar {
+                scrollbar-width: thin;
+                scrollbar-color: rgba(255,255,255,0.3) transparent;
+            }
+            
+            .admin-sidebar::-webkit-scrollbar {
+                width: 4px;
+            }
+            
+            .admin-sidebar::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            
+            .admin-sidebar::-webkit-scrollbar-thumb {
+                background: rgba(255,255,255,0.3);
+                border-radius: 2px;
+            }
+            
+            .admin-sidebar::-webkit-scrollbar-thumb:hover {
+                background: rgba(255,255,255,0.5);
+            }
+            
+            /* Garantir que o último item (Sair) seja sempre visível */
+            .admin-sidebar .sidebar-menu .menu-list:last-child {
+                margin-bottom: 1rem; /* Adicionar espaço extra no final */
+            }
+        }
+        
+        /* Estilos específicos para telas muito pequenas (smartphones) */
+        @media (max-width: 480px) {
+            .admin-sidebar {
+                width: 220px; /* Reduzir largura do sidebar */
+            }
+            
+            .admin-sidebar .sidebar-menu a {
+                padding: 0.4rem 0.6rem; /* Reduzir ainda mais o padding */
+                font-size: 0.85rem; /* Reduzir ainda mais a fonte */
+            }
+            
+            .admin-sidebar .sidebar-header {
+                padding: 0.5rem;
+                padding-top: 2rem;
+            }
+            
+            .admin-sidebar .sidebar-header h1 {
+                font-size: 1rem !important;
+                margin-bottom: 0.2rem !important;
+            }
+            
+            .admin-sidebar .sidebar-header p {
+                font-size: 0.65rem !important;
+                margin-bottom: 0.4rem !important;
+            }
+            
+            .admin-sidebar .sidebar-menu .icon {
+                font-size: 0.85rem;
+                min-width: 1.1rem;
+            }
+            
+            .admin-sidebar .sidebar-menu .menu-text {
+                font-size: 0.8rem;
+            }
+            
+            .admin-sidebar .sidebar-menu hr {
+                margin: 0.4rem 0;
+            }
+            
+            .admin-sidebar .sidebar-menu .menu-list {
+                margin-bottom: 0.2rem;
+            }
+            
+            .admin-sidebar .sidebar-menu .menu-list li {
+                margin-bottom: 0.05rem;
             }
         }
         .unidade-card {
@@ -395,7 +521,7 @@
                             <span class="menu-text">Configurações</span>
                         </a>
                     </li>
-                    {% if current_user.can_manage_users() %}
+                    {% if current_user.is_authenticated and current_user.can_manage_users() %}
                     <li>
                         <a href="{{ url_for('admin_usuarios') }}" class="{% if request.endpoint.startswith('admin_usuarios') %}is-active{% endif %}">
                             <span class="icon">
@@ -466,7 +592,7 @@
                             <span class="icon">
                                 <i class="fas fa-user-circle"></i>
                             </span>
-                            <span class="username">{{ current_user.username }}</span>
+                            <span class="username">{% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Visitante{% endif %}</span>
                         </div>
                     </div>
                 </div>
