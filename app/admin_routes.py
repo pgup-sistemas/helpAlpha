@@ -10,10 +10,19 @@ import pandas as pd
 import math
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
-import matplotlib
-matplotlib.use('Agg')  # Backend não-interativo
-import matplotlib.pyplot as plt
-import seaborn as sns
+
+# Tentar importar matplotlib (opcional)
+try:
+    import matplotlib
+    matplotlib.use('Agg')  # Backend não-interativo
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    MATPLOTLIB_AVAILABLE = True
+except ImportError:
+    MATPLOTLIB_AVAILABLE = False
+    plt = None
+    sns = None
+
 from io import BytesIO
 import base64
 from sqlalchemy import func, desc
@@ -595,12 +604,16 @@ def register_admin_routes(app):
     
     def gerar_grafico_exames_populares(exames_populares):
         """Gera gráfico de exames mais populares"""
+        if not MATPLOTLIB_AVAILABLE or plt is None:
+            return None
+            
         if not exames_populares:
             return None
         
         # Configurar estilo
         plt.style.use('default')
-        sns.set_palette("husl")
+        if sns is not None:
+            sns.set_palette("husl")
         
         # Preparar dados
         nomes = [exame[0] for exame in exames_populares]
@@ -633,12 +646,16 @@ def register_admin_routes(app):
     
     def gerar_grafico_termos_populares(termos_populares):
         """Gera gráfico de termos de busca mais populares"""
+        if not MATPLOTLIB_AVAILABLE or plt is None:
+            return None
+            
         if not termos_populares:
             return None
         
         # Configurar estilo
         plt.style.use('default')
-        sns.set_palette("Set2")
+        if sns is not None:
+            sns.set_palette("Set2")
         
         # Preparar dados
         termos = [termo[0] for termo in termos_populares]
