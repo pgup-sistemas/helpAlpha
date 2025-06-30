@@ -87,12 +87,15 @@ class ProductionConfig(Config):
     
     # Em produção, usar variáveis de ambiente obrigatórias
     SECRET_KEY = os.environ.get('SECRET_KEY')
-    if not SECRET_KEY or SECRET_KEY == 'dev-secret-key-change-in-production':
-        raise ValueError('SECRET_KEY deve ser configurada em produção!')
-    
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
-    if not SQLALCHEMY_DATABASE_URI:
-        raise ValueError('DATABASE_URL deve ser configurada em produção!')
+    
+    def __init__(self):
+        # Validar configurações críticas apenas quando a classe for instanciada
+        if not self.SECRET_KEY or self.SECRET_KEY == 'dev-secret-key-change-in-production':
+            raise ValueError('SECRET_KEY deve ser configurada em produção!')
+        
+        if not self.SQLALCHEMY_DATABASE_URI:
+            raise ValueError('DATABASE_URL deve ser configurada em produção!')
     
     # Configurações de segurança adicionais para produção
     SESSION_COOKIE_SECURE = True
