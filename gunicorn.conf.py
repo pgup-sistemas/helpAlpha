@@ -1,8 +1,9 @@
 # Configuração do Gunicorn para produção
 import multiprocessing
+import os
 
 # Configurações básicas
-bind = "0.0.0.0:10000"
+bind = f"0.0.0.0:{os.environ.get('PORT', '5000')}"
 workers = multiprocessing.cpu_count() * 2 + 1
 worker_class = "sync"
 worker_connections = 1000

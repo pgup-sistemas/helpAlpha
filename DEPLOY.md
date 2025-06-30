@@ -1,217 +1,125 @@
-# 🚀 Guia de Deploy - Help Alphaclin
+# 🚀 Deploy no Render - Help Alphaclin
 
-## Deploy no Render.com
+## 📋 Pré-requisitos
 
-### Pré-requisitos
+- Conta no Render.com
+- Repositório Git configurado
+- Python 3.11.9 (especificado no runtime.txt)
 
-1. **Conta no Render.com**: [render.com](https://render.com)
-2. **Repositório GitHub**: Código deve estar no GitHub
-3. **Configurações**: Arquivos de deploy já configurados
+## 🔧 Configuração
 
-### Passo a Passo
+### 1. Arquivos de Configuração
 
-#### 1. Preparação do Repositório
+O projeto já inclui todos os arquivos necessários para deploy no Render:
 
-Verifique se os seguintes arquivos estão presentes:
+- `render.yaml` - Configuração do serviço
+- `runtime.txt` - Versão do Python (3.11.9)
+- `requirements.txt` - Dependências
+- `Procfile` - Comando de inicialização
+- `gunicorn.conf.py` - Configuração do servidor
 
-```bash
-helpAlpha/
-├── render.yaml          # ✅ Configuração do Render
-├── gunicorn.conf.py     # ✅ Configuração do Gunicorn
-├── Procfile            # ✅ Comando de inicialização
-├── requirements.txt    # ✅ Dependências Python
-├── run.py             # ✅ Arquivo de execução
-└── VERSION            # ✅ Versão do sistema
-```
+### 2. Variáveis de Ambiente
 
-#### 2. Deploy no Render.com
+O Render configurará automaticamente:
 
-1. **Acesse o Render.com**
-   - Faça login em [render.com](https://render.com)
+- `FLASK_ENV=production`
+- `SECRET_KEY` (gerada automaticamente)
+- `DATABASE_URL` (do banco PostgreSQL)
+- `LOG_LEVEL=WARNING`
 
-2. **Crie um novo Blueprint**
-   - Clique em "New +"
-   - Selecione "Blueprint"
+### 3. Banco de Dados
 
-3. **Conecte o Repositório**
-   - Conecte sua conta GitHub
-   - Selecione o repositório `help-alphaclin`
+O `render.yaml` configura automaticamente um banco PostgreSQL gratuito.
 
-4. **Configure o Deploy**
-   - O Render detectará automaticamente o `render.yaml`
-   - Verifique as configurações:
-     - **Nome**: `help-alphaclin`
-     - **Plano**: `Free`
-     - **Região**: Mais próxima do Brasil
+## 🚀 Deploy
 
-5. **Inicie o Deploy**
-   - Clique em "Apply"
-   - Aguarde o build (5-10 minutos)
+### Opção 1: Deploy Automático (Recomendado)
 
-#### 3. Configuração Pós-Deploy
+1. **Conecte seu repositório** no Render
+2. **Selecione o repositório** `helpAlpha`
+3. **Render detectará** o `render.yaml` automaticamente
+4. **Clique em "Create New Service"**
+5. **Aguarde** o build e deploy
 
-Após o deploy ser concluído:
+### Opção 2: Deploy Manual
 
-1. **Acesse o Painel Administrativo**
-   ```
-   https://seu-app.onrender.com/admin/login
-   ```
+1. **Crie um novo Web Service**
+2. **Conecte o repositório**
+3. **Configure:**
+   - **Build Command:** `pip install -r requirements.txt`
+   - **Start Command:** `gunicorn run:app --config gunicorn.conf.py`
+   - **Python Version:** 3.11.9
 
-2. **Credenciais Padrão**
-   - **Usuário**: `admin`
-   - **Senha**: Verificar logs do Render (gerada automaticamente)
+## 🔍 Troubleshooting
 
-3. **Configure o Google Maps**
-   - Acesse `/admin/configuracoes`
-   - Adicione a URL do iframe do Google Maps
+### Erro de Build
 
-4. **Importe os Dados**
-   - Use o upload em massa para importar exames
-   - Ou adicione manualmente
+Se houver erro de build:
 
-### Configurações Importantes
+1. **Verifique a versão do Python** (deve ser 3.11.9)
+2. **Atualize as dependências** se necessário
+3. **Verifique os logs** de build no Render
 
-#### Variáveis de Ambiente (Automáticas)
+### Erro de Runtime
 
-O `render.yaml` configura automaticamente:
+Se houver erro de runtime:
 
-```yaml
-envVars:
-  - key: FLASK_ENV
-    value: production
-  - key: SECRET_KEY
-    generateValue: true
-  - key: DATABASE_URL
-    fromDatabase:
-      name: help-alphaclin-db
-      property: connectionString
-  - key: ADMIN_USERNAME
-    value: admin
-  - key: ADMIN_EMAIL
-    value: admin@helpalphaclin.com
-  - key: ADMIN_PASSWORD
-    generateValue: true
-```
+1. **Verifique as variáveis de ambiente**
+2. **Confirme a conexão com o banco**
+3. **Verifique os logs** de aplicação
 
-#### Banco de Dados PostgreSQL
+### Problemas Comuns
 
-- **Configurado automaticamente** pelo Render
-- **Backup automático** diário
-- **SSL habilitado** por padrão
+#### Pandas não instala
+- **Solução:** Use Python 3.11.9 (não 3.13)
+- **Alternativa:** Remova pandas se não for essencial
 
-### Monitoramento
+#### Banco de dados não conecta
+- **Verifique:** `DATABASE_URL` está configurada
+- **Confirme:** Banco PostgreSQL está ativo
 
-#### Logs
+#### Aplicação não inicia
+- **Verifique:** `SECRET_KEY` está definida
+- **Confirme:** `FLASK_ENV=production`
 
-Acesse os logs no painel do Render:
-- **Build Logs**: Durante o deploy
-- **Runtime Logs**: Durante a execução
+## 📊 Monitoramento
 
-#### Métricas
+### Logs
 
-- **Uptime**: Monitoramento automático
-- **Performance**: Métricas de resposta
-- **Erros**: Alertas automáticos
+- **Build Logs:** Durante o deploy
+- **Runtime Logs:** Durante a execução
+- **Access Logs:** Requisições HTTP
 
-### Troubleshooting
+### Métricas
 
-#### Problemas Comuns
+- **Uptime:** Disponibilidade do serviço
+- **Response Time:** Tempo de resposta
+- **Error Rate:** Taxa de erros
 
-1. **Build Falha**
-   ```bash
-   # Verificar requirements.txt
-   # Verificar sintaxe Python
-   # Verificar dependências
-   ```
+## 🔒 Segurança
 
-2. **Aplicação Não Inicia**
-   ```bash
-   # Verificar logs do Gunicorn
-   # Verificar variáveis de ambiente
-   # Verificar configuração do banco
-   ```
+### Configurações Automáticas
 
-3. **Erro de Banco de Dados**
-   ```bash
-   # Verificar DATABASE_URL
-   # Verificar conectividade
-   # Verificar permissões
-   ```
+- ✅ HTTPS/SSL automático
+- ✅ Headers de segurança
+- ✅ Rate limiting
+- ✅ CSRF protection
 
-#### Comandos Úteis
+### Recomendações
 
-```bash
-# Verificar status
-curl https://seu-app.onrender.com/health
+- 🔐 Altere senhas padrão após deploy
+- 📝 Configure backup do banco
+- 🔍 Monitore logs regularmente
+- 🔄 Mantenha dependências atualizadas
 
-# Verificar logs
-# Acesse o painel do Render > Logs
+## 📞 Suporte
 
-# Reiniciar aplicação
-# Render > Dashboard > Seu App > Manual Deploy
-```
+Se houver problemas:
 
-### Segurança
-
-#### Configurações Automáticas
-
-- **HTTPS**: Habilitado automaticamente
-- **Headers de Segurança**: Configurados
-- **Rate Limiting**: Ativo
-- **CSP**: Content Security Policy
-
-#### Recomendações
-
-1. **Altere a senha do admin** após o primeiro login
-2. **Configure Google Maps** corretamente
-3. **Monitore os logs** regularmente
-4. **Faça backup** dos dados importantes
-
-### Performance
-
-#### Otimizações Automáticas
-
-- **Gunicorn**: Configurado para produção
-- **Workers**: Otimizados para CPU
-- **Timeout**: Configurado adequadamente
-- **Keep-alive**: Habilitado
-
-#### Monitoramento
-
-- **Response Time**: < 500ms
-- **Uptime**: > 99.9%
-- **Memory**: Otimizado
-- **CPU**: Eficiente
-
-### Backup e Recuperação
-
-#### Banco de Dados
-
-- **Backup automático**: Diário
-- **Retenção**: 7 dias
-- **Recuperação**: Via painel do Render
-
-#### Código
-
-- **Versionamento**: Git
-- **Rollback**: Via Render
-- **Deploy**: Automático
-
-### Suporte
-
-#### Render.com
-
-- **Documentação**: [docs.render.com](https://docs.render.com)
-- **Status**: [status.render.com](https://status.render.com)
-- **Suporte**: Via chat/email
-
-#### PageUp Sistemas
-
-- **Email**: pageupsistemas@gmail.com
-- **WhatsApp**: (69) 99388-2222
-- **GitHub**: [@pgup-sistemas](https://github.com/pgup-sistemas)
+1. **Verifique os logs** no Render Dashboard
+2. **Consulte** a documentação do Render
+3. **Entre em contato** com o suporte técnico
 
 ---
 
-**Última atualização**: Janeiro 2025  
-**Versão do Deploy**: v1.0.0 
+**Render.com** - Plataforma de deploy recomendada para o Help Alphaclin 
