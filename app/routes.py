@@ -1,4 +1,4 @@
-from flask import render_template, request, jsonify, send_file, current_app, redirect, url_for, send_from_directory
+from flask import render_template, request, jsonify, send_file, current_app, redirect, url_for, send_from_directory, flash
 import json
 import os
 from datetime import datetime
@@ -100,6 +100,31 @@ def paginate_exames(exames, page=1, per_page=9):
     )
 
 def register_routes(app):
+    """Registra as rotas da aplicação"""
+
+    @app.route('/admin/avisos/ativar/<int:aviso_id>', methods=['POST'])
+    def admin_ativar_aviso(aviso_id):
+        aviso = Aviso.query.get_or_404(aviso_id)
+        aviso.is_ativo = True
+        db.session.commit()
+        flash('Aviso ativado com sucesso!', 'success')
+        return redirect(url_for('admin_avisos'))
+
+    @app.route('/admin/avisos/desativar/<int:aviso_id>', methods=['POST'])
+    def admin_desativar_aviso(aviso_id):
+        aviso = Aviso.query.get_or_404(aviso_id)
+        aviso.is_ativo = False
+        db.session.commit()
+        flash('Aviso desativado com sucesso!', 'warning')
+        return redirect(url_for('admin_avisos'))
+
+    # ====== NOVA ROTA: Configurações do Site com upload de logo ======
+    from flask_login import login_required, current_user
+    from werkzeug.utils import secure_filename
+    from app.forms import SiteConfigForm
+
+
+
     """Registra as rotas da aplicação"""
     
     @app.route('/')

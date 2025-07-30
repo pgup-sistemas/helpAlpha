@@ -192,6 +192,11 @@ class SiteConfigForm(FlaskForm):
         DataRequired(message='O nome do site é obrigatório'),
         Length(min=3, max=100, message='O nome deve ter entre 3 e 100 caracteres')
     ])
+
+    # Upload de logo
+    logo = FileField('Logo do Site', validators=[
+        FileAllowed(['jpg', 'jpeg', 'png', 'svg'], 'Apenas imagens (jpg, png, svg) são permitidas')
+    ])
     descricao_site = TextAreaField('Descrição do Site', validators=[
         DataRequired(message='A descrição do site é obrigatória'),
         Length(min=10, max=500, message='A descrição deve ter entre 10 e 500 caracteres')

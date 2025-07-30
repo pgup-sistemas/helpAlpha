@@ -297,6 +297,9 @@ class SiteConfig(db.Model):
     telefone_principal = db.Column(db.String(20))
     whatsapp = db.Column(db.String(20))
     
+    # Caminho da logo do site
+    logo_path = db.Column(db.String(255), nullable=True, default=None)
+    
     # Endereços (JSON)
     enderecos = db.Column(db.Text, nullable=False, default='[]')  # Lista de endereços em JSON
     
@@ -382,6 +385,7 @@ class SiteConfig(db.Model):
             'email_contato': self.email_contato,
             'telefone_principal': self.telefone_principal,
             'whatsapp': self.whatsapp,
+            'logo_path': self.logo_path,
             'enderecos': self.get_enderecos(),
             'redes_sociais': self.get_redes_sociais(),
             'google_maps_api_key': self.google_maps_api_key,

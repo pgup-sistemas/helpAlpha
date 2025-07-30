@@ -851,6 +851,39 @@ def register_admin_routes(app):
             config.mostrar_mapa = form.mostrar_mapa.data
             config.mostrar_redes_sociais = form.mostrar_redes_sociais.data
             
+            # --- Upload/remoção da logo ---
+            from werkzeug.utils import secure_filename
+            import os
+            from datetime import datetime
+            logo_file = form.logo.data
+            remover_logo = request.form.get('remover_logo')
+            logo_dir = os.path.join(current_app.root_path, 'static', 'images')
+            if not os.path.exists(logo_dir):
+                os.makedirs(logo_dir)
+            if logo_file:
+                filename = secure_filename(logo_file.filename)
+                ext = os.path.splitext(filename)[1].lower()
+                if ext not in ['.jpg', '.jpeg', '.png', '.svg']:
+                    flash('Formato de imagem não permitido.', 'danger')
+                    return render_template('admin/configuracoes.html', form=form, config=config)
+                unique_name = f"logo_{datetime.utcnow().strftime('%Y%m%d%H%M%S')}{ext}"
+                file_path = os.path.join(logo_dir, unique_name)
+                logo_file.save(file_path)
+                # Remove logo antiga se existir
+                if config.logo_path and os.path.exists(os.path.join(logo_dir, os.path.basename(config.logo_path))):
+                    try:
+                        os.remove(os.path.join(logo_dir, os.path.basename(config.logo_path)))
+                    except Exception:
+                        pass
+                config.logo_path = f'images/{unique_name}'
+            elif remover_logo:
+                # Remove logo do disco se existir
+                if config.logo_path and os.path.exists(os.path.join(logo_dir, os.path.basename(config.logo_path))):
+                    try:
+                        os.remove(os.path.join(logo_dir, os.path.basename(config.logo_path)))
+                    except Exception:
+                        pass
+                config.logo_path = None
             db.session.commit()
             flash('Configurações atualizadas com sucesso!', 'success')
             return redirect(url_for('admin_configuracoes'))

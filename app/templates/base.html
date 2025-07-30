@@ -36,7 +36,7 @@
     <meta property="twitter:url" content="{{ request.url }}">
     <meta property="twitter:title" content="{% block twitter_title %}{{ site_config.nome_site or 'Help Alphaclin' }} - Sistema de Consulta de Exames{% endblock %}">
     <meta property="twitter:description" content="{% block twitter_description %}{{ site_config.meta_description or 'Consulte informações sobre exames laboratoriais e de imagem. Preparo, documentos necessários, horários e contatos das unidades Help Alphaclin.' }}{% endblock %}">
-    <meta property="twitter:image" content="{% block twitter_image %}{{ url_for('static', filename='images/help-alphaclin-twitter.jpg', _external=True) }}{% endblock %}">
+    <meta property="twitter:image" content="{% block twitter_image %}<img src="{{ url_for('static', filename=site_config.logo_path) if site_config.logo_path else url_for('static', filename='images/logo.png') }}" alt="{{ site_config.nome_site or 'Help Alphaclin' }}" style="height: 60px; max-width: 200px; background: #fff; border-radius: 8px; padding: 4px;">{% endblock %}">
     
     <!-- Schema.org structured data -->
     <script type="application/ld+json">
@@ -44,9 +44,9 @@
         "@context": "https://schema.org",
         "@type": "MedicalOrganization",
         "name": "{{ site_config.nome_site or 'Help Alphaclin' }}",
-        "description": "{{ site_config.descricao_site or 'Sistema de consulta de exames laboratoriais e de imagem' }}",
+        "description": "{{ site_config.descricao_site or 'Sistema de consulta de exames laboratoriais, vacinas e de imagem' }}",
         "url": "{{ request.url_root }}",
-        "logo": "{{ url_for('static', filename='images/logo.png', _external=True) }}",
+        "logo": "{{ url_for('static', filename=site_config.logo_path, _external=True) if site_config.logo_path else url_for('static', filename='images/logo.png', _external=True) }}",
         "image": "{{ url_for('static', filename='images/help-alphaclin.jpg', _external=True) }}",
         "address": [
             {
@@ -124,7 +124,7 @@
     
     <style>
         .hero.is-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #008bcd 30%, #faaf3f 100%);
         }
         .card {
             transition: transform 0.2s ease-in-out;
@@ -280,9 +280,101 @@
                 margin-bottom: 0.5rem;
             }
         }
+        
+        /* Aviso animado */
+        .aviso-marquee {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #ffdd57;
+            padding: 1.0rem 0.5rem;
+            text-align: left;
+            font-size: 1rem;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        
+        .aviso-marquee__content {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            box-sizing: border-box;
+            text-align: left;
+            padding-left: 0;
+            position: relative;
+        }
+        .aviso-marquee__inner {
+            display: inline-block;
+            white-space: nowrap;
+            will-change: transform;
+            animation: marquee 18s linear infinite;
+        }
+        
+        @keyframes marquee {
+            0% {
+                transform: translateX(0);
+            }
+            10% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+        /* Adiciona espaço no topo do body quando aviso está presente */
+        body.tem-aviso {
+            padding-top: 3.2rem; /* dobrou o espaço para banner mais alto */
+        }
+        @media (max-width: 600px) {
+            body.tem-aviso {
+                padding-top: 6.2rem;
+            }
+        }
     </style>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var aviso = document.querySelector('.aviso-marquee');
+        if (aviso) {
+          document.body.classList.add('tem-aviso');
+        }
+      });
+    </script>
 </head>
 <body>
+    <!-- Aviso animado -->
+    {% if avisos %}
+  <div class="aviso-marquee" style="margin-bottom: 2.5rem;">
+    <span class="icon" style="margin-right:8px;"><i class="fas fa-exclamation-triangle"></i></span>
+    <span class="has-text-weight-bold" style="margin-right: 16px;">Avisos Importantes:</span>
+    <div class="aviso-marquee__content" style="display: flex; align-items: center;">
+  <span class="aviso-marquee__inner">
+    {% for aviso in avisos %}
+      <strong>{{ aviso.titulo }}:</strong> {{ aviso.conteudo }}
+      {% if aviso.data_fim %}
+        <span class="has-text-grey-dark">
+          <span class="icon is-small"><i class="fas fa-calendar"></i></span>
+          <span>Válido até: {{ aviso.data_fim.strftime('%d/%m/%Y %H:%M') }}</span>
+        </span>
+      {% endif %}
+      &nbsp;&nbsp;&nbsp;
+    {% endfor %}
+    {% for aviso in avisos %}
+      <strong>{{ aviso.titulo }}:</strong> {{ aviso.conteudo }}
+      {% if aviso.data_fim %}
+        <span class="has-text-grey-dark">
+          <span class="icon is-small"><i class="fas fa-calendar"></i></span>
+          <span>Válido até: {{ aviso.data_fim.strftime('%d/%m/%Y %H:%M') }}</span>
+        </span>
+      {% endif %}
+      &nbsp;&nbsp;&nbsp;
+    {% endfor %}
+  </span>
+</div>
+    <button class="delete is-small" style="margin-left:8px;vertical-align:middle;" onclick="this.parentElement.style.display='none'"></button>
+  </div>
+{% endif %}
+
     <!-- Navigation -->
     <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
         <div class="container">
@@ -337,48 +429,6 @@
             </div>
         </div>
     </section>
-
-    <!-- Avisos Banner -->
-    {% if avisos %}
-    <div class="container">
-        <div id="avisos-banner" class="notification is-warning is-light" style="border-radius: 0; margin: 0; border-bottom: 1px solid #ffdd57;">
-            <div class="level">
-                <div class="level-left">
-                    <div class="level-item">
-                        <div>
-                            <h4 class="title is-6">
-                                <span class="icon">
-                                    <i class="fas fa-exclamation-triangle"></i>
-                                </span>
-                                <span>Avisos Importantes</span>
-                            </h4>
-                            {% for aviso in avisos %}
-                            <div class="mt-2">
-                                <p class="is-size-6">
-                                    <strong>{{ aviso.titulo }}:</strong> {{ aviso.conteudo }}
-                                    {% if aviso.data_fim %}
-                                    <span class="has-text-grey-dark">
-                                        <span class="icon is-small">
-                                            <i class="fas fa-calendar"></i>
-                                        </span>
-                                        <span>Válido até: {{ aviso.data_fim.strftime('%d/%m/%Y %H:%M') }}</span>
-                                    </span>
-                                    {% endif %}
-                                </p>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-                <div class="level-right">
-                    <div class="level-item">
-                        <button class="delete is-small" onclick="document.getElementById('avisos-banner').remove()"></button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endif %}
 
     <!-- Main Content -->
     <section class="section">

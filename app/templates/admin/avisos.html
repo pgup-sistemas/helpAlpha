@@ -72,9 +72,19 @@
                             </td>
                             <td>
                                 {% if aviso.is_ativo %}
-                                <span class="tag is-success">Ativo</span>
+                                <span class="tag is-success mb-2">Ativo</span>
+                                <form action="{{ url_for('admin_desativar_aviso', aviso_id=aviso.id) }}" method="post" style="display:inline;">
+                                    <button class="button is-small is-warning" type="submit" title="Desativar aviso">
+                                        <span class="icon"><i class="fas fa-ban"></i></span>
+                                    </button>
+                                </form>
                                 {% else %}
-                                <span class="tag is-danger">Inativo</span>
+                                <span class="tag is-danger mb-2">Inativo</span>
+                                <form action="{{ url_for('admin_ativar_aviso', aviso_id=aviso.id) }}" method="post" style="display:inline;">
+                                    <button class="button is-small is-success" type="submit" title="Ativar aviso">
+                                        <span class="icon"><i class="fas fa-check"></i></span>
+                                    </button>
+                                </form>
                                 {% endif %}
                             </td>
                             <td>

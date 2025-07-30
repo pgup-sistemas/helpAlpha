@@ -71,6 +71,33 @@
             {% endif %}
         </div>
 
+        <!-- Upload da Logo -->
+        <div class="field">
+            <label class="label">Logo do Site</label>
+            <div class="control">
+                {{ form.logo(class="input", accept="image/png, image/jpeg, image/svg+xml") }}
+            </div>
+            <p class="help">Formatos aceitos: PNG, JPG, SVG. Tamanho recomendado: até 512x512px.</p>
+            {% if form.logo.errors %}
+                <p class="help is-danger">
+                    {% for error in form.logo.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </p>
+            {% endif %}
+            {% if config and config.logo_path %}
+                <div class="mt-3">
+                    <label class="label">Logo Atual:</label><br>
+                    <img src="{{ url_for('static', filename=config.logo_path) }}" alt="Logo do Site" style="max-height: 80px; max-width: 200px; background: #fff; border: 1px solid #eee; padding: 4px;">
+                    <div class="mt-2">
+                        <label class="checkbox">
+                            <input type="checkbox" name="remover_logo"> Remover logo atual
+                        </label>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
         <div class="field">
             <label class="label">{{ form.descricao_site.label }}</label>
             <div class="control">

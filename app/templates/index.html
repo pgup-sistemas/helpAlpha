@@ -224,11 +224,11 @@
             </span>
             <span>Resultados para "{{ query }}"</span>
         </h2>
-        <p class="subtitle is-6 is-size-7-mobile">Encontrados {{ pagination.total }} serviço(s)</p>
+        <p class="subtitle is-6 is-size-7-mobile has-text-centered-mobile">Encontrados {{ pagination.total }} serviço(s)</p>
     </div>
 </div>
 {% else %}
-<div class="columns is-centered">
+<div class="columns is-centered has-text-centered-mobile">
     <div class="column is-12-mobile is-10-tablet is-10-desktop">
         <h2 class="title is-4 is-size-5-mobile">
             <span class="icon">
@@ -236,7 +236,7 @@
             </span>
             <span>Todos os Serviços Disponíveis</span>
         </h2>
-        <p class="subtitle is-6 is-size-7-mobile">Consulte informações sobre {{ pagination.total }} serviços</p>
+        <p class="subtitle is-6 is-size-7-mobile has-text-centered-mobile">Consulte informações sobre {{ pagination.total }} serviços</p>
     </div>
 </div>
 {% endif %}
