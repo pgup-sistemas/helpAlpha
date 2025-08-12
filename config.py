@@ -74,7 +74,7 @@ class Config:
 class DevelopmentConfig(Config):
     """Configurações para desenvolvimento"""
     DEBUG = True
-    SQLALCHEMY_ECHO = True
+    SQLALCHEMY_ECHO = False
     
     # Configurações específicas de desenvolvimento
     SECRET_KEY = 'dev-secret-key-change-in-production'
@@ -124,4 +124,4 @@ config = {
     'production': ProductionConfig,
     'testing': TestingConfig,
     'default': DevelopmentConfig
-} 
+}

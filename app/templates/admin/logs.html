@@ -74,7 +74,7 @@
                                         </span>
                                         <span>Limpar</span>
                                     </a>
-                                    <a href="{{ url_for('exportar_relatorio', tipo='logs', **request.args) }}" class="button is-success">
+                                    <a href="{{ url_for('exportar_relatorio', tipo='logs', data_inicio=request.args.get('data_inicio'), data_fim=request.args.get('data_fim'), ip=request.args.get('ip'), pagina=request.args.get('pagina')) }}" class="button is-success">
                                         <span class="icon">
                                             <i class="fas fa-download"></i>
                                         </span>
@@ -184,14 +184,14 @@
                     {% if logs.pages > 1 %}
                     <nav class="pagination is-centered" role="navigation" aria-label="pagination">
                         {% if logs.has_prev %}
-                            <a href="{{ url_for('logs_acesso', page=logs.prev_num, **request.args) }}" 
+                            <a href="{{ url_for('logs_acesso', page=logs.prev_num, data_inicio=request.args.get('data_inicio'), data_fim=request.args.get('data_fim'), ip=request.args.get('ip'), pagina=request.args.get('pagina')) }}" 
                                class="pagination-previous">Anterior</a>
                         {% else %}
                             <span class="pagination-previous" disabled>Anterior</span>
                         {% endif %}
                         
                         {% if logs.has_next %}
-                            <a href="{{ url_for('logs_acesso', page=logs.next_num, **request.args) }}" 
+                            <a href="{{ url_for('logs_acesso', page=logs.next_num, data_inicio=request.args.get('data_inicio'), data_fim=request.args.get('data_fim'), ip=request.args.get('ip'), pagina=request.args.get('pagina')) }}" 
                                class="pagination-next">Próxima</a>
                         {% else %}
                             <span class="pagination-next" disabled>Próxima</span>
@@ -202,7 +202,7 @@
                                 {% if page_num %}
                                     {% if page_num != logs.page %}
                                         <li>
-                                            <a href="{{ url_for('logs_acesso', page=page_num, **request.args) }}" 
+                                            <a href="{{ url_for('logs_acesso', page=page_num, data_inicio=request.args.get('data_inicio'), data_fim=request.args.get('data_fim'), ip=request.args.get('ip'), pagina=request.args.get('pagina')) }}" 
                                                class="pagination-link">{{ page_num }}</a>
                                         </li>
                                     {% else %}
@@ -240,7 +240,7 @@
                             </span>
                             <span>Voltar aos Relatórios</span>
                         </a>
-                        <a href="{{ url_for('exportar_relatorio', tipo='logs', **request.args) }}" class="button is-success">
+                        <a href="{{ url_for('exportar_relatorio', tipo='logs', data_inicio=request.args.get('data_inicio'), data_fim=request.args.get('data_fim'), ip=request.args.get('ip'), pagina=request.args.get('pagina')) }}" class="button is-success">
                             <span class="icon">
                                 <i class="fas fa-download"></i>
                             </span>
@@ -252,4 +252,4 @@
         </div>
     </div>
 </div>
-{% endblock %} 
+{% endblock %}

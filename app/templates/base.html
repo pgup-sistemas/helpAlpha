@@ -293,6 +293,7 @@
             font-size: 1rem;
             z-index: 1000;
             box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            overflow: hidden;
         }
         
         .aviso-marquee__content {
@@ -308,15 +309,13 @@
             display: inline-block;
             white-space: nowrap;
             will-change: transform;
-            animation: marquee 18s linear infinite;
+            animation: marquee 25s linear infinite;
+            padding-right: 100%; /* Garante espaço suficiente para a animação completa */
         }
         
         @keyframes marquee {
             0% {
-                transform: translateX(0);
-            }
-            10% {
-                transform: translateX(0);
+                transform: translateX(100%);
             }
             100% {
                 transform: translateX(-100%);
@@ -324,12 +323,20 @@
         }
         /* Adiciona espaço no topo do body quando aviso está presente */
         body.tem-aviso {
-            padding-top: 3.2rem; /* dobrou o espaço para banner mais alto */
+            padding-top: 3.2rem; /* espaço para o banner */
         }
         @media (max-width: 600px) {
             body.tem-aviso {
                 padding-top: 6.2rem;
             }
+        }
+        /* Ajusta a posição da navbar quando tem aviso */
+        body.tem-aviso .navbar {
+            margin-top: 1rem;
+        }
+        /* Garante que o aviso não sobreponha outros elementos */
+        .aviso-marquee {
+            z-index: 30;
         }
     </style>
     <script>
@@ -344,33 +351,23 @@
 <body>
     <!-- Aviso animado -->
     {% if avisos %}
-  <div class="aviso-marquee" style="margin-bottom: 2.5rem;">
+  <div class="aviso-marquee" style="margin-bottom: 0;">
     <span class="icon" style="margin-right:8px;"><i class="fas fa-exclamation-triangle"></i></span>
     <span class="has-text-weight-bold" style="margin-right: 16px;">Avisos Importantes:</span>
     <div class="aviso-marquee__content" style="display: flex; align-items: center;">
-  <span class="aviso-marquee__inner">
-    {% for aviso in avisos %}
-      <strong>{{ aviso.titulo }}:</strong> {{ aviso.conteudo }}
-      {% if aviso.data_fim %}
-        <span class="has-text-grey-dark">
-          <span class="icon is-small"><i class="fas fa-calendar"></i></span>
-          <span>Válido até: {{ aviso.data_fim.strftime('%d/%m/%Y %H:%M') }}</span>
-        </span>
-      {% endif %}
-      &nbsp;&nbsp;&nbsp;
-    {% endfor %}
-    {% for aviso in avisos %}
-      <strong>{{ aviso.titulo }}:</strong> {{ aviso.conteudo }}
-      {% if aviso.data_fim %}
-        <span class="has-text-grey-dark">
-          <span class="icon is-small"><i class="fas fa-calendar"></i></span>
-          <span>Válido até: {{ aviso.data_fim.strftime('%d/%m/%Y %H:%M') }}</span>
-        </span>
-      {% endif %}
-      &nbsp;&nbsp;&nbsp;
-    {% endfor %}
-  </span>
-</div>
+      <span class="aviso-marquee__inner">
+        {% for aviso in avisos %}
+          <strong>{{ aviso.titulo }}:</strong> {{ aviso.conteudo }}
+          {% if aviso.data_fim %}
+            <span class="has-text-grey-dark">
+              <span class="icon is-small"><i class="fas fa-calendar"></i></span>
+              <span>Válido até: {{ aviso.data_fim.strftime('%d/%m/%Y %H:%M') }}</span>
+            </span>
+          {% endif %}
+          &nbsp;&nbsp;&nbsp;
+        {% endfor %}
+      </span>
+    </div>
     <button class="delete is-small" style="margin-left:8px;vertical-align:middle;" onclick="this.parentElement.style.display='none'"></button>
   </div>
 {% endif %}
@@ -758,4 +755,4 @@
     }
     </style>
 </body>
-</html> 
+</html>

@@ -4,6 +4,8 @@ Script principal para executar a aplicação Flask
 """
 
 import os
+import logging
+logging.getLogger('sqlalchemy.engine').setLevel(logging.ERROR)
 from app import create_app, init_database
 from config import config
 
@@ -40,4 +42,4 @@ if __name__ == '__main__':
     print(f"🌐 Servidor rodando em: http://{host}:{port}")
     print(f"🔧 Debug: {'Ativado' if debug else 'Desativado'}")
     
-    app.run(debug=debug, host=host, port=port) 
+    app.run(debug=debug, host=host, port=port)
