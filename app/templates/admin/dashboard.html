@@ -1,0 +1,355 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Dashboard - Help Alphaclin{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- Welcome Section -->
+<div class="notification is-primary is-light">
+    <h1 class="title is-4">
+        <span class="icon">
+            <i class="fas fa-tachometer-alt"></i>
+        </span>
+        <span>Painel de Controle</span>
+    </h1>
+    <p>Bem-vindo ao painel de controle do Help Alphaclin. Aqui você pode gerenciar todos os exames e monitorar o sistema.</p>
+</div>
+
+<!-- Statistics Cards -->
+<div class="columns">
+    <div class="column is-2">
+        <div class="card">
+            <div class="card-content">
+                <div class="content has-text-centered">
+                    <span class="icon is-large has-text-primary">
+                        <i class="fas fa-clipboard-list fa-2x"></i>
+                    </span>
+                    <p class="title is-2">{{ total_exames }}</p>
+                    <p class="subtitle is-6">Total de Serviços</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="column is-2">
+        <div class="card">
+            <div class="card-content">
+                <div class="content has-text-centered">
+                    <span class="icon is-large has-text-info">
+                        <i class="fas fa-hospital fa-2x"></i>
+                    </span>
+                    <p class="title is-2">{{ total_unidades }}</p>
+                    <p class="subtitle is-6">Unidades</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="column is-2">
+        <div class="card">
+            <div class="card-content">
+                <div class="content has-text-centered">
+                    <span class="icon is-large has-text-warning">
+                        <i class="fas fa-bullhorn fa-2x"></i>
+                    </span>
+                    <p class="title is-2">{{ total_avisos }}</p>
+                    <p class="subtitle is-6">Avisos Ativos</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="column is-2">
+        <div class="card">
+            <div class="card-content">
+                <div class="content has-text-centered">
+                    <span class="icon is-large has-text-success">
+                        <i class="fas fa-users fa-2x"></i>
+                    </span>
+                    <p class="title is-2">{{ total_usuarios }}</p>
+                    <p class="subtitle is-6">Usuários</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="column is-2">
+        <div class="card">
+            <div class="card-content">
+                <div class="content has-text-centered">
+                    <span class="icon is-large has-text-danger">
+                        <i class="fas fa-eye fa-2x"></i>
+                    </span>
+                    <p class="title is-2">{{ acessos_hoje }}</p>
+                    <p class="subtitle is-6">Acessos Hoje</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="column is-2">
+        <div class="card">
+            <div class="card-content">
+                <div class="content has-text-centered">
+                    <span class="icon is-large has-text-info">
+                        <i class="fas fa-chart-line fa-2x"></i>
+                    </span>
+                    <p class="title is-2">{{ acessos_semana }}</p>
+                    <p class="subtitle is-6">Acessos Semana</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="columns">
+    <div class="column is-6">
+        <div class="card">
+            <header class="card-header">
+                <p class="card-header-title">
+                    <span class="icon">
+                        <i class="fas fa-bolt"></i>
+                    </span>
+                    <span>Ações Rápidas</span>
+                </p>
+            </header>
+            <div class="card-content">
+                <div class="content">
+                    <div class="buttons">
+                        <a href="{{ url_for('admin_add_exame') }}" class="button is-primary">
+                            <span class="icon">
+                                <i class="fas fa-plus"></i>
+                            </span>
+                            <span>Adicionar Novo Exame</span>
+                        </a>
+                        <a href="{{ url_for('admin_exames') }}" class="button is-info">
+                            <span class="icon">
+                                <i class="fas fa-list"></i>
+                            </span>
+                            <span>Gerenciar Exames</span>
+                        </a>
+                        <a href="{{ url_for('admin_upload_excel') }}" class="button is-success">
+                            <span class="icon">
+                                <i class="fas fa-upload"></i>
+                            </span>
+                            <span>Upload em Massa</span>
+                        </a>
+                        <a href="{{ url_for('index') }}" target="_blank" class="button is-warning">
+                            <span class="icon">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                            <span>Ver Site</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="column is-6">
+        <div class="card">
+            <header class="card-header">
+                <p class="card-header-title">
+                    <span class="icon">
+                        <i class="fas fa-info-circle"></i>
+                    </span>
+                    <span>Informações do Sistema</span>
+                </p>
+            </header>
+            <div class="card-content">
+                <div class="content">
+                    <ul>
+                        <li><strong>Versão:</strong> 1.0.0</li>
+                        <li><strong>Desenvolvido por:</strong> PageUp Sistemas</li>
+                        <li><strong>Responsável:</strong> Oézios Normando</li>
+                        <li><strong>Última atualização:</strong> 28/06/2025</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upload Massa Section -->
+<div class="columns">
+    <div class="column is-12">
+        <div class="card">
+            <header class="card-header">
+                <p class="card-header-title">
+                    <span class="icon">
+                        <i class="fas fa-upload"></i>
+                    </span>
+                    <span>Upload em Massa de Exames</span>
+                </p>
+            </header>
+            <div class="card-content">
+                <div class="content">
+                    <div class="columns">
+                        <div class="column is-8">
+                            <h4 class="title is-5">Importar Múltiplos Exames</h4>
+                            <p>Faça upload de um arquivo Excel (.xlsx ou .xls) para importar vários exames de uma vez. Esta funcionalidade é ideal para:</p>
+                            <ul>
+                                <li>Migração de dados de outros sistemas</li>
+                                <li>Cadastro em lote de novos exames</li>
+                                <li>Atualização em massa de informações</li>
+                                <li>Importação de catálogos de exames</li>
+                            </ul>
+                        </div>
+                        <div class="column is-4">
+                            <div class="buttons is-centered">
+                                <a href="{{ url_for('admin_upload_excel') }}" class="button is-success is-fullwidth">
+                                    <span class="icon">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                    </span>
+                                    <span>Fazer Upload</span>
+                                </a>
+                                <a href="{{ url_for('admin_download_template') }}" class="button is-info is-fullwidth">
+                                    <span class="icon">
+                                        <i class="fas fa-download"></i>
+                                    </span>
+                                    <span>Baixar Template</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="columns">
+    <div class="column is-6">
+        <div class="card">
+            <header class="card-header">
+                <p class="card-header-title">
+                    <span class="icon">
+                        <i class="fas fa-users"></i>
+                    </span>
+                    <span>Usuários Ativos Recentemente</span>
+                </p>
+            </header>
+            <div class="card-content">
+                <div class="content">
+                    {% if usuarios_ativos %}
+                        <div class="table-container">
+                            <table class="table is-fullwidth is-striped is-hoverable">
+                                <thead>
+                                    <tr>
+                                        <th>Usuário</th>
+                                        <th>Nível</th>
+                                        <th>Última Atividade</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for usuario in usuarios_ativos %}
+                                    <tr>
+                                        <td>
+                                            <div class="media">
+                                                <div class="media-left">
+                                                    <span class="icon">
+                                                        <i class="fas fa-user-circle"></i>
+                                                    </span>
+                                                </div>
+                                                <div class="media-content">
+                                                    <p class="title is-6">{{ usuario.username }}</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="tag {% if usuario.role == 'admin' %}is-danger{% elif usuario.role == 'editor' %}is-warning{% else %}is-info{% endif %}">
+                                                {{ usuario.role|title }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="has-text-grey">{{ usuario.last_activity|brazil_datetime }}</span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="has-text-centered">
+                            <p class="has-text-grey">Nenhum usuário ativo recentemente.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="column is-6">
+        <div class="card">
+            <header class="card-header">
+                <p class="card-header-title">
+                    <span class="icon">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                    <span>Acessos Recentes</span>
+                </p>
+            </header>
+            <div class="card-content">
+                <div class="content">
+                    {% if acessos_recentes %}
+                        <div class="table-container">
+                            <table class="table is-fullwidth is-striped is-hoverable">
+                                <thead>
+                                    <tr>
+                                        <th>IP</th>
+                                        <th>Página</th>
+                                        <th>Data/Hora</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for acesso in acessos_recentes %}
+                                    <tr>
+                                        <td>
+                                            <span class="has-text-grey">{{ acesso.ip_address }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="tag is-light">{{ acesso.pagina }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="has-text-grey">{{ acesso.created_at|brazil_datetime }}</span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="has-text-centered">
+                            <p class="has-text-grey">Nenhum acesso registrado recentemente.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Help Section -->
+<div class="notification is-info is-light mt-5">
+    <h4 class="title is-5">
+        <span class="icon">
+            <i class="fas fa-question-circle"></i>
+        </span>
+        <span>Precisa de Ajuda?</span>
+    </h4>
+    <p>Para suporte técnico ou dúvidas sobre o sistema, entre em contato:</p>
+    <div class="columns">
+        <div class="column is-4">
+            <p><strong>Email:</strong> suporte@helpalphaclinclinclin.com.br</p>
+        </div>
+        <div class="column is-4">
+            <p><strong>WhatsApp:</strong> (69) 98129-0005</p>
+        </div>
+        <div class="column is-4">
+            <p><strong>Telefone:</strong> (69) 3223-0132</p>
+        </div>
+    </div>
+</div>
+{% endblock %} 

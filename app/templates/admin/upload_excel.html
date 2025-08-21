@@ -1,0 +1,343 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Upload em Massa - Help Alphaclin Admin{% endblock %}
+{% block page_title %}Upload em Massa de Exames{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div class="notification is-info is-light">
+    <h3 class="title is-4">
+        <span class="icon">
+            <i class="fas fa-upload"></i>
+        </span>
+        <span>Importar Exames via Excel</span>
+    </h3>
+    <p>Faça upload de um arquivo Excel (.xlsx ou .xls) para importar múltiplos exames de uma vez.</p>
+</div>
+
+<!-- Download Template -->
+<div class="card mb-5">
+    <header class="card-header">
+        <p class="card-header-title">
+            <span class="icon">
+                <i class="fas fa-download"></i>
+            </span>
+            <span>Template de Exemplo</span>
+        </p>
+    </header>
+    <div class="card-content">
+        <div class="content">
+            <p>Baixe o template Excel com a estrutura correta para preencher seus dados:</p>
+            <a href="{{ url_for('admin_download_template') }}" class="button is-success">
+                <span class="icon">
+                    <i class="fas fa-file-excel"></i>
+                </span>
+                <span>Baixar Template Excel</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Upload Form -->
+<div class="card">
+    <header class="card-header">
+        <p class="card-header-title">
+            <span class="icon">
+                <i class="fas fa-cloud-upload-alt"></i>
+            </span>
+            <span>Upload do Arquivo</span>
+        </p>
+    </header>
+    <div class="card-content">
+        <form method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            
+            <div class="field">
+                <label class="label">{{ form.arquivo.label }}</label>
+                <div class="control">
+                    <div class="file has-name is-fullwidth">
+                        <label class="file-label">
+                            {{ form.arquivo(class="file-input", accept=".xlsx,.xls") }}
+                            <span class="file-cta">
+                                <span class="file-icon">
+                                    <i class="fas fa-upload"></i>
+                                </span>
+                                <span class="file-label">
+                                    Escolher arquivo...
+                                </span>
+                            </span>
+                            <span class="file-name" id="file-name">
+                                Nenhum arquivo selecionado
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                {% if form.arquivo.errors %}
+                    {% for error in form.arquivo.errors %}
+                        <p class="help is-danger">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+                <p class="help">Formatos aceitos: .xlsx, .xls (máximo 10MB)</p>
+            </div>
+            
+            <div class="field">
+                <div class="control">
+                    {{ form.submit(class="button is-primary is-fullwidth") }}
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Instructions -->
+<div class="card mt-5">
+    <header class="card-header">
+        <p class="card-header-title">
+            <span class="icon">
+                <i class="fas fa-info-circle"></i>
+            </span>
+            <span>Instruções</span>
+        </p>
+    </header>
+    <div class="card-content">
+        <div class="content">
+            <h4 class="title is-5">Estrutura do Arquivo Excel</h4>
+            <p>O arquivo deve conter as seguintes colunas:</p>
+            
+            <!-- Desktop Table -->
+            <div class="is-hidden-mobile">
+                <table class="table is-fullwidth is-striped">
+                    <thead>
+                        <tr>
+                            <th>Coluna</th>
+                            <th>Obrigatório</th>
+                            <th>Descrição</th>
+                            <th>Exemplo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>nome</strong></td>
+                            <td><span class="tag is-danger">Sim</span></td>
+                            <td>Nome do exame</td>
+                            <td>Hemograma Completo</td>
+                        </tr>
+                        <tr>
+                            <td><strong>descricao</strong></td>
+                            <td><span class="tag is-danger">Sim</span></td>
+                            <td>Descrição detalhada</td>
+                            <td>Avaliação das células sanguíneas...</td>
+                        </tr>
+                        <tr>
+                            <td><strong>preparo</strong></td>
+                            <td><span class="tag is-danger">Sim</span></td>
+                            <td>Instruções de preparo</td>
+                            <td>Jejum de 8 horas...</td>
+                        </tr>
+                        <tr>
+                            <td><strong>documentos</strong></td>
+                            <td><span class="tag is-warning">Não</span></td>
+                            <td>Documentos necessários</td>
+                            <td>RG, CPF e pedido médico</td>
+                        </tr>
+                        <tr>
+                            <td><strong>pos_exame</strong></td>
+                            <td><span class="tag is-warning">Não</span></td>
+                            <td>Cuidados após o exame</td>
+                            <td>Nenhuma restrição</td>
+                        </tr>
+                        <tr>
+                            <td><strong>tempo</strong></td>
+                            <td><span class="tag is-warning">Não</span></td>
+                            <td>Duração do exame</td>
+                            <td>10-15 minutos</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Mobile Cards -->
+            <div class="is-hidden-tablet">
+                <div class="columns is-multiline">
+                    <div class="column is-12">
+                        <div class="box">
+                            <h5 class="title is-6 mb-2">nome</h5>
+                            <div class="tags mb-2">
+                                <span class="tag is-danger is-small">Obrigatório</span>
+                            </div>
+                            <p class="has-text-grey mb-2"><strong>Descrição:</strong> Nome do exame</p>
+                            <p class="has-text-grey"><strong>Exemplo:</strong> Hemograma Completo</p>
+                        </div>
+                    </div>
+                    
+                    <div class="column is-12">
+                        <div class="box">
+                            <h5 class="title is-6 mb-2">descricao</h5>
+                            <div class="tags mb-2">
+                                <span class="tag is-danger is-small">Obrigatório</span>
+                            </div>
+                            <p class="has-text-grey mb-2"><strong>Descrição:</strong> Descrição detalhada</p>
+                            <p class="has-text-grey"><strong>Exemplo:</strong> Avaliação das células sanguíneas...</p>
+                        </div>
+                    </div>
+                    
+                    <div class="column is-12">
+                        <div class="box">
+                            <h5 class="title is-6 mb-2">preparo</h5>
+                            <div class="tags mb-2">
+                                <span class="tag is-danger is-small">Obrigatório</span>
+                            </div>
+                            <p class="has-text-grey mb-2"><strong>Descrição:</strong> Instruções de preparo</p>
+                            <p class="has-text-grey"><strong>Exemplo:</strong> Jejum de 8 horas...</p>
+                        </div>
+                    </div>
+                    
+                    <div class="column is-12">
+                        <div class="box">
+                            <h5 class="title is-6 mb-2">documentos</h5>
+                            <div class="tags mb-2">
+                                <span class="tag is-warning is-small">Opcional</span>
+                            </div>
+                            <p class="has-text-grey mb-2"><strong>Descrição:</strong> Documentos necessários</p>
+                            <p class="has-text-grey"><strong>Exemplo:</strong> RG, CPF e pedido médico</p>
+                        </div>
+                    </div>
+                    
+                    <div class="column is-12">
+                        <div class="box">
+                            <h5 class="title is-6 mb-2">pos_exame</h5>
+                            <div class="tags mb-2">
+                                <span class="tag is-warning is-small">Opcional</span>
+                            </div>
+                            <p class="has-text-grey mb-2"><strong>Descrição:</strong> Cuidados após o exame</p>
+                            <p class="has-text-grey"><strong>Exemplo:</strong> Nenhuma restrição</p>
+                        </div>
+                    </div>
+                    
+                    <div class="column is-12">
+                        <div class="box">
+                            <h5 class="title is-6 mb-2">tempo</h5>
+                            <div class="tags mb-2">
+                                <span class="tag is-warning is-small">Opcional</span>
+                            </div>
+                            <p class="has-text-grey mb-2"><strong>Descrição:</strong> Duração do exame</p>
+                            <p class="has-text-grey"><strong>Exemplo:</strong> 10-15 minutos</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h4 class="title is-5 mt-4">Regras de Importação</h4>
+            <ul>
+                <li><strong>Campos obrigatórios:</strong> nome, descricao, preparo</li>
+                <li><strong>Campos opcionais:</strong> documentos, pos_exame, tempo</li>
+                <li><strong>Duplicatas:</strong> Exames com nomes iguais serão ignorados</li>
+                <li><strong>Linhas vazias:</strong> Serão automaticamente puladas</li>
+                <li><strong>Valores padrão:</strong> Campos opcionais vazios receberão valores padrão</li>
+            </ul>
+
+            <h4 class="title is-5 mt-4">Dicas</h4>
+            <div class="notification is-light">
+                <ul>
+                    <li>Use o template fornecido como base</li>
+                    <li>Mantenha os nomes das colunas exatamente como mostrado</li>
+                    <li>Evite caracteres especiais nos nomes dos exames</li>
+                    <li>Teste com poucos registros primeiro</li>
+                    <li>Faça backup dos dados antes de importar</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Action Buttons -->
+<div class="columns is-centered mt-5">
+    <div class="column is-6">
+        <div class="buttons is-centered">
+            <a href="{{ url_for('admin_exames') }}" class="button is-light">
+                <span class="icon">
+                    <i class="fas fa-arrow-left"></i>
+                </span>
+                <span>Voltar aos Exames</span>
+            </a>
+            <a href="{{ url_for('admin_dashboard') }}" class="button is-info">
+                <span class="icon">
+                    <i class="fas fa-tachometer-alt"></i>
+                </span>
+                <span>Dashboard</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Responsive table adjustments */
+@media screen and (max-width: 768px) {
+    .table {
+        font-size: 0.875rem;
+    }
+    
+    .table th,
+    .table td {
+        padding: 0.5rem 0.25rem;
+    }
+    
+    .box {
+        margin-bottom: 0.75rem;
+        padding: 1rem;
+    }
+    
+    .box .title.is-6 {
+        margin-bottom: 0.5rem;
+    }
+    
+    .tags {
+        margin-bottom: 0.5rem;
+    }
+    
+    .has-text-grey {
+        font-size: 0.875rem;
+        line-height: 1.4;
+    }
+}
+
+/* Improve mobile spacing */
+@media screen and (max-width: 768px) {
+    .card-content {
+        padding: 1rem;
+    }
+    
+    .content h4.title.is-5 {
+        font-size: 1.1rem;
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .content ul {
+        margin-left: 1rem;
+    }
+    
+    .content li {
+        margin-bottom: 0.5rem;
+    }
+}
+</style>
+
+<script>
+// File name display
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.querySelector('.file-input');
+    const fileName = document.getElementById('file-name');
+    
+    if (fileInput) {
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                fileName.textContent = this.files[0].name;
+            } else {
+                fileName.textContent = 'Nenhum arquivo selecionado';
+            }
+        });
+    }
+});
+</script>
+{% endblock %} 

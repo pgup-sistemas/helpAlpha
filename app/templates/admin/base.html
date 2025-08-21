@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin - Help Alphaclin - Exames e Vacinas{% endblock %}</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='images/favicon-16x16.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/apple-touch-icon.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bulma.min.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .admin-sidebar {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #3273dc 0%, #209cee 100%);
+            transition: all 0.3s ease;
+            width: 250px;
+            flex-shrink: 0;
+            z-index: 999;
+        }
+        .admin-sidebar.collapsed {
+            width: 60px;
+        }
+        .admin-content {
+            min-height: 100vh;
+            background-color: #f5f5f5;
+            transition: all 0.3s ease;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .admin-content.sidebar-closed {
+            margin-left: 60px;
+        }
+        .sidebar-menu a {
+            color: white;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+        }
+        .sidebar-menu a:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+        }
+        .sidebar-menu a.is-active {
+            background-color: rgba(255,255,255,0.2);
+            border-left: 4px solid white;
+        }
+        .sidebar-menu .menu-text {
+            transition: opacity 0.3s ease;
+            margin-left: 0.5rem;
+        }
+        .collapsed .sidebar-menu .menu-text {
+            opacity: 0;
+            display: none;
+        }
+        .collapsed .sidebar-menu a {
+            justify-content: center;
+            padding: 0.75rem 0.5rem;
+        }
+        .collapsed .sidebar-menu .icon {
+            margin-right: 0;
+            font-size: 1.2rem;
+        }
+        .footer {
+            background-color: #f5f5f5;
+            padding: 2rem 1.5rem;
+            margin-top: auto;
+        }
+        .sidebar-toggle {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            background: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 40px;
+            min-height: 40px;
+            /* Debug: garantir visibilidade */
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        .sidebar-toggle:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+        .sidebar-toggle.collapsed {
+            right: 0.5rem;
+        }
+        .sidebar-toggle .icon {
+            font-size: 1rem;
+            /* Debug: garantir visibilidade do ícone */
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        .main-content-wrapper {
+            transition: margin-left 0.3s ease;
+        }
+        .sidebar-header {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-top: 3rem;
+            position: relative;
+        }
+        .collapsed .sidebar-header {
+            padding: 1rem 0.5rem;
+            padding-top: 3rem;
+        }
+        .collapsed .sidebar-header .menu-text {
+            display: none;
+        }
+        
+        /* Container principal com espaçamento */
+        .page-container {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            flex: 1;
+        }
+        
+        /* Navbar com espaçamento */
+        .admin-navbar {
+            background: linear-gradient(135deg, #3273dc 0%, #209cee 100%);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 0.5rem 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .admin-navbar .title {
+            color: white;
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .user-info {
+            background: rgba(255,255,255,0.15);
+            border-radius: 20px;
+            padding: 0.3rem 0.6rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .user-info:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-1px);
+        }
+        
+        .user-info .icon {
+            color: #fbbf24;
+            font-size: 1.1rem;
+        }
+        
+        .user-info .username {
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        
+        /* Cards e conteúdo com espaçamento */
+        .content-section {
+            margin-bottom: 2rem;
+        }
+        
+        .content-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .admin-layout {
+                flex-direction: column;
+            }
+            
+            .admin-sidebar {
+                position: fixed;
+                left: -250px;
+                top: 0;
+                z-index: 999;
+                width: 250px;
+                transition: left 0.3s ease;
+                /* Garantir que o sidebar tenha scroll se necessário */
+                max-height: 100vh;
+                overflow-y: auto;
+            }
+            .admin-sidebar.mobile-open {
+                left: 0;
+            }
+            .admin-content {
+                margin-left: 0;
+            }
+            .admin-content.sidebar-closed {
+                margin-left: 0;
+            }
+            .sidebar-toggle {
+                position: fixed;
+                top: 1rem;
+                left: 1rem;
+                right: auto;
+                z-index: 1001;
+                background: rgba(50, 115, 220, 0.9);
+                border: 1px solid rgba(255,255,255,0.2);
+                box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            }
+            .sidebar-toggle .icon {
+                font-size: 1rem;
+            }
+            .page-container {
+                padding: 1rem;
+                padding-top: 4rem; /* Espaço para o botão hamburger */
+            }
+            .admin-navbar {
+                padding: 0.5rem 1rem;
+                margin-bottom: 1rem;
+                padding-left: 4rem; /* Espaço para o botão hamburger */
+            }
+            .admin-navbar .title {
+                font-size: 1.1rem;
+            }
+            .user-info {
+                padding: 0.3rem 0.6rem;
+            }
+            .user-info .username {
+                font-size: 0.8rem;
+            }
+            
+            /* Reduzir espaçamento dos links do sidebar no mobile */
+            .admin-sidebar .sidebar-menu a {
+                padding: 0.5rem 0.75rem; /* Reduzir padding vertical e horizontal */
+                font-size: 0.9rem; /* Reduzir tamanho da fonte */
+            }
+            
+            /* Reduzir espaçamento do header do sidebar */
+            .admin-sidebar .sidebar-header {
+                padding: 0.75rem;
+                padding-top: 2.5rem; /* Reduzir padding top */
+            }
+            
+            .admin-sidebar .sidebar-header h1 {
+                font-size: 1.1rem !important; /* Reduzir tamanho do título */
+                margin-bottom: 0.25rem !important;
+            }
+            
+            .admin-sidebar .sidebar-header p {
+                font-size: 0.7rem !important; /* Reduzir tamanho do subtítulo */
+                margin-bottom: 0.5rem !important;
+            }
+            
+            /* Reduzir espaçamento dos separadores (hr) */
+            .admin-sidebar .sidebar-menu hr {
+                margin: 0.5rem 0; /* Reduzir margem dos separadores */
+            }
+            
+            /* Reduzir espaçamento das listas */
+            .admin-sidebar .sidebar-menu .menu-list {
+                margin-bottom: 0.25rem; /* Reduzir margem entre grupos de links */
+            }
+            
+            .admin-sidebar .sidebar-menu .menu-list li {
+                margin-bottom: 0.1rem; /* Reduzir margem entre itens */
+            }
+            
+            /* Reduzir tamanho dos ícones no mobile */
+            .admin-sidebar .sidebar-menu .icon {
+                font-size: 0.9rem;
+                min-width: 1.2rem; /* Garantir largura mínima consistente */
+            }
+            
+            /* Garantir que o texto dos links seja menor */
+            .admin-sidebar .sidebar-menu .menu-text {
+                font-size: 0.85rem;
+            }
+            
+            /* Botão hamburger mobile */
+            #mobileMenuToggle {
+                position: fixed;
+                top: 1rem;
+                left: 1rem;
+                z-index: 1001;
+                background: rgba(50, 115, 220, 0.9) !important;
+                border: 1px solid rgba(255,255,255,0.2) !important;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                color: white !important;
+                min-width: 40px;
+                min-height: 40px;
+                border-radius: 4px;
+            }
+            #mobileMenuToggle:hover {
+                background: rgba(50, 115, 220, 1) !important;
+                transform: translateY(-1px);
+            }
+            #mobileMenuToggle .icon {
+                font-size: 1.1rem;
+            }
+            
+            /* Overlay para fechar o sidebar */
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 998;
+            }
+            .sidebar-overlay.active {
+                display: block;
+            }
+            
+            /* Esconder botão toggle do sidebar no mobile */
+            .admin-sidebar .sidebar-toggle {
+                display: none;
+            }
+            
+            /* Melhorar scroll do sidebar no mobile */
+            .admin-sidebar {
+                scrollbar-width: thin;
+                scrollbar-color: rgba(255,255,255,0.3) transparent;
+            }
+            
+            .admin-sidebar::-webkit-scrollbar {
+                width: 4px;
+            }
+            
+            .admin-sidebar::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            
+            .admin-sidebar::-webkit-scrollbar-thumb {
+                background: rgba(255,255,255,0.3);
+                border-radius: 2px;
+            }
+            
+            .admin-sidebar::-webkit-scrollbar-thumb:hover {
+                background: rgba(255,255,255,0.5);
+            }
+            
+            /* Garantir que o último item (Sair) seja sempre visível */
+            .admin-sidebar .sidebar-menu .menu-list:last-child {
+                margin-bottom: 1rem; /* Adicionar espaço extra no final */
+            }
+        }
+        
+        /* Estilos específicos para telas muito pequenas (smartphones) */
+        @media (max-width: 480px) {
+            .admin-sidebar {
+                width: 220px; /* Reduzir largura do sidebar */
+            }
+            
+            .admin-sidebar .sidebar-menu a {
+                padding: 0.4rem 0.6rem; /* Reduzir ainda mais o padding */
+                font-size: 0.85rem; /* Reduzir ainda mais a fonte */
+            }
+            
+            .admin-sidebar .sidebar-header {
+                padding: 0.5rem;
+                padding-top: 2rem;
+            }
+            
+            .admin-sidebar .sidebar-header h1 {
+                font-size: 1rem !important;
+                margin-bottom: 0.2rem !important;
+            }
+            
+            .admin-sidebar .sidebar-header p {
+                font-size: 0.65rem !important;
+                margin-bottom: 0.4rem !important;
+            }
+            
+            .admin-sidebar .sidebar-menu .icon {
+                font-size: 0.85rem;
+                min-width: 1.1rem;
+            }
+            
+            .admin-sidebar .sidebar-menu .menu-text {
+                font-size: 0.8rem;
+            }
+            
+            .admin-sidebar .sidebar-menu hr {
+                margin: 0.4rem 0;
+            }
+            
+            .admin-sidebar .sidebar-menu .menu-list {
+                margin-bottom: 0.2rem;
+            }
+            
+            .admin-sidebar .sidebar-menu .menu-list li {
+                margin-bottom: 0.05rem;
+            }
+        }
+        .unidade-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            height: 100%;
+        }
+        .unidade-card h4 {
+            color: #3273dc;
+            border-bottom: 2px solid #3273dc;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .horario-item {
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+        .horario-item strong {
+            color: #363636;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Overlay para mobile -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <!-- Sidebar Header -->
+            <div class="sidebar-header">
+                <!-- Sidebar Toggle Button (apenas desktop) -->
+                <button id="sidebarToggle" class="sidebar-toggle" type="button" title="Recolher/Expandir Menu">
+                    <span class="icon">
+                        <i class="fas fa-chevron-left"></i>
+                    </span>
+                </button>
+                
+                <h1 class="title has-text-white has-text-centered menu-text">
+                    <i class="fas fa-stethoscope"></i><br>
+                    Help Alphaclin
+                </h1>
+                <p class="has-text-white has-text-centered is-size-7 menu-text">Painel Administrativo</p>
+            </div>
+            
+            <div class="sidebar-menu">
+                <ul class="menu-list">
+                    <li>
+                        <a href="{{ url_for('admin_dashboard') }}" class="{% if request.endpoint == 'admin_dashboard' %}is-active{% endif %}">
+                            <span class="icon">
+                                <i class="fas fa-tachometer-alt"></i>
+                            </span>
+                            <span class="menu-text">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin_exames') }}" class="{% if request.endpoint == 'admin_exames' %}is-active{% endif %}">
+                            <span class="icon">
+                                <i class="fas fa-flask"></i>
+                            </span>
+                            <span class="menu-text">Gerenciar Exames</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin_add_exame') }}" class="{% if request.endpoint == 'admin_add_exame' %}is-active{% endif %}">
+                            <span class="icon">
+                                <i class="fas fa-plus"></i>
+                            </span>
+                            <span class="menu-text">Adicionar Exame</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin_upload_excel') }}" class="{% if request.endpoint == 'admin_upload_excel' %}is-active{% endif %}">
+                            <span class="icon">
+                                <i class="fas fa-upload"></i>
+                            </span>
+                            <span class="menu-text">Upload em Massa</span>
+                        </a>
+                    </li>
+                </ul>
+                
+                <hr class="has-background-white">
+                
+                <ul class="menu-list">
+                    <li>
+                        <a href="{{ url_for('admin_unidades') }}" class="{% if request.endpoint.startswith('admin_unidades') %}is-active{% endif %}">
+                            <span class="icon">
+                                <i class="fas fa-hospital"></i>
+                            </span>
+                            <span class="menu-text">Unidades</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin_avisos') }}" class="{% if request.endpoint.startswith('admin_avisos') %}is-active{% endif %}">
+                            <span class="icon">
+                                <i class="fas fa-bullhorn"></i>
+                            </span>
+                            <span class="menu-text">Avisos</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin_configuracoes') }}" class="{% if request.endpoint.startswith('admin_configuracoes') %}is-active{% endif %}">
+                            <span class="icon">
+                                <i class="fas fa-cog"></i>
+                            </span>
+                            <span class="menu-text">Configurações</span>
+                        </a>
+                    </li>
+                    {% if current_user.is_authenticated and current_user.can_manage_users() %}
+                    <li>
+                        <a href="{{ url_for('admin_usuarios') }}" class="{% if request.endpoint.startswith('admin_usuarios') %}is-active{% endif %}">
+                            <span class="icon">
+                                <i class="fas fa-users"></i>
+                            </span>
+                            <span class="menu-text">Usuários</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+                
+                <hr class="has-background-white">
+                
+                <ul class="menu-list">
+                    <li>
+                        <a href="{{ url_for('relatorios') }}" class="{% if request.endpoint.startswith('relatorios') or request.endpoint.startswith('estatisticas') or request.endpoint.startswith('logs') %}is-active{% endif %}">
+                            <span class="icon">
+                                <i class="fas fa-chart-bar"></i>
+                            </span>
+                            <span class="menu-text">Relatórios</span>
+                        </a>
+                    </li>
+                </ul>
+                
+                <hr class="has-background-white">
+                
+                <ul class="menu-list">
+                    <li>
+                        <a href="{{ url_for('index') }}" target="_blank">
+                            <span class="icon">
+                                <i class="fas fa-external-link-alt"></i>
+                            </span>
+                            <span class="menu-text">Ver Site</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin_logout') }}">
+                            <span class="icon">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </span>
+                            <span class="menu-text">Sair</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <div class="admin-content" id="mainContent">
+            <!-- Header -->
+            <nav class="admin-navbar" role="navigation" aria-label="main navigation">
+                <div class="navbar-brand">
+                    <!-- Botão hamburger para mobile -->
+                    <button id="mobileMenuToggle" class="button is-white is-small" style="display: none;">
+                        <span class="icon">
+                            <i class="fas fa-bars"></i>
+                        </span>
+                    </button>
+                    
+                    <div class="navbar-item">
+                        <h2 class="title">{% block page_title %}Dashboard{% endblock %}</h2>
+                    </div>
+                </div>
+                
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <div class="user-info">
+                            <span class="icon">
+                                <i class="fas fa-user-circle"></i>
+                            </span>
+                            <span class="username">{% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Visitante{% endif %}</span>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            
+            <!-- Page Container -->
+            <div class="page-container">
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="content-section">
+                            {% for category, message in messages %}
+                                <div class="notification is-{{ category if category != 'message' else 'info' }} is-light">
+                                    <button class="delete"></button>
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+                
+                <!-- Page Content -->
+                <div class="content-section">
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+            
+            <!-- Footer -->
+            <footer class="footer">
+                <div class="container">
+                    <!-- Copyright -->
+                    <div class="content has-text-centered">
+                        <p class="is-size-7">
+                            <strong>Help Alphaclin</strong> - Desenvolvido por <strong>PageUp Sistemas</strong> - Oézios Normando
+                        </p>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+    
+    <script>
+        // Sidebar Toggle Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const adminSidebar = document.getElementById('adminSidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            
+            // Verificar se os elementos existem
+            if (!adminSidebar) {
+                console.error('Sidebar não encontrado');
+                return;
+            }
+            
+            // Função para verificar se é mobile
+            function isMobile() {
+                return window.innerWidth <= 768;
+            }
+            
+            // Função para abrir/fechar sidebar no mobile
+            function toggleMobileSidebar() {
+                const isOpen = adminSidebar.classList.contains('mobile-open');
+                
+                if (isOpen) {
+                    adminSidebar.classList.remove('mobile-open');
+                    sidebarOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                } else {
+                    adminSidebar.classList.add('mobile-open');
+                    sidebarOverlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+            
+            // Função para fechar sidebar no mobile
+            function closeMobileSidebar() {
+                adminSidebar.classList.remove('mobile-open');
+                sidebarOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+            
+            // Configurar botão mobile
+            if (mobileMenuToggle) {
+                mobileMenuToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    toggleMobileSidebar();
+                });
+            }
+            
+            // Configurar overlay para fechar sidebar
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener('click', closeMobileSidebar);
+            }
+            
+            // Configurar botão desktop (apenas se não for mobile)
+            if (sidebarToggle && !isMobile()) {
+                // Carregar estado salvo
+                const savedState = localStorage.getItem('adminSidebarCollapsed');
+                console.log('Estado salvo:', savedState);
+                
+                // Aplicar estado inicial
+                if (savedState === 'true') {
+                    adminSidebar.classList.add('collapsed');
+                    updateIcon(true);
+                } else {
+                    adminSidebar.classList.remove('collapsed');
+                    updateIcon(false);
+                }
+                
+                // Event listener para o botão desktop
+                sidebarToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Botão desktop clicado');
+                    
+                    const isCurrentlyCollapsed = adminSidebar.classList.contains('collapsed');
+                    const newState = !isCurrentlyCollapsed;
+                    
+                    console.log('Mudando estado para:', newState);
+                    
+                    if (newState) {
+                        adminSidebar.classList.add('collapsed');
+                    } else {
+                        adminSidebar.classList.remove('collapsed');
+                    }
+                    
+                    updateIcon(newState);
+                    localStorage.setItem('adminSidebarCollapsed', newState.toString());
+                });
+                
+                function updateIcon(isCollapsed) {
+                    const icon = sidebarToggle.querySelector('i');
+                    if (icon) {
+                        if (isCollapsed) {
+                            icon.className = 'fas fa-chevron-right';
+                            console.log('Ícone alterado para: chevron-right');
+                        } else {
+                            icon.className = 'fas fa-chevron-left';
+                            console.log('Ícone alterado para: chevron-left');
+                        }
+                    } else {
+                        console.error('Ícone não encontrado');
+                    }
+                }
+            }
+            
+            // Mostrar/ocultar botão mobile baseado no tamanho da tela
+            function updateMobileButton() {
+                if (mobileMenuToggle) {
+                    if (isMobile()) {
+                        mobileMenuToggle.style.display = 'block';
+                        if (sidebarToggle) sidebarToggle.style.display = 'none';
+                    } else {
+                        mobileMenuToggle.style.display = 'none';
+                        if (sidebarToggle) sidebarToggle.style.display = 'block';
+                        // Fechar sidebar mobile se estiver aberto
+                        closeMobileSidebar();
+                    }
+                }
+            }
+            
+            // Executar na inicialização
+            updateMobileButton();
+            
+            // Executar quando a tela for redimensionada
+            window.addEventListener('resize', updateMobileButton);
+            
+            // Fechar sidebar mobile ao clicar em um link
+            const sidebarLinks = adminSidebar.querySelectorAll('a');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    if (isMobile()) {
+                        closeMobileSidebar();
+                    }
+                });
+            });
+            
+            // Auto-hide flash messages
+            (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+                const $notification = $delete.parentNode;
+                $delete.addEventListener('click', () => {
+                    $notification.parentNode.removeChild($notification);
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

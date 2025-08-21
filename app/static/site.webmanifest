@@ -1,0 +1,58 @@
+{
+    "name": "Help Alphaclin - Sistema de Consulta de Exames",
+    "short_name": "Help Alphaclin",
+    "description": "Sistema de consulta de exames laboratoriais e de imagem",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#667eea",
+    "theme_color": "#667eea",
+    "orientation": "portrait-primary",
+    "scope": "/",
+    "lang": "pt-BR",
+    "categories": ["medical", "health", "utilities"],
+    "icons": [
+        {
+            "src": "/static/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable any"
+        },
+        {
+            "src": "/static/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable any"
+        },
+        {
+            "src": "/static/apple-touch-icon.png",
+            "sizes": "180x180",
+            "type": "image/png"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Buscar Exames",
+            "short_name": "Buscar",
+            "description": "Buscar exames disponíveis",
+            "url": "/",
+            "icons": [
+                {
+                    "src": "/static/icon-search.png",
+                    "sizes": "96x96"
+                }
+            ]
+        },
+        {
+            "name": "Contatos",
+            "short_name": "Contatos",
+            "description": "Informações de contato",
+            "url": "/#contatos",
+            "icons": [
+                {
+                    "src": "/static/icon-phone.png",
+                    "sizes": "96x96"
+                }
+            ]
+        }
+    ]
+} 

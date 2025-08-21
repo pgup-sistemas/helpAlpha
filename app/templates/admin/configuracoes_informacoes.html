@@ -1,0 +1,325 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Gerenciar Informações Importantes{% endblock %}
+
+{% block content %}
+<style>
+/* Estilos para o modal com scroll */
+.modal-card {
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-card-body {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 60vh;
+    padding: 1.5rem;
+}
+
+/* Melhorar responsividade do modal */
+@media (max-width: 768px) {
+    .modal-card {
+        margin: 0 1rem;
+        max-height: 95vh;
+    }
+    
+    .modal-card-body {
+        max-height: 50vh;
+        padding: 1rem;
+    }
+    
+    .modal-card-head,
+    .modal-card-foot {
+        padding: 0.75rem 1rem;
+    }
+}
+
+/* Estilos para campos do formulário */
+.field {
+    margin-bottom: 1rem;
+}
+
+.field:last-child {
+    margin-bottom: 0;
+}
+
+/* Melhorar espaçamento em mobile */
+@media (max-width: 768px) {
+    .columns .column {
+        margin-bottom: 0.5rem;
+    }
+    
+    .textarea {
+        min-height: 80px;
+    }
+}
+
+/* Scrollbar personalizada para o modal */
+.modal-card-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-card-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.modal-card-body::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.modal-card-body::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+</style>
+
+<div class="container">
+    <div class="columns is-centered">
+        <div class="column is-10">
+            <div class="box">
+                <h1 class="title has-text-centered">
+                    <span class="icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </span>
+                    <span>Gerenciar Informações Importantes</span>
+                </h1>
+                
+                <!-- Menu de Navegação -->
+                <div class="tabs is-centered is-boxed">
+                    <ul>
+                        <li>
+                            <a href="{{ url_for('admin_configuracoes') }}">
+                                <span class="icon"><i class="fas fa-info-circle"></i></span>
+                                <span>Geral</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('admin_configuracoes_enderecos') }}">
+                                <span class="icon"><i class="fas fa-map-marker-alt"></i></span>
+                                <span>Endereços</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('admin_configuracoes_redes_sociais') }}">
+                                <span class="icon"><i class="fab fa-facebook"></i></span>
+                                <span>Redes Sociais</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('admin_configuracoes_horarios') }}">
+                                <span class="icon"><i class="fas fa-clock"></i></span>
+                                <span>Horários</span>
+                            </a>
+                        </li>
+                        <li class="is-active">
+                            <a href="#informacoes">
+                                <span class="icon"><i class="fas fa-exclamation-triangle"></i></span>
+                                <span>Informações</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Lista de Informações -->
+                <div class="mt-5">
+                    <div class="level">
+                        <div class="level-left">
+                            <div class="level-item">
+                                <h2 class="title is-4">Informações Importantes</h2>
+                            </div>
+                        </div>
+                        <div class="level-right">
+                            <div class="level-item">
+                                <button class="button is-primary" onclick="mostrarFormulario()">
+                                    <span class="icon">
+                                        <i class="fas fa-plus"></i>
+                                    </span>
+                                    <span>Adicionar Informação</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if config.get_informacoes_importantes() %}
+                        <div class="columns is-multiline">
+                            {% for info in config.get_informacoes_importantes() %}
+                                <div class="column is-6">
+                                    <div class="card">
+                                        <header class="card-header">
+                                            <p class="card-header-title">
+                                                <span class="icon">
+                                                    <i class="fas fa-info-circle"></i>
+                                                </span>
+                                                <span>{{ info.titulo }}</span>
+                                            </p>
+                                            <div class="card-header-icon">
+                                                <div class="buttons are-small">
+                                                    <button class="button is-info" onclick="editarInfo({{ info.id }})">
+                                                        <span class="icon">
+                                                            <i class="fas fa-edit"></i>
+                                                        </span>
+                                                    </button>
+                                                    <button class="button is-danger" onclick="excluirInfo({{ info.id }})">
+                                                        <span class="icon">
+                                                            <i class="fas fa-trash"></i>
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </header>
+                                        <div class="card-content">
+                                            <div class="content">
+                                                <p>{{ info.descricao }}</p>
+                                                
+                                                <p><strong>Status:</strong><br>
+                                                {% if info.ativo %}
+                                                    <span class="tag is-success">Ativo</span>
+                                                {% else %}
+                                                    <span class="tag is-danger">Inativo</span>
+                                                {% endif %}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="notification is-info is-light">
+                            <p class="has-text-centered">
+                                <span class="icon">
+                                    <i class="fas fa-info-circle"></i>
+                                </span>
+                                <span>Nenhuma informação importante cadastrada. Clique em "Adicionar Informação" para começar.</span>
+                            </p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Modal para Adicionar/Editar Informação -->
+                <div id="modal-info" class="modal">
+                    <div class="modal-background"></div>
+                    <div class="modal-card">
+                        <header class="modal-card-head">
+                            <p class="modal-card-title" id="modal-title">Adicionar Informação</p>
+                            <button class="delete" aria-label="close" onclick="fecharModal()"></button>
+                        </header>
+                        <form method="POST" id="form-info">
+                            <input type="hidden" name="action" id="form-action" value="adicionar">
+                            <input type="hidden" name="info_id" id="form-info-id">
+                            
+                            <section class="modal-card-body">
+                                <div class="field">
+                                    <label class="label">Título da Informação</label>
+                                    <div class="control">
+                                        <input class="input" type="text" name="titulo" id="form-titulo" placeholder="Ex: Chegue com antecedência" required>
+                                    </div>
+                                </div>
+
+                                <div class="field">
+                                    <label class="label">Descrição</label>
+                                    <div class="control">
+                                        <textarea class="textarea" name="descricao" id="form-descricao" placeholder="Ex: Recomendamos chegar 15 minutos antes do horário marcado" rows="4" required></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="field">
+                                    <label class="checkbox">
+                                        <input type="checkbox" name="ativo" id="form-ativo" checked>
+                                        Informação ativa
+                                    </label>
+                                </div>
+                            </section>
+                            
+                            <footer class="modal-card-foot">
+                                <button type="submit" class="button is-primary">Salvar</button>
+                                <button type="button" class="button" onclick="fecharModal()">Cancelar</button>
+                            </footer>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Exemplos de Informações -->
+                <div class="notification is-info is-light mt-5">
+                    <h4 class="title is-5">
+                        <span class="icon">
+                            <i class="fas fa-lightbulb"></i>
+                        </span>
+                        <span>Exemplos de Informações Importantes</span>
+                    </h4>
+                    <div class="columns">
+                        <div class="column">
+                            <h5 class="title is-6">Antecedência</h5>
+                            <p><strong>Título:</strong> Chegue com antecedência<br>
+                            <strong>Descrição:</strong> Recomendamos chegar 15 minutos antes do horário marcado</p>
+                        </div>
+                        <div class="column">
+                            <h5 class="title is-6">Documentos</h5>
+                            <p><strong>Título:</strong> Documentos necessários<br>
+                            <strong>Descrição:</strong> Traga sempre RG, CPF e pedido médico</p>
+                        </div>
+                        <div class="column">
+                            <h5 class="title is-6">Jejum</h5>
+                            <p><strong>Título:</strong> Respeite o jejum<br>
+                            <strong>Descrição:</strong> Respeite rigorosamente as orientações de jejum</p>
+                        </div>
+                        <div class="column">
+                            <h5 class="title is-6">Dúvidas</h5>
+                            <p><strong>Título:</strong> Dúvidas<br>
+                            <strong>Descrição:</strong> Entre em contato conosco para esclarecimentos</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function mostrarFormulario() {
+    document.getElementById('modal-title').textContent = 'Adicionar Informação';
+    document.getElementById('form-action').value = 'adicionar';
+    document.getElementById('form-info-id').value = '';
+    document.getElementById('form-info').reset();
+    document.getElementById('modal-info').classList.add('is-active');
+}
+
+function editarInfo(id) {
+    const informacoes = {{ config.get_informacoes_importantes() | tojson }};
+    const info = informacoes.find(i => i.id === id);
+    
+    if (info) {
+        document.getElementById('modal-title').textContent = 'Editar Informação';
+        document.getElementById('form-action').value = 'editar';
+        document.getElementById('form-info-id').value = id;
+        document.getElementById('form-titulo').value = info.titulo;
+        document.getElementById('form-descricao').value = info.descricao;
+        document.getElementById('form-ativo').checked = info.ativo;
+        
+        document.getElementById('modal-info').classList.add('is-active');
+    }
+}
+
+function excluirInfo(id) {
+    if (confirm('Tem certeza que deseja excluir esta informação?')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.innerHTML = `
+            <input type="hidden" name="action" value="excluir">
+            <input type="hidden" name="info_id" value="${id}">
+        `;
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+function fecharModal() {
+    document.getElementById('modal-info').classList.remove('is-active');
+}
+
+// Fechar modal ao clicar no background
+document.querySelector('.modal-background').addEventListener('click', fecharModal);
+</script>
+{% endblock %} 

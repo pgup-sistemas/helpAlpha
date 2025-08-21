@@ -1,0 +1,352 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Gerenciar Redes Sociais{% endblock %}
+
+{% block content %}
+<style>
+/* Estilos para o modal com scroll */
+.modal-card {
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-card-body {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 60vh;
+    padding: 1.5rem;
+}
+
+/* Melhorar responsividade do modal */
+@media (max-width: 768px) {
+    .modal-card {
+        margin: 0 1rem;
+        max-height: 95vh;
+    }
+    
+    .modal-card-body {
+        max-height: 50vh;
+        padding: 1rem;
+    }
+    
+    .modal-card-head,
+    .modal-card-foot {
+        padding: 0.75rem 1rem;
+    }
+}
+
+/* Estilos para campos do formulário */
+.field {
+    margin-bottom: 1rem;
+}
+
+.field:last-child {
+    margin-bottom: 0;
+}
+
+/* Melhorar espaçamento em mobile */
+@media (max-width: 768px) {
+    .columns .column {
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* Scrollbar personalizada para o modal */
+.modal-card-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-card-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.modal-card-body::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.modal-card-body::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+</style>
+
+<div class="container">
+    <div class="columns is-centered">
+        <div class="column is-10">
+            <div class="box">
+                <h1 class="title has-text-centered">
+                    <span class="icon">
+                        <i class="fab fa-facebook"></i>
+                    </span>
+                    <span>Gerenciar Redes Sociais</span>
+                </h1>
+                
+                <!-- Menu de Navegação -->
+                <div class="tabs is-centered is-boxed">
+                    <ul>
+                        <li>
+                            <a href="{{ url_for('admin_configuracoes') }}">
+                                <span class="icon"><i class="fas fa-info-circle"></i></span>
+                                <span>Geral</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('admin_configuracoes_enderecos') }}">
+                                <span class="icon"><i class="fas fa-map-marker-alt"></i></span>
+                                <span>Endereços</span>
+                            </a>
+                        </li>
+                        <li class="is-active">
+                            <a href="#redes-sociais">
+                                <span class="icon"><i class="fab fa-facebook"></i></span>
+                                <span>Redes Sociais</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('admin_configuracoes_horarios') }}">
+                                <span class="icon"><i class="fas fa-clock"></i></span>
+                                <span>Horários</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('admin_configuracoes_informacoes') }}">
+                                <span class="icon"><i class="fas fa-exclamation-triangle"></i></span>
+                                <span>Informações</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Lista de Redes Sociais -->
+                <div class="mt-5">
+                    <div class="level">
+                        <div class="level-left">
+                            <div class="level-item">
+                                <h2 class="title is-4">Redes Sociais Cadastradas</h2>
+                            </div>
+                        </div>
+                        <div class="level-right">
+                            <div class="level-item">
+                                <button class="button is-primary" onclick="mostrarFormulario()">
+                                    <span class="icon">
+                                        <i class="fas fa-plus"></i>
+                                    </span>
+                                    <span>Adicionar Rede Social</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if config.get_redes_sociais() %}
+                        <div class="columns is-multiline">
+                            {% for rede in config.get_redes_sociais() %}
+                                <div class="column is-4">
+                                    <div class="card">
+                                        <header class="card-header">
+                                            <p class="card-header-title">
+                                                <span class="icon">
+                                                    <i class="{{ rede.icone }}"></i>
+                                                </span>
+                                                <span>{{ rede.nome }}</span>
+                                            </p>
+                                            <div class="card-header-icon">
+                                                <div class="buttons are-small">
+                                                    <button class="button is-info" onclick="editarRede({{ rede.id }})">
+                                                        <span class="icon">
+                                                            <i class="fas fa-edit"></i>
+                                                        </span>
+                                                    </button>
+                                                    <button class="button is-danger" onclick="excluirRede({{ rede.id }})">
+                                                        <span class="icon">
+                                                            <i class="fas fa-trash"></i>
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </header>
+                                        <div class="card-content">
+                                            <div class="content">
+                                                <p><strong>URL:</strong><br>
+                                                <a href="{{ rede.url }}" target="_blank" class="is-size-7">{{ rede.url }}</a></p>
+                                                
+                                                <p><strong>Ícone:</strong><br>
+                                                <code>{{ rede.icone }}</code></p>
+                                                
+                                                <p><strong>Status:</strong><br>
+                                                {% if rede.ativo %}
+                                                    <span class="tag is-success">Ativo</span>
+                                                {% else %}
+                                                    <span class="tag is-danger">Inativo</span>
+                                                {% endif %}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="notification is-info is-light">
+                            <p class="has-text-centered">
+                                <span class="icon">
+                                    <i class="fas fa-info-circle"></i>
+                                </span>
+                                <span>Nenhuma rede social cadastrada. Clique em "Adicionar Rede Social" para começar.</span>
+                            </p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Modal para Adicionar/Editar Rede Social -->
+                <div id="modal-rede" class="modal">
+                    <div class="modal-background"></div>
+                    <div class="modal-card">
+                        <header class="modal-card-head">
+                            <p class="modal-card-title" id="modal-title">Adicionar Rede Social</p>
+                            <button class="delete" aria-label="close" onclick="fecharModal()"></button>
+                        </header>
+                        <form method="POST" id="form-rede">
+                            <input type="hidden" name="action" id="form-action" value="adicionar">
+                            <input type="hidden" name="rede_id" id="form-rede-id">
+                            
+                            <section class="modal-card-body">
+                                <div class="field">
+                                    <label class="label">Nome da Rede Social</label>
+                                    <div class="control">
+                                        <input class="input" type="text" name="nome" id="form-nome" placeholder="Ex: Facebook" required>
+                                    </div>
+                                </div>
+
+                                <div class="field">
+                                    <label class="label">URL da Página</label>
+                                    <div class="control">
+                                        <input class="input" type="url" name="url" id="form-url" placeholder="https://www.facebook.com/suaempresa" required>
+                                    </div>
+                                </div>
+
+                                <div class="field">
+                                    <label class="label">Ícone (FontAwesome)</label>
+                                    <div class="control">
+                                        <div class="select is-fullwidth">
+                                            <select name="icone" id="form-icone" required>
+                                                <option value="">Selecione um ícone</option>
+                                                <option value="fab fa-facebook">Facebook</option>
+                                                <option value="fab fa-instagram">Instagram</option>
+                                                <option value="fab fa-twitter">Twitter</option>
+                                                <option value="fab fa-linkedin">LinkedIn</option>
+                                                <option value="fab fa-youtube">YouTube</option>
+                                                <option value="fab fa-whatsapp">WhatsApp</option>
+                                                <option value="fab fa-telegram">Telegram</option>
+                                                <option value="fab fa-tiktok">TikTok</option>
+                                                <option value="fab fa-pinterest">Pinterest</option>
+                                                <option value="fab fa-snapchat">Snapchat</option>
+                                                <option value="fas fa-globe">Website</option>
+                                                <option value="fas fa-envelope">Email</option>
+                                                <option value="fas fa-phone">Telefone</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <p class="help">Selecione o ícone da rede social usando FontAwesome</p>
+                                </div>
+
+                                <div class="field">
+                                    <label class="checkbox">
+                                        <input type="checkbox" name="ativo" id="form-ativo" checked>
+                                        Rede social ativa
+                                    </label>
+                                </div>
+                            </section>
+                            
+                            <footer class="modal-card-foot">
+                                <button type="submit" class="button is-primary">Salvar</button>
+                                <button type="button" class="button" onclick="fecharModal()">Cancelar</button>
+                            </footer>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Informações sobre Ícones -->
+                <div class="notification is-info is-light mt-5">
+                    <h4 class="title is-5">
+                        <span class="icon">
+                            <i class="fas fa-info-circle"></i>
+                        </span>
+                        <span>Ícones Disponíveis</span>
+                    </h4>
+                    <p>Os ícones são baseados no FontAwesome. Você pode usar qualquer classe do FontAwesome, incluindo:</p>
+                    <div class="columns is-multiline">
+                        <div class="column is-3">
+                            <p><i class="fab fa-facebook"></i> <code>fab fa-facebook</code></p>
+                            <p><i class="fab fa-instagram"></i> <code>fab fa-instagram</code></p>
+                            <p><i class="fab fa-twitter"></i> <code>fab fa-twitter</code></p>
+                        </div>
+                        <div class="column is-3">
+                            <p><i class="fab fa-linkedin"></i> <code>fab fa-linkedin</code></p>
+                            <p><i class="fab fa-youtube"></i> <code>fab fa-youtube</code></p>
+                            <p><i class="fab fa-whatsapp"></i> <code>fab fa-whatsapp</code></p>
+                        </div>
+                        <div class="column is-3">
+                            <p><i class="fab fa-telegram"></i> <code>fab fa-telegram</code></p>
+                            <p><i class="fab fa-tiktok"></i> <code>fab fa-tiktok</code></p>
+                            <p><i class="fas fa-globe"></i> <code>fas fa-globe</code></p>
+                        </div>
+                        <div class="column is-3">
+                            <p><i class="fas fa-envelope"></i> <code>fas fa-envelope</code></p>
+                            <p><i class="fas fa-phone"></i> <code>fas fa-phone</code></p>
+                            <p><i class="fas fa-map-marker-alt"></i> <code>fas fa-map-marker-alt</code></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function mostrarFormulario() {
+    document.getElementById('modal-title').textContent = 'Adicionar Rede Social';
+    document.getElementById('form-action').value = 'adicionar';
+    document.getElementById('form-rede-id').value = '';
+    document.getElementById('form-rede').reset();
+    document.getElementById('modal-rede').classList.add('is-active');
+}
+
+function editarRede(id) {
+    const redes = {{ config.get_redes_sociais() | tojson }};
+    const rede = redes.find(r => r.id === id);
+    
+    if (rede) {
+        document.getElementById('modal-title').textContent = 'Editar Rede Social';
+        document.getElementById('form-action').value = 'editar';
+        document.getElementById('form-rede-id').value = id;
+        document.getElementById('form-nome').value = rede.nome;
+        document.getElementById('form-url').value = rede.url;
+        document.getElementById('form-icone').value = rede.icone;
+        document.getElementById('form-ativo').checked = rede.ativo;
+        
+        document.getElementById('modal-rede').classList.add('is-active');
+    }
+}
+
+function excluirRede(id) {
+    if (confirm('Tem certeza que deseja excluir esta rede social?')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.innerHTML = `
+            <input type="hidden" name="action" value="excluir">
+            <input type="hidden" name="rede_id" value="${id}">
+        `;
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+function fecharModal() {
+    document.getElementById('modal-rede').classList.remove('is-active');
+}
+
+// Fechar modal ao clicar no background
+document.querySelector('.modal-background').addEventListener('click', fecharModal);
+</script>
+{% endblock %} 

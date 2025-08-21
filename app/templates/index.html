@@ -1,0 +1,368 @@
+{% extends "base.html" %}
+
+{% block title %}{{ site_config.nome_site or 'Help Alphaclin' }} - Consulta de Exames Laboratoriais, Vacinas e Imagem{% endblock %}
+
+{% block meta_title %}{{ site_config.nome_site or 'Help Alphaclin' }} - Consulta de Exames Laboratoriais, Vacinas e Imagem | Porto Velho{% endblock %}
+
+{% block meta_description %}{{ site_config.meta_description or 'Consulte informações sobre exames laboratoriais, vacinas e de imagem. Preparo, documentos necessários, horários e contatos das unidades Help Alphaclin em Porto Velho, Rondônia.' }}{% endblock %}
+
+{% block meta_keywords %}{{ site_config.meta_keywords or 'exames laboratoriais, Vacinas, exames de imagem, laboratório, Porto Velho, Rondônia, Help Alphaclin, preparo, jejum, documentos, consulta, agendamento' }}{% endblock %}
+
+{% block og_title %}{{ site_config.nome_site or 'Help Alphaclin' }} - Consulta de Exames Laboratoriais, Vacinas e Imagem | Porto Velho{% endblock %}
+
+{% block og_description %}{{ site_config.meta_description or 'Consulte informações sobre exames laboratoriais, vacinas e de imagem. Preparo, documentos necessários, horários e contatos das unidades Help Alphaclin em Porto Velho, Rondônia.' }}{% endblock %}
+
+{% block twitter_title %}{{ site_config.nome_site or 'Help Alphaclin' }} - Consulta de Exames Laboratoriais, Vacinas e Imagem | Porto Velho{% endblock %}
+
+{% block twitter_description %}{{ site_config.meta_description or 'Consulte informações sobre exames laboratoriais, vacinas e de imagem. Preparo, documentos necessários, horários e contatos das unidades Help Alphaclin em Porto Velho, Rondônia.' }}{% endblock %}
+
+<!-- Schema.org for WebSite -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "{{ site_config.nome_site or 'Help Alphaclin' }}",
+    "description": "{{ site_config.descricao_site or 'Sistema de consulta de exames laboratoriais, vacinas e de imagem' }}",
+    "url": "{{ request.url_root }}",
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "{{ request.url_root }}?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    "publisher": {
+        "@type": "MedicalOrganization",
+        "name": "{{ site_config.nome_site or 'Help Alphaclin' }}",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Av. Calama 2215",
+            "addressLocality": "São João Bosco",
+            "addressRegion": "RO",
+            "addressCountry": "BR"
+        }
+    }
+}
+</script>
+
+{% block content %}
+<style>
+/* CSS para limitar textos e evitar transbordamento */
+.card .title.is-5 {
+    font-size: 0.9rem !important;
+    line-height: 1.2;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    max-width: 100%;
+}
+
+.card .subtitle.is-6 {
+    font-size: 0.8rem !important;
+    line-height: 1.3;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.card .tags .tag {
+    font-size: 0.7rem !important;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.card .tag span {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Ajustes específicos para o level com categoria */
+.card .level.is-mobile {
+    align-items: flex-start;
+}
+
+.card .level-left {
+    flex: 1;
+    min-width: 0;
+}
+
+.card .level-left .tag {
+    font-size: 0.65rem !important;
+    padding: 0.25rem 0.5rem;
+    margin-top: 0.25rem;
+}
+
+/* Garantir que os cards tenham altura consistente */
+.card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.card .content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Ajustes para mobile */
+@media screen and (max-width: 768px) {
+    .card .title.is-5 {
+        font-size: 0.8rem !important;
+    }
+    
+    .card .subtitle.is-6 {
+        font-size: 0.75rem !important;
+    }
+    
+    .card .tags .tag {
+        font-size: 0.65rem !important;
+        padding: 0.25rem 0.5rem;
+    }
+    
+    .card .level-left .tag {
+        font-size: 0.6rem !important;
+    }
+}
+</style>
+
+
+<!-- Search Section -->
+<div class="columns is-centered">
+    <div class="column is-12-mobile is-10-tablet is-8-desktop">
+        <div class="box">
+            <h1 class="title has-text-centered is-size-4-mobile">
+                <span class="icon">
+                    <i class="fas fa-search"></i>
+                </span>
+                <span>Buscar Serviços</span>
+            </h1>
+            <p class="subtitle has-text-centered is-size-6-mobile">
+                Digite o nome do exame, vacina ou serviço que você procura
+            </p>
+            
+            <form method="GET" action="{{ url_for('index') }}">
+                <div class="field">
+                    <div class="control has-icons-left has-icons-right">
+                        <input class="input is-medium-mobile" type="text" name="q" 
+                               placeholder="Ex: Hemograma, Tomografia, Vacina COVID..." 
+                               value="{{ query }}" autocomplete="off">
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        {% if query %}
+                        <span class="icon is-small is-right">
+                            <a href="{{ url_for('index') }}">
+                                <i class="fas fa-times"></i>
+                            </a>
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Category Filters -->
+                <div class="field">
+                    <div class="control">
+                        <div class="buttons has-addons is-centered">
+                            <a href="{{ url_for('index', q=query) }}" 
+                               class="button is-medium-mobile {{ 'is-primary' if not request.args.get('categoria') else 'is-light' }}">
+                                <span class="icon">
+                                    <i class="fas fa-list"></i>
+                                </span>
+                                <span>Todos</span>
+                            </a>
+                            <a href="{{ url_for('index', q=query, categoria='laboratorio') }}" 
+                               class="button is-medium-mobile {{ 'is-info' if request.args.get('categoria') == 'laboratorio' else 'is-light' }}">
+                                <span class="icon">
+                                    <i class="fas fa-flask"></i>
+                                </span>
+                                <span>Laboratório</span>
+                            </a>
+                            <a href="{{ url_for('index', q=query, categoria='imagem') }}" 
+                               class="button is-medium-mobile {{ 'is-warning' if request.args.get('categoria') == 'imagem' else 'is-light' }}">
+                                <span class="icon">
+                                    <i class="fas fa-x-ray"></i>
+                                </span>
+                                <span>Imagem</span>
+                            </a>
+                            <a href="{{ url_for('index', q=query, categoria='vacina') }}" 
+                               class="button is-medium-mobile {{ 'is-success' if request.args.get('categoria') == 'vacina' else 'is-light' }}">
+                                <span class="icon">
+                                    <i class="fas fa-syringe"></i>
+                                </span>
+                                <span>Vacinas</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="field">
+                    <div class="control">
+                        <button type="submit" class="button is-primary is-fullwidth is-medium-mobile">
+                            <span class="icon">
+                                <i class="fas fa-search"></i>
+                            </span>
+                            <span>Buscar Serviços</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Results Section -->
+{% if query %}
+<div class="columns is-centered">
+    <div class="column is-12-mobile is-10-tablet is-10-desktop">
+        <h2 class="title is-4 is-size-5-mobile">
+            <span class="icon">
+                <i class="fas fa-list"></i>
+            </span>
+            <span>Resultados para "{{ query }}"</span>
+        </h2>
+        <p class="subtitle is-6 is-size-7-mobile has-text-centered-mobile">Encontrados {{ pagination.total }} serviço(s)</p>
+    </div>
+</div>
+{% else %}
+<div class="columns is-centered has-text-centered-mobile">
+    <div class="column is-12-mobile is-10-tablet is-10-desktop">
+        <h2 class="title is-4 is-size-5-mobile">
+            <span class="icon">
+                <i class="fas fa-clipboard-list"></i>
+            </span>
+            <span>Todos os Serviços Disponíveis</span>
+        </h2>
+        <p class="subtitle is-6 is-size-7-mobile has-text-centered-mobile">Consulte informações sobre {{ pagination.total }} serviços</p>
+    </div>
+</div>
+{% endif %}
+
+<!-- Exames Grid - Responsive -->
+<div class="columns is-multiline">
+    {% for exame in exames %}
+    <div class="column is-12-mobile is-6-tablet is-4-desktop">
+        <div class="card h-100">
+            <div class="card-content">
+                <div class="content">
+                    <div class="level is-mobile">
+                        <div class="level-left">
+                            <div class="level-item">
+                                <span class="icon {{ exame.cor_categoria }}">
+                                    <i class="{{ exame.icone or exame.icone_padrao }}"></i>
+                                </span>
+                            </div>
+                            <div class="level-item">
+                                <div>
+                                    <h3 class="title is-5 is-size-6-mobile mb-1">{{ exame.nome[:50] }}{% if exame.nome|length > 50 %}...{% endif %}</h3>
+                                    <span class="tag {{ exame.cor_categoria }} is-light is-small">{{ exame.categoria_display[:10] }}{% if exame.categoria_display|length > 10 %}...{% endif %}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="subtitle is-6 is-size-7-mobile">{{ exame.descricao|markdown_safe|safe|truncate_html(80) }}</p>
+                    
+                    <div class="tags">
+                        <span class="tag is-info is-small is-size-7-mobile">
+                            <span class="icon">
+                                <i class="fas fa-clock"></i>
+                            </span>
+                            <span>{{ exame.tempo|markdown_safe|safe|truncate_html(20) }}</span>
+                        </span>
+                        <span class="tag is-warning is-small is-size-7-mobile">
+                            <span class="icon">
+                                <i class="fas fa-utensils"></i>
+                            </span>
+                            <span>{{ exame.preparo|markdown_safe|safe|truncate_html(15) }}</span>
+                        </span>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <a href="{{ url_for('exame', nome_exame=exame.nome) }}" class="button is-primary is-fullwidth is-medium-mobile">
+                            <span class="icon">
+                                <i class="fas fa-info-circle"></i>
+                            </span>
+                            <span>Ver Detalhes</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination - Mobile friendly -->
+{% if pagination.total_pages > 1 %}
+<div class="columns is-centered mt-5">
+    <div class="column is-12-mobile is-8-tablet is-6-desktop">
+        <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+            <!-- Previous Page -->
+            {% if pagination.has_prev %}
+            <a href="{{ url_for('index', page=pagination.prev_page, q=query) }}" class="pagination-previous is-size-7-mobile">
+                <span class="icon">
+                    <i class="fas fa-chevron-left"></i>
+                </span>
+                <span>Anterior</span>
+            </a>
+            {% else %}
+            <span class="pagination-previous is-size-7-mobile" disabled>
+                <span class="icon">
+                    <i class="fas fa-chevron-left"></i>
+                </span>
+                <span>Anterior</span>
+            </span>
+            {% endif %}
+            
+            <!-- Next Page -->
+            {% if pagination.has_next %}
+            <a href="{{ url_for('index', page=pagination.next_page, q=query) }}" class="pagination-next is-size-7-mobile">
+                <span>Próxima</span>
+                <span class="icon">
+                    <i class="fas fa-chevron-right"></i>
+                </span>
+            </a>
+            {% else %}
+            <span class="pagination-next is-size-7-mobile" disabled>
+                <span>Próxima</span>
+                <span class="icon">
+                    <i class="fas fa-chevron-right"></i>
+                </span>
+            </span>
+            {% endif %}
+            
+            <!-- Page Numbers -->
+            <ul class="pagination-list">
+                {% for page_num in pagination.iter_pages() %}
+                    {% if page_num %}
+                        {% if page_num != pagination.page %}
+                            <li>
+                                <a href="{{ url_for('index', page=page_num, q=query) }}" class="pagination-link is-size-7-mobile">{{ page_num }}</a>
+                            </li>
+                        {% else %}
+                            <li>
+                                <span class="pagination-link is-current is-size-7-mobile">{{ page_num }}</span>
+                            </li>
+                        {% endif %}
+                    {% else %}
+                        <li><span class="pagination-ellipsis is-size-7-mobile">&hellip;</span></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </nav>
+
+        <div class="has-text-centered mt-3">
+            <p class="is-size-7-mobile has-text-grey">
+                Página {{ pagination.page }} de {{ pagination.pages }} 
+                ({{ pagination.total }} exames no total)
+            </p>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %} 

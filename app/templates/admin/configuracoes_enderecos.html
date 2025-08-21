@@ -1,0 +1,409 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Gerenciar Endereços{% endblock %}
+
+{% block content %}
+<style>
+/* Estilos para o modal com scroll */
+.modal-card {
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-card-body {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 60vh;
+    padding: 1.5rem;
+}
+
+/* Melhorar responsividade do modal */
+@media (max-width: 768px) {
+    .modal-card {
+        margin: 0 1rem;
+        max-height: 95vh;
+    }
+    
+    .modal-card-body {
+        max-height: 50vh;
+        padding: 1rem;
+    }
+    
+    .modal-card-head,
+    .modal-card-foot {
+        padding: 0.75rem 1rem;
+    }
+}
+
+/* Estilos para campos do formulário */
+.field {
+    margin-bottom: 1rem;
+}
+
+.field:last-child {
+    margin-bottom: 0;
+}
+
+/* Melhorar espaçamento em mobile */
+@media (max-width: 768px) {
+    .columns .column {
+        margin-bottom: 0.5rem;
+    }
+    
+    .textarea {
+        min-height: 80px;
+    }
+}
+
+/* Scrollbar personalizada para o modal */
+.modal-card-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-card-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.modal-card-body::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.modal-card-body::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+</style>
+
+<div class="container">
+    <div class="columns is-centered">
+        <div class="column is-10">
+            <div class="box">
+                <h1 class="title has-text-centered">
+                    <span class="icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </span>
+                    <span>Gerenciar Endereços</span>
+                </h1>
+                
+                <!-- Menu de Navegação -->
+                <div class="tabs is-centered is-boxed">
+                    <ul>
+                        <li>
+                            <a href="{{ url_for('admin_configuracoes') }}">
+                                <span class="icon"><i class="fas fa-info-circle"></i></span>
+                                <span>Geral</span>
+                            </a>
+                        </li>
+                        <li class="is-active">
+                            <a href="#enderecos">
+                                <span class="icon"><i class="fas fa-map-marker-alt"></i></span>
+                                <span>Endereços</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('admin_configuracoes_redes_sociais') }}">
+                                <span class="icon"><i class="fab fa-facebook"></i></span>
+                                <span>Redes Sociais</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('admin_configuracoes_horarios') }}">
+                                <span class="icon"><i class="fas fa-clock"></i></span>
+                                <span>Horários</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('admin_configuracoes_informacoes') }}">
+                                <span class="icon"><i class="fas fa-exclamation-triangle"></i></span>
+                                <span>Informações</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Lista de Endereços -->
+                <div class="mt-5">
+                    <div class="level">
+                        <div class="level-left">
+                            <div class="level-item">
+                                <h2 class="title is-4">Endereços Cadastrados</h2>
+                            </div>
+                        </div>
+                        <div class="level-right">
+                            <div class="level-item">
+                                <button class="button is-primary" onclick="mostrarFormulario()">
+                                    <span class="icon">
+                                        <i class="fas fa-plus"></i>
+                                    </span>
+                                    <span>Adicionar Endereço</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if config.get_enderecos() %}
+                        <div class="columns is-multiline">
+                            {% for endereco in config.get_enderecos() %}
+                                <div class="column is-6">
+                                    <div class="card">
+                                        <header class="card-header">
+                                            <p class="card-header-title">
+                                                <span class="icon">
+                                                    <i class="fas fa-map-marker-alt"></i>
+                                                </span>
+                                                <span>{{ endereco.nome }}</span>
+                                            </p>
+                                            <div class="card-header-icon">
+                                                <div class="buttons are-small">
+                                                    <button class="button is-info" onclick="editarEndereco({{ endereco.id }})">
+                                                        <span class="icon">
+                                                            <i class="fas fa-edit"></i>
+                                                        </span>
+                                                    </button>
+                                                    <button class="button is-danger" onclick="excluirEndereco({{ endereco.id }})">
+                                                        <span class="icon">
+                                                            <i class="fas fa-trash"></i>
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </header>
+                                        <div class="card-content">
+                                            <div class="content">
+                                                <p><strong>Endereço:</strong><br>
+                                                {{ endereco.endereco }}{% if endereco.bairro %}, {{ endereco.bairro }}{% endif %}</p>
+                                                
+                                                <p><strong>Cidade/Estado:</strong><br>
+                                                {{ endereco.cidade }}{% if endereco.estado %}, {{ endereco.estado }}{% endif %}{% if endereco.cep %} - CEP: {{ endereco.cep }}{% endif %}</p>
+                                                
+                                                {% if endereco.telefones %}
+                                                    <p><strong>Telefones:</strong></p>
+                                                    <ul>
+                                                        {% for telefone in endereco.telefones %}
+                                                            <li>{{ telefone.strip() }}</li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                {% endif %}
+                                                
+                                                {% if endereco.horarios %}
+                                                    <p><strong>Horários:</strong><br>
+                                                    {{ endereco.horarios }}</p>
+                                                {% endif %}
+                                                
+                                                {% if endereco.coordenadas %}
+                                                    <p><strong>Coordenadas:</strong><br>
+                                                    {{ endereco.coordenadas }}</p>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="notification is-info is-light">
+                            <p class="has-text-centered">
+                                <span class="icon">
+                                    <i class="fas fa-info-circle"></i>
+                                </span>
+                                <span>Nenhum endereço cadastrado. Clique em "Adicionar Endereço" para começar.</span>
+                            </p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Modal para Adicionar/Editar Endereço -->
+                <div id="modal-endereco" class="modal">
+                    <div class="modal-background"></div>
+                    <div class="modal-card">
+                        <header class="modal-card-head">
+                            <p class="modal-card-title" id="modal-title">Adicionar Endereço</p>
+                            <button class="delete" aria-label="close" onclick="fecharModal()"></button>
+                        </header>
+                        <form method="POST" id="form-endereco">
+                            <input type="hidden" name="action" id="form-action" value="adicionar">
+                            <input type="hidden" name="endereco_id" id="form-endereco-id">
+                            
+                            <section class="modal-card-body">
+                                <div class="field">
+                                    <label class="label">Nome da Unidade</label>
+                                    <div class="control">
+                                        <input class="input" type="text" name="nome" id="form-nome" placeholder="Ex: Unidade Central" required>
+                                    </div>
+                                </div>
+
+                                <div class="field">
+                                    <label class="label">Endereço</label>
+                                    <div class="control">
+                                        <input class="input" type="text" name="endereco" id="form-endereco" placeholder="Ex: Av. Calama 2215" required>
+                                    </div>
+                                </div>
+
+                                <div class="columns">
+                                    <div class="column">
+                                        <div class="field">
+                                            <label class="label">Bairro</label>
+                                            <div class="control">
+                                                <input class="input" type="text" name="bairro" id="form-bairro" placeholder="Ex: São João Bosco">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="column">
+                                        <div class="field">
+                                            <label class="label">Cidade</label>
+                                            <div class="control">
+                                                <input class="input" type="text" name="cidade" id="form-cidade" placeholder="Ex: Porto Velho" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="column">
+                                        <div class="field">
+                                            <label class="label">Estado</label>
+                                            <div class="control">
+                                                <input class="input" type="text" name="estado" id="form-estado" placeholder="Ex: RO" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="column">
+                                        <div class="field">
+                                            <label class="label">CEP</label>
+                                            <div class="control">
+                                                <input class="input" type="text" name="cep" id="form-cep" placeholder="Ex: 76801-000">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="field">
+                                    <label class="label">Telefones</label>
+                                    <div class="control">
+                                        <textarea class="textarea" name="telefones" id="form-telefones" placeholder="Digite os telefones separados por vírgula&#10;Ex: (69) 3223-0132, (69) 3223-0133" rows="3"></textarea>
+                                    </div>
+                                    <p class="help">Digite os telefones separados por vírgula</p>
+                                </div>
+
+                                <div class="field">
+                                    <label class="label">Horários de Funcionamento</label>
+                                    <div class="control">
+                                        <textarea class="textarea" name="horarios" id="form-horarios" placeholder="Ex: Segunda a Sexta: 6h30 às 21h30&#10;Sábado: 6h30 às 17h" rows="3"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="field">
+                                    <label class="label">Coordenadas (Latitude,Longitude)</label>
+                                    <div class="control">
+                                        <input class="input" type="text" name="coordenadas" id="form-coordenadas" placeholder="Ex: -8.7619,-63.9039">
+                                    </div>
+                                    <p class="help">Coordenadas para o Google Maps (opcional)</p>
+                                </div>
+                            </section>
+                            
+                            <footer class="modal-card-foot">
+                                <button type="submit" class="button is-primary">Salvar</button>
+                                <button type="button" class="button" onclick="fecharModal()">Cancelar</button>
+                            </footer>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function mostrarFormulario() {
+    document.getElementById('modal-title').textContent = 'Adicionar Endereço';
+    document.getElementById('form-action').value = 'adicionar';
+    document.getElementById('form-endereco-id').value = '';
+    document.getElementById('form-endereco').reset();
+    document.getElementById('modal-endereco').classList.add('is-active');
+    
+    // Focar no primeiro campo
+    setTimeout(() => {
+        document.getElementById('form-nome').focus();
+    }, 100);
+}
+
+function editarEndereco(id) {
+    const enderecos = {{ config.get_enderecos() | tojson }};
+    const endereco = enderecos.find(e => e.id === id);
+    
+    if (endereco) {
+        document.getElementById('modal-title').textContent = 'Editar Endereço';
+        document.getElementById('form-action').value = 'editar';
+        document.getElementById('form-endereco-id').value = id;
+        document.getElementById('form-nome').value = endereco.nome;
+        document.getElementById('form-endereco').value = endereco.endereco;
+        document.getElementById('form-bairro').value = endereco.bairro || '';
+        document.getElementById('form-cidade').value = endereco.cidade;
+        document.getElementById('form-estado').value = endereco.estado;
+        document.getElementById('form-cep').value = endereco.cep || '';
+        document.getElementById('form-telefones').value = Array.isArray(endereco.telefones) ? endereco.telefones.join(', ') : endereco.telefones || '';
+        document.getElementById('form-horarios').value = endereco.horarios || '';
+        document.getElementById('form-coordenadas').value = endereco.coordenadas || '';
+        
+        document.getElementById('modal-endereco').classList.add('is-active');
+        
+        // Focar no primeiro campo
+        setTimeout(() => {
+            document.getElementById('form-nome').focus();
+        }, 100);
+    }
+}
+
+function excluirEndereco(id) {
+    if (confirm('Tem certeza que deseja excluir este endereço?')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.innerHTML = `
+            <input type="hidden" name="action" value="excluir">
+            <input type="hidden" name="endereco_id" value="${id}">
+        `;
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+function fecharModal() {
+    document.getElementById('modal-endereco').classList.remove('is-active');
+    // Limpar formulário ao fechar
+    document.getElementById('form-endereco').reset();
+}
+
+// Fechar modal ao clicar no background
+document.addEventListener('DOMContentLoaded', function() {
+    const modalBackground = document.querySelector('.modal-background');
+    if (modalBackground) {
+        modalBackground.addEventListener('click', fecharModal);
+    }
+    
+    // Fechar modal com ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && document.getElementById('modal-endereco').classList.contains('is-active')) {
+            fecharModal();
+        }
+    });
+    
+    // Prevenir fechamento do modal ao clicar dentro dele
+    const modalCard = document.querySelector('.modal-card');
+    if (modalCard) {
+        modalCard.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    }
+});
+
+// Auto-resize para textareas
+document.addEventListener('DOMContentLoaded', function() {
+    const textareas = document.querySelectorAll('textarea');
+    textareas.forEach(textarea => {
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 200) + 'px';
+        });
+    });
+});
+</script>
+{% endblock %} 

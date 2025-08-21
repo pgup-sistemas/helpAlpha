@@ -1,0 +1,198 @@
+{% extends "admin/base.html" %}
+
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="columns is-centered">
+        <div class="column is-8">
+            <div class="card">
+                <header class="card-header">
+                    <p class="card-header-title">
+                        <span class="icon">
+                            <i class="fas fa-user-edit"></i>
+                        </span>
+                        {{ title }}
+                    </p>
+                </header>
+                
+                <div class="card-content">
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="columns">
+                            <div class="column">
+                                <div class="field">
+                                    {{ form.username.label(class="label") }}
+                                    <div class="control">
+                                        {{ form.username(class="input", placeholder="Digite o nome de usuário") }}
+                                    </div>
+                                    {% if form.username.errors %}
+                                        {% for error in form.username.errors %}
+                                            <p class="help is-danger">{{ error }}</p>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="column">
+                                <div class="field">
+                                    {{ form.email.label(class="label") }}
+                                    <div class="control">
+                                        {{ form.email(class="input", placeholder="Digite o email") }}
+                                    </div>
+                                    {% if form.email.errors %}
+                                        {% for error in form.email.errors %}
+                                            <p class="help is-danger">{{ error }}</p>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="columns">
+                            <div class="column">
+                                <div class="field">
+                                    {{ form.password.label(class="label") }}
+                                    <div class="control">
+                                        {{ form.password(class="input", placeholder="Digite a senha") }}
+                                    </div>
+                                    {% if form.password.errors %}
+                                        {% for error in form.password.errors %}
+                                            <p class="help is-danger">{{ error }}</p>
+                                        {% endfor %}
+                                    {% endif %}
+                                    <p class="help">Deixe em branco para manter a senha atual (ao editar)</p>
+                                </div>
+                            </div>
+                            
+                            <div class="column">
+                                <div class="field">
+                                    {{ form.confirm_password.label(class="label") }}
+                                    <div class="control">
+                                        {{ form.confirm_password(class="input", placeholder="Confirme a senha") }}
+                                    </div>
+                                    {% if form.confirm_password.errors %}
+                                        {% for error in form.confirm_password.errors %}
+                                            <p class="help is-danger">{{ error }}</p>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="columns">
+                            <div class="column">
+                                <div class="field">
+                                    {{ form.role.label(class="label") }}
+                                    <div class="control">
+                                        <div class="select is-fullwidth">
+                                            {{ form.role() }}
+                                        </div>
+                                    </div>
+                                    {% if form.role.errors %}
+                                        {% for error in form.role.errors %}
+                                            <p class="help is-danger">{{ error }}</p>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="column">
+                                <div class="field">
+                                    <label class="label">Permissões</label>
+                                    <div class="control">
+                                        <div class="tags">
+                                            <span class="tag is-info">Visualizar Estatísticas</span>
+                                            {% if form.role.data in ['admin', 'editor'] %}
+                                                <span class="tag is-warning">Editar Conteúdo</span>
+                                            {% endif %}
+                                            {% if form.role.data == 'admin' %}
+                                                <span class="tag is-danger">Deletar Conteúdo</span>
+                                                <span class="tag is-danger">Gerenciar Usuários</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <p class="help">As permissões são definidas automaticamente baseadas no nível de acesso</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="columns">
+                            <div class="column">
+                                <div class="field">
+                                    <div class="control">
+                                        <label class="checkbox">
+                                            {{ form.is_admin() }}
+                                            {{ form.is_admin.label.text }}
+                                        </label>
+                                    </div>
+                                    <p class="help">Administradores têm acesso total ao sistema</p>
+                                </div>
+                            </div>
+                            
+                            <div class="column">
+                                <div class="field">
+                                    <div class="control">
+                                        <label class="checkbox">
+                                            {{ form.is_active() }}
+                                            {{ form.is_active.label.text }}
+                                        </label>
+                                    </div>
+                                    <p class="help">Usuários inativos não podem fazer login</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="field is-grouped">
+                            <div class="control">
+                                {{ form.submit(class="button is-primary") }}
+                            </div>
+                            <div class="control">
+                                <a href="{{ url_for('admin_usuarios') }}" class="button is-light">Cancelar</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Informações sobre níveis de acesso -->
+            <div class="card mt-4">
+                <header class="card-header">
+                    <p class="card-header-title">
+                        <span class="icon">
+                            <i class="fas fa-info-circle"></i>
+                        </span>
+                        Níveis de Acesso
+                    </p>
+                </header>
+                
+                <div class="card-content">
+                    <div class="columns">
+                        <div class="column">
+                            <div class="notification is-info is-light">
+                                <h4 class="title is-6">Visualizador</h4>
+                                <p>Pode visualizar estatísticas e relatórios do sistema.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="column">
+                            <div class="notification is-warning is-light">
+                                <h4 class="title is-6">Editor</h4>
+                                <p>Pode editar exames, unidades e avisos. Também pode visualizar estatísticas.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="column">
+                            <div class="notification is-danger is-light">
+                                <h4 class="title is-6">Administrador</h4>
+                                <p>Acesso total ao sistema, incluindo gerenciamento de usuários e configurações.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

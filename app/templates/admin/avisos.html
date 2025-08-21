@@ -1,0 +1,166 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Gerenciar Avisos{% endblock %}
+{% block page_title %}Avisos{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="columns">
+        <div class="column">
+            <div class="level">
+                <div class="level-left">
+                    <div class="level-item">
+                        <h1 class="title">Gerenciar Avisos</h1>
+                    </div>
+                </div>
+                <div class="level-right">
+                    <div class="level-item">
+                        <a href="{{ url_for('admin_add_aviso') }}" class="button is-primary">
+                            <span class="icon">
+                                <i class="fas fa-plus"></i>
+                            </span>
+                            <span>Novo Aviso</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            {% if avisos %}
+            <div class="table-container">
+                <table class="table is-fullwidth is-striped is-hoverable">
+                    <thead>
+                        <tr>
+                            <th>Título</th>
+                            <th>Tipo</th>
+                            <th>Conteúdo</th>
+                            <th>Período</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for aviso in avisos %}
+                        <tr>
+                            <td>
+                                <strong>{{ aviso.titulo }}</strong>
+                            </td>
+                            <td>
+                                {% if aviso.tipo == 'info' %}
+                                    <span class="tag is-info">Informação</span>
+                                {% elif aviso.tipo == 'warning' %}
+                                    <span class="tag is-warning">Aviso</span>
+                                {% elif aviso.tipo == 'error' %}
+                                    <span class="tag is-danger">Erro</span>
+                                {% elif aviso.tipo == 'success' %}
+                                    <span class="tag is-success">Sucesso</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="content is-small">
+                                    {{ aviso.conteudo[:100] }}{% if aviso.conteudo|length > 100 %}...{% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="content is-small">
+                                    <div><strong>Início:</strong> {{ aviso.data_inicio.strftime('%d/%m/%Y %H:%M') }}</div>
+                                    {% if aviso.data_fim %}
+                                    <div><strong>Fim:</strong> {{ aviso.data_fim.strftime('%d/%m/%Y %H:%M') }}</div>
+                                    {% else %}
+                                    <div><em>Permanente</em></div>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                {% if aviso.is_ativo %}
+                                <span class="tag is-success mb-2">Ativo</span>
+                                <form action="{{ url_for('admin_desativar_aviso', aviso_id=aviso.id) }}" method="post" style="display:inline;">
+                                    <button class="button is-small is-warning" type="submit" title="Desativar aviso">
+                                        <span class="icon"><i class="fas fa-ban"></i></span>
+                                    </button>
+                                </form>
+                                {% else %}
+                                <span class="tag is-danger mb-2">Inativo</span>
+                                <form action="{{ url_for('admin_ativar_aviso', aviso_id=aviso.id) }}" method="post" style="display:inline;">
+                                    <button class="button is-small is-success" type="submit" title="Ativar aviso">
+                                        <span class="icon"><i class="fas fa-check"></i></span>
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="buttons are-small">
+                                    <a href="{{ url_for('admin_edit_aviso', aviso_id=aviso.id) }}" 
+                                       class="button is-info is-light">
+                                        <span class="icon">
+                                            <i class="fas fa-edit"></i>
+                                        </span>
+                                        <span>Editar</span>
+                                    </a>
+                                    <button class="button is-danger is-light" 
+                                            onclick="confirmarExclusao('{{ aviso.titulo }}', {{ aviso.id }})">
+                                        <span class="icon">
+                                            <i class="fas fa-trash"></i>
+                                        </span>
+                                        <span>Excluir</span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="notification is-info">
+                <p>Nenhum aviso cadastrado ainda.</p>
+                <a href="{{ url_for('admin_add_aviso') }}" class="button is-info is-light">
+                    <span class="icon">
+                        <i class="fas fa-plus"></i>
+                    </span>
+                    <span>Adicionar Primeiro Aviso</span>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Modal de confirmação -->
+<div id="modal-exclusao" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Confirmar Exclusão</p>
+            <button class="delete" aria-label="close" onclick="fecharModal()"></button>
+        </header>
+        <section class="modal-card-body">
+            <p>Tem certeza que deseja excluir o aviso <strong id="titulo-aviso"></strong>?</p>
+            <p class="has-text-danger">Esta ação não pode ser desfeita.</p>
+        </section>
+        <footer class="modal-card-foot">
+            <form id="form-exclusao" method="POST">
+                <button type="submit" class="button is-danger">Confirmar</button>
+                <button type="button" class="button" onclick="fecharModal()">Cancelar</button>
+            </form>
+        </footer>
+    </div>
+</div>
+
+<script>
+function confirmarExclusao(titulo, id) {
+    document.getElementById('titulo-aviso').textContent = titulo;
+    document.getElementById('form-exclusao').action = `/admin/avisos/delete/${id}`;
+    document.getElementById('modal-exclusao').classList.add('is-active');
+}
+
+function fecharModal() {
+    document.getElementById('modal-exclusao').classList.remove('is-active');
+}
+
+// Fechar modal ao clicar no background
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('modal-exclusao');
+    modal.querySelector('.modal-background').addEventListener('click', fecharModal);
+});
+</script>
+{% endblock %} 

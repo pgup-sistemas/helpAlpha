@@ -1,0 +1,533 @@
+{% extends "base.html" %}
+
+{% block title %}{{ exame.nome }} - {{ site_config.nome_site or 'Help Alphaclin' }}{% endblock %}
+
+{% block meta_title %}{{ exame.nome }} - Preparo e Informações | {{ site_config.nome_site or 'Help Alphaclin' }}{% endblock %}
+
+{% block meta_description %}Consulte informações sobre {{ exame.nome }}. Preparo: {{ exame.preparo }}. Documentos necessários, duração e cuidados pós-exame.{% endblock %}
+
+{% block meta_keywords %}{{ exame.nome }}, preparo, jejum, documentos, duração, {{ exame.nome.lower() }}, exames, laboratório, {{ site_config.nome_site or 'Help Alphaclin' }}{% endblock %}
+
+{% block og_title %}{{ exame.nome }} - Preparo e Informações | {{ site_config.nome_site or 'Help Alphaclin' }}{% endblock %}
+
+{% block og_description %}Consulte informações sobre {{ exame.nome }}. Preparo: {{ exame.preparo }}. Documentos necessários e cuidados pós-exame.{% endblock %}
+
+{% block twitter_title %}{{ exame.nome }} - Preparo e Informações | {{ site_config.nome_site or 'Help Alphaclin' }}{% endblock %}
+
+{% block twitter_description %}Consulte informações sobre {{ exame.nome }}. Preparo: {{ exame.preparo }}. Documentos necessários e cuidados pós-exame.{% endblock %}
+
+<!-- Schema.org for MedicalTest -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "MedicalTest",
+    "name": "{{ exame.nome }}",
+    "description": "{{ exame.descricao }}",
+    "url": "{{ request.url }}",
+    "category": "MedicalTest",
+    "preparation": "{{ exame.preparo }}",
+    "followup": "{{ exame.pos_exame }}",
+    "timeRequired": "{{ exame.tempo }}",
+    "requiredDocumentation": "{{ exame.documentos }}",
+    "availableAtOrFrom": {
+        "@type": "MedicalOrganization",
+        "name": "{{ site_config.nome_site or 'Help Alphaclin' }}",
+        "address": [
+            {
+                "@type": "PostalAddress",
+                "streetAddress": "Av. Calama 2215",
+                "addressLocality": "São João Bosco",
+                "addressRegion": "RO",
+                "addressCountry": "BR"
+            },
+            {
+                "@type": "PostalAddress",
+                "streetAddress": "Av. Jatuarana 4184",
+                "addressLocality": "Conceição",
+                "addressRegion": "RO",
+                "addressCountry": "BR"
+            }
+        ],
+        "telephone": ["{{ site_config.telefone_principal or '+556932230132' }}", "{{ site_config.whatsapp or '+5569981290005' }}"]
+    },
+    "areaServed": {
+        "@type": "City",
+        "name": "Porto Velho",
+        "addressRegion": "RO",
+        "addressCountry": "BR"
+    }
+}
+</script>
+
+{% block content %}
+<style>
+/* CSS otimizado para mobile */
+@media (max-width: 768px) {
+    /* Container e espaçamentos */
+    .container {
+        padding: 0 0.5rem;
+    }
+    
+    /* Breadcrumb */
+    .breadcrumb {
+        font-size: 0.7rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .breadcrumb ul {
+        flex-wrap: wrap;
+    }
+    
+    /* Card header */
+    .card-header-title {
+        font-size: 0.9rem !important;
+        padding: 0.75rem;
+        line-height: 1.2;
+        min-height: 3rem;
+    }
+    
+    .card-header-title .level {
+        align-items: flex-start;
+    }
+    
+    .card-header-title .level-left {
+        width: 100%;
+    }
+    
+    .card-header-title .level-left .tag {
+        font-size: 0.65rem !important;
+        padding: 0.25rem 0.5rem;
+        margin-top: 0.25rem;
+        display: inline-block;
+    }
+    
+    /* Melhorar exibição do nome do exame */
+    .exame-nome {
+        font-weight: 600;
+        line-height: 1.4;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
+        margin-bottom: 0.5rem;
+        min-height: 2rem;
+    }
+    
+    /* Ajustar layout do level para dar mais espaço ao nome */
+    .card-header-title .level-left .level-item:first-child {
+        flex-shrink: 0;
+        margin-right: 0.75rem;
+    }
+    
+    .card-header-title .level-left .level-item:last-child {
+        flex: 1;
+        min-width: 0;
+    }
+    
+    /* Títulos */
+    .title.is-4 {
+        font-size: 1.2rem !important;
+        line-height: 1.3;
+    }
+    
+    .title.is-5 {
+        font-size: 1rem !important;
+        line-height: 1.3;
+    }
+    
+    .title.is-6 {
+        font-size: 0.9rem !important;
+        line-height: 1.3;
+    }
+    
+    /* Textos */
+    .is-size-5-mobile {
+        font-size: 0.9rem !important;
+        line-height: 1.3;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+    
+    .is-size-6-mobile {
+        font-size: 0.8rem !important;
+        line-height: 1.4;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+    
+    .is-size-7-mobile {
+        font-size: 0.75rem !important;
+        line-height: 1.4;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+    
+    /* Notificações */
+    .notification {
+        padding: 0.5rem;
+        margin: 0.5rem 0;
+        font-size: 0.8rem !important;
+        line-height: 1.4;
+    }
+    
+    /* Cards */
+    .card {
+        margin-bottom: 0.75rem;
+    }
+    
+    .card-content {
+        padding: 0.75rem;
+    }
+    
+    /* Botões */
+    .buttons.is-mobile .button {
+        height: 2.5rem;
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+    }
+    
+    /* Tags */
+    .tag {
+        font-size: 0.7rem !important;
+        padding: 0.25rem 0.5rem;
+    }
+    
+    /* Ícones */
+    .icon {
+        font-size: 0.9rem;
+    }
+    
+    /* Espaçamentos */
+    .mt-5 {
+        margin-top: 1rem !important;
+    }
+    
+    .mt-4 {
+        margin-top: 0.75rem !important;
+    }
+    
+    .mt-2 {
+        margin-top: 0.5rem !important;
+    }
+    
+    /* Quebra de texto */
+    .card-header-title,
+    .title,
+    .subtitle,
+    p,
+    .notification p,
+    .tag {
+        word-break: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
+    }
+}
+
+/* Tablet styles */
+@media (min-width: 769px) and (max-width: 1023px) {
+    .card-header-title {
+        font-size: 1rem !important;
+    }
+    
+    .title.is-4 {
+        font-size: 1.4rem !important;
+    }
+    
+    .title.is-5 {
+        font-size: 1.1rem !important;
+    }
+    
+    .is-size-5-mobile {
+        font-size: 1rem !important;
+    }
+    
+    .is-size-6-mobile {
+        font-size: 0.9rem !important;
+    }
+    
+    .is-size-7-mobile {
+        font-size: 0.8rem !important;
+    }
+}
+
+/* Desktop styles */
+@media (min-width: 1024px) {
+    .card-content {
+        padding: 1.5rem;
+    }
+    
+    .title.is-4 {
+        font-size: 1.5rem !important;
+    }
+    
+    .title.is-5 {
+        font-size: 1.25rem !important;
+    }
+}
+
+/* Estilos para elementos Markdown */
+.markdown-content {
+    line-height: 1.6;
+}
+
+.markdown-content p {
+    margin-bottom: 0.75rem;
+}
+
+.markdown-content strong {
+    font-weight: 600;
+    color: #363636;
+}
+
+.markdown-content em {
+    font-style: italic;
+    color: #4a4a4a;
+}
+
+.markdown-content code {
+    background-color: #f5f5f5;
+    color: #e83e8c;
+    padding: 0.125rem 0.25rem;
+    border-radius: 3px;
+    font-size: 0.875em;
+    font-family: 'Courier New', monospace;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+}
+
+.markdown-content li {
+    margin-bottom: 0.25rem;
+    line-height: 1.4;
+}
+
+.markdown-content ul li {
+    list-style-type: disc;
+}
+
+.markdown-content ol li {
+    list-style-type: decimal;
+}
+
+.markdown-content hr {
+    border: none;
+    border-top: 1px solid #dbdbdb;
+    margin: 1rem 0;
+}
+
+/* Melhorar espaçamento em notificações */
+.notification .markdown-content {
+    margin: 0;
+}
+
+.notification .markdown-content p:last-child {
+    margin-bottom: 0;
+}
+
+/* Classes específicas do Markdown */
+.markdown-paragraph {
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
+}
+
+.markdown-list {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+}
+
+.markdown-list li {
+    margin-bottom: 0.25rem;
+    line-height: 1.4;
+}
+
+/* Destaques especiais */
+.markdown-content .highlight {
+    background-color: #fff3cd;
+    padding: 0.5rem;
+    border-radius: 4px;
+    border-left: 4px solid #ffc107;
+    margin: 0.5rem 0;
+}
+
+.markdown-content .warning {
+    background-color: #f8d7da;
+    padding: 0.5rem;
+    border-radius: 4px;
+    border-left: 4px solid #dc3545;
+    margin: 0.5rem 0;
+}
+
+.markdown-content .success {
+    background-color: #d1ecf1;
+    padding: 0.5rem;
+    border-radius: 4px;
+    border-left: 4px solid #17a2b8;
+    margin: 0.5rem 0;
+}
+</style>
+
+<div class="container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="breadcrumbs">
+        <ul>
+            <li><a href="{{ url_for('index') }}">Início</a></li>
+            <li class="is-active"><a href="#" aria-current="page">{{ exame.nome[:30] }}{% if exame.nome|length > 30 %}...{% endif %}</a></li>
+        </ul>
+    </nav>
+
+    <!-- Exame Details -->
+    <div class="columns is-multiline">
+        <!-- Main Content - Responsive: full width on mobile, 8/12 on desktop -->
+        <div class="column is-12-tablet is-8-desktop">
+            <div class="card">
+                <header class="card-header">
+                    <p class="card-header-title">
+                        <div class="level is-mobile">
+                            <div class="level-left">
+                                <div class="level-item">
+                                    <span class="icon {{ exame.cor_categoria }}">
+                                        <i class="{{ exame.icone or exame.icone_padrao }}"></i>
+                                    </span>
+                                </div>
+                                <div class="level-item">
+                                    <div>
+                                        <div class="exame-nome">{{ exame.nome }}</div>
+                                        <span class="tag {{ exame.cor_categoria }} is-light is-small mt-1">{{ exame.categoria_display[:10] }}{% if exame.categoria_display|length > 10 %}...{% endif %}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </p>
+                </header>
+                <div class="card-content">
+                    <div class="content">
+                        <h2 class="title is-4 is-size-5-mobile">Descrição</h2>
+                        <div class="is-size-6-mobile markdown-content">{{ exame.descricao|markdown_safe|safe }}</div>
+                        
+                        <h3 class="title is-5 is-size-6-mobile mt-5">
+                            <span class="icon">
+                                <i class="fas fa-clock"></i>
+                            </span>
+                            <span>Preparo Necessário</span>
+                        </h3>
+                        <div class="notification is-info is-light">
+                            <div class="is-size-6-mobile markdown-content">{{ exame.preparo|markdown_safe|safe }}</div>
+                        </div>
+                        
+                        <h3 class="title is-5 is-size-6-mobile mt-5">
+                            <span class="icon">
+                                <i class="fas fa-file-alt"></i>
+                            </span>
+                            <span>Documentos Exigidos</span>
+                        </h3>
+                        <div class="notification is-warning is-light">
+                            <div class="is-size-6-mobile markdown-content">{{ exame.documentos|markdown_safe|safe }}</div>
+                        </div>
+                        
+                        <h3 class="title is-5 is-size-6-mobile mt-5">
+                            <span class="icon">
+                                <i class="fas fa-hourglass-half"></i>
+                            </span>
+                            <span>Duração do Exame</span>
+                        </h3>
+                        <div class="is-size-6-mobile markdown-content">{{ exame.tempo|markdown_safe|safe }}</div>
+                        
+                        <h3 class="title is-5 is-size-6-mobile mt-5">
+                            <span class="icon">
+                                <i class="fas fa-heart"></i>
+                            </span>
+                            <span>Cuidados Pós-Exame</span>
+                        </h3>
+                        <div class="notification is-success is-light">
+                            <div class="is-size-6-mobile markdown-content">{{ exame.pos_exame|markdown_safe|safe }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar - Responsive: full width on mobile, 4/12 on desktop -->
+        <div class="column is-12-tablet is-4-desktop">
+            <!-- Contact Information -->
+            <div class="card">
+                <header class="card-header">
+                    <p class="card-header-title">
+                        <span class="icon">
+                            <i class="fas fa-phone"></i>
+                        </span>
+                        <span class="is-size-6-mobile">Agende seu Exame</span>
+                    </p>
+                </header>
+                <div class="card-content">
+                    <div class="content">
+                        <h4 class="title is-6 is-size-7-mobile">Unidade Central</h4>
+                        <p class="is-size-7-mobile"><i class="fas fa-phone"></i> {{ site_config.telefone_principal or '(69) 3223-0132' }}</p>
+                        <p class="is-size-7-mobile"><i class="fas fa-phone"></i> (69) 3223-0133</p>
+                        <p class="is-size-7-mobile"><i class="fas fa-phone"></i> (69) 3223-0136</p>
+                        
+                        <hr>
+                        
+                        <h4 class="title is-6 is-size-7-mobile">Zona Sul</h4>
+                        <p class="is-size-7-mobile"><i class="fas fa-phone"></i> (69) 3227-9311</p>
+                        <p class="is-size-7-mobile"><i class="fab fa-whatsapp"></i> {{ site_config.whatsapp or '(69) 98129-0005' }}</p>
+                        
+                        <hr>
+                        
+                        <!-- Mobile-friendly buttons -->
+                        <div class="buttons is-mobile">
+                            <a href="tel:+556932230132" class="button is-primary is-fullwidth is-small">
+                                <span class="icon is-small">
+                                    <i class="fas fa-phone"></i>
+                                </span>
+                                <span>Ligar Agora</span>
+                            </a>
+                        </div>
+                        <div class="buttons is-mobile mt-2">
+                            <a href="https://wa.me/5569981290005" target="_blank" class="button is-success is-fullwidth is-small">
+                                <span class="icon is-small">
+                                    <i class="fab fa-whatsapp"></i>
+                                </span>
+                                <span>WhatsApp</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Related Information -->
+            <div class="card mt-4">
+                <header class="card-header">
+                    <p class="card-header-title">
+                        <span class="icon">
+                            <i class="fas fa-info-circle"></i>
+                        </span>
+                        <span class="is-size-6-mobile">Informações Importantes</span>
+                    </p>
+                </header>
+                <div class="card-content">
+                    <div class="content">
+                        <ul class="is-size-7-mobile">
+                            <li><strong>Chegue com antecedência:</strong> 15 minutos antes</li>
+                            <li><strong>Documentos:</strong> RG, CPF e pedido médico</li>
+                            <li><strong>Jejum:</strong> Respeite as orientações</li>
+                            <li><strong>Dúvidas:</strong> Entre em contato conosco</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Back to Search - Mobile friendly -->
+    <div class="has-text-centered mt-5">
+        <a href="{{ url_for('index') }}" class="button is-outlined is-small">
+            <span class="icon is-small">
+                <i class="fas fa-arrow-left"></i>
+            </span>
+            <span>Voltar para Busca</span>
+        </a>
+    </div>
+</div>
+{% endblock %} 

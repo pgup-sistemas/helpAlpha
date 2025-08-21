@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Exame Não Encontrado - {{ site_config.nome_site or 'Help Alphaclin' }}{% endblock %}
+
+{% block content %}
+<div class="columns is-centered">
+    <div class="column is-12-mobile is-8-tablet is-6-desktop">
+        <div class="notification is-danger is-light">
+            <div class="content has-text-centered">
+                <span class="icon is-large">
+                    <i class="fas fa-exclamation-triangle fa-3x"></i>
+                </span>
+                <h1 class="title is-2 is-size-3-mobile">404</h1>
+                <h2 class="subtitle is-4 is-size-5-mobile">Exame Não Encontrado</h2>
+                <p class="is-size-6-mobile">O exame que você está procurando não foi encontrado em nossa base de dados.</p>
+                <p class="is-size-6-mobile">Verifique se o nome está correto ou tente buscar por outro termo.</p>
+                
+                <div class="mt-5">
+                    <a href="{{ url_for('index') }}" class="button is-primary is-medium-mobile">
+                        <span class="icon">
+                            <i class="fas fa-home"></i>
+                        </span>
+                        <span>Voltar ao Início</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+    .notification {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .icon.is-large {
+        font-size: 3rem !important;
+    }
+    
+    .title.is-2 {
+        font-size: 2rem;
+    }
+    
+    .subtitle.is-4 {
+        font-size: 1.25rem;
+    }
+    
+    .button.is-medium-mobile {
+        height: 3rem;
+        font-size: 1rem;
+        padding: 0 1.5rem;
+    }
+}
+
+/* Tablet styles */
+@media (min-width: 769px) and (max-width: 1023px) {
+    .button.is-medium-mobile {
+        height: 2.5rem;
+    }
+}
+</style>
+{% endblock %} 
