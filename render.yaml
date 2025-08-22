@@ -4,7 +4,7 @@ services:
     env: python
     plan: free
     pythonVersion: "3.11.9"
-    buildCommand: pip install -r requirements.txt
+    buildCommand: pip install -r requirements.txt && python migrate_data.py
     startCommand: gunicorn --workers 1 --bind 0.0.0.0:$PORT run:app
     envVars:
       - key: FLASK_ENV
@@ -12,7 +12,9 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: DATABASE_URL
-        value: sqlite:///helpalphaclin.db
+        fromDatabase:
+          name: helpalphaclin-db
+          property: connectionString
       - key: LOG_LEVEL
         value: WARNING
       - key: GOOGLE_MAPS_API_KEY
@@ -23,3 +25,8 @@ services:
         value: admin@helpalphaclin.com
       - key: ADMIN_PASSWORD
         generateValue: true
+
+databases:
+  - name: helpalphaclin-db
+    databaseName: helpalphaclin
+    user: helpalphaclin

@@ -49,34 +49,20 @@ def create_app(config_class=Config):
         from app.security import setup_security
         setup_security(app)
         if app.debug:
-<<<<<<< HEAD
-            pass
-    except ImportError as e:
-        if app.debug:
-            pass
-=======
             print("✅ Módulo de segurança configurado")
     except ImportError as e:
         if app.debug:
             print(f"⚠️  Erro ao configurar segurança: {e}")
->>>>>>> 992509f6f026cc295a8e71a87170556795035cd1
     
     # Configurar rate limiting
     try:
         from app.rate_limiting import setup_rate_limiting
         setup_rate_limiting(app)
         if app.debug:
-<<<<<<< HEAD
-            pass
-    except ImportError as e:
-        if app.debug:
-            pass
-=======
             print("✅ Rate limiting configurado")
     except ImportError as e:
         if app.debug:
             print(f"⚠️  Erro ao configurar rate limiting: {e}")
->>>>>>> 992509f6f026cc295a8e71a87170556795035cd1
     
     # Registrar filtros Jinja2 para Markdown
     @app.template_filter('markdown')
@@ -175,7 +161,6 @@ def create_app(config_class=Config):
             # Retornar configuração padrão em caso de erro
             return {'site_config': SiteConfig()}
     
-<<<<<<< HEAD
     # Context processor para carregar avisos ativos globalmente
     @app.context_processor
     def inject_avisos():
@@ -203,8 +188,6 @@ def create_app(config_class=Config):
             print(f"ERRO ao carregar avisos: {e}")
             return {'avisos': []}
     
-=======
->>>>>>> 992509f6f026cc295a8e71a87170556795035cd1
     # Adicionar variáveis globais aos templates
     @app.context_processor
     def inject_version():
@@ -285,11 +268,7 @@ def init_database(app):
         db.create_all()
         
         if not db_exists:
-<<<<<<< HEAD
-            pass
-=======
             print("🗄️  Banco de dados criado automaticamente")
->>>>>>> 992509f6f026cc295a8e71a87170556795035cd1
         
         # Criar usuário admin se não existir
         admin_user = User.query.filter_by(username='admin').first()
@@ -303,15 +282,9 @@ def init_database(app):
             admin_user.set_password('admin123')
             db.session.add(admin_user)
             db.session.commit()
-<<<<<<< HEAD
-            pass
-        else:
-            pass
-=======
             print("👤 Usuário admin criado: admin / admin123")
         else:
             print("👤 Usuário admin já existe")
->>>>>>> 992509f6f026cc295a8e71a87170556795035cd1
         
         # Criar configuração padrão do site se não existir
         site_config = SiteConfig.query.first()
@@ -319,15 +292,9 @@ def init_database(app):
             site_config = SiteConfig()
             db.session.add(site_config)
             db.session.commit()
-<<<<<<< HEAD
-            pass
-        
-        pass
-=======
             print("⚙️  Configuração padrão do site criada")
         
         print("✅ Banco de dados inicializado com sucesso!")
->>>>>>> 992509f6f026cc295a8e71a87170556795035cd1
 
 def get_version():
     """Obtém a versão do sistema do arquivo VERSION"""
@@ -338,8 +305,4 @@ def get_version():
                 return f.read().strip()
         return '1.0.0'  # Versão padrão
     except Exception:
-<<<<<<< HEAD
         return '1.0.0'  # Versão padrão em caso de erro
-=======
-        return '1.0.0'  # Versão padrão em caso de erro 
->>>>>>> 992509f6f026cc295a8e71a87170556795035cd1

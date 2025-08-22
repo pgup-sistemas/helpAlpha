@@ -38,12 +38,11 @@ if __name__ == '__main__':
     host = os.environ.get('FLASK_HOST', '0.0.0.0')
     port = int(os.environ.get('FLASK_PORT', 5000))
     
-<<<<<<< HEAD
-    pass
-=======
-    print(f"🚀 Iniciando Help Alphaclin em modo {'DESENVOLVIMENTO' if debug else 'PRODUÇÃO'}")
+    modo = 'DESENVOLVIMENTO' if debug else 'PRODUÇÃO'
+    status_debug = 'Ativado' if debug else 'Desativado'
+    
+    print(f"🚀 Iniciando Help Alphaclin em modo {modo}")
     print(f"🌐 Servidor rodando em: http://{host}:{port}")
-    print(f"🔧 Debug: {'Ativado' if debug else 'Desativado'}")
->>>>>>> 992509f6f026cc295a8e71a87170556795035cd1
+    print(f"🔧 Debug: {status_debug}")
     
     app.run(debug=debug, host=host, port=port)
